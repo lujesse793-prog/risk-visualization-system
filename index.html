@@ -1,0 +1,1749 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>贷后风险检测系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./vendor/xlsx.full.min.js"></script>
+    <script>
+      document.documentElement.dataset.xlsxReady = window.XLSX ? "true" : "false";
+    </script>
+    <script src="./data/projects.js"></script>
+    <script src="./data/china_map_paths.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              border: "hsl(var(--border))",
+              background: "hsl(var(--background))",
+              foreground: "hsl(var(--foreground))",
+              muted: "hsl(var(--muted))",
+              "muted-foreground": "hsl(var(--muted-foreground))",
+              card: "hsl(var(--card))",
+              "card-foreground": "hsl(var(--card-foreground))",
+              primary: "hsl(var(--primary))",
+              "primary-foreground": "hsl(var(--primary-foreground))",
+            },
+            boxShadow: {
+              soft: "0 14px 40px rgba(31, 54, 80, 0.08)",
+              cabin: "0 18px 54px rgba(31, 54, 80, 0.10)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --background: 210 34% 97%;
+        --foreground: 222 33% 12%;
+        --card: 0 0% 100%;
+        --card-foreground: 222 33% 12%;
+        --muted: 210 28% 93%;
+        --muted-foreground: 215 14% 43%;
+        --border: 214 30% 88%;
+        --primary: 214 43% 28%;
+        --primary-foreground: 210 40% 98%;
+      }
+
+      .dark {
+        --background: 222 28% 8%;
+        --foreground: 210 30% 94%;
+        --card: 222 25% 11%;
+        --card-foreground: 210 30% 94%;
+        --muted: 221 22% 16%;
+        --muted-foreground: 215 12% 68%;
+        --border: 218 18% 22%;
+        --primary: 208 42% 70%;
+        --primary-foreground: 222 35% 10%;
+      }
+
+      body {
+        font-family: "DIN Alternate", "Aptos", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+        overflow-x: hidden;
+        background: #f5f8fb;
+      }
+
+      .surface-grid {
+        background-image:
+          linear-gradient(to right, rgba(64, 92, 124, 0.055) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(64, 92, 124, 0.055) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(245, 248, 251, 0.96), rgba(236, 243, 249, 0.92));
+        background-size: 32px 32px, 32px 32px, auto;
+      }
+
+      .dark .surface-grid {
+        background-image:
+          linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(15, 23, 42, 0.94));
+      }
+
+      .map-shell {
+        background:
+          linear-gradient(180deg, rgba(255,255,255,.82), rgba(241,246,251,.72)),
+          linear-gradient(to right, rgba(80, 105, 130, .08) 1px, transparent 1px);
+        background-size: auto, 72px 100%;
+      }
+
+      .dark .map-shell {
+        background:
+          linear-gradient(180deg, rgba(20,30,46,.82), rgba(17,24,39,.78)),
+          linear-gradient(to right, rgba(148, 163, 184, .06) 1px, transparent 1px);
+        background-size: auto, 72px 100%;
+      }
+
+      .region-map-layer {
+        animation: mapLayerIn 260ms ease-out both;
+        transform-origin: center;
+      }
+
+      .region-path {
+        transition: fill 180ms ease, stroke 180ms ease, stroke-width 180ms ease, opacity 180ms ease;
+      }
+
+      @keyframes mapLayerIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px) scale(.992);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .region-map-layer {
+          animation: none;
+        }
+
+        .region-path {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-background text-foreground antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const iconPaths = {
+        ChevronRight: "m9 18 6-6-6-6",
+        Clock3: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Zm0-14v5l3 1.5",
+        ExternalLink: "M15 3h6v6m-11 5L21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",
+        FileText: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Zm0 0v6h6M8 13h8M8 17h6",
+        Link2: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+        Moon: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z",
+        Search: "m21 21-4.34-4.34M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z",
+        ShieldCheck: "M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Zm-11-1 2 2 4-4",
+        Sun: "M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z",
+        TriangleAlert: "M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0ZM12 9v4m0 4h.01",
+        CheckCircle2: "M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+        Upload: "M12 3v12m0-12 4 4m-4-4-4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2",
+      };
+
+      function Icon({ name, className = "" }) {
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d={iconPaths[name]} />
+          </svg>
+        );
+      }
+
+      function cn(...classes) {
+        return classes.filter(Boolean).join(" ");
+      }
+
+      function Card({ children, className = "" }) {
+        return <section className={cn("rounded-2xl border border-border/70 bg-card/88 text-card-foreground shadow-soft backdrop-blur", className)}>{children}</section>;
+      }
+
+      function Badge({ children, tone = "neutral" }) {
+        const tones = {
+          severe: "border-red-200 bg-red-50 text-red-700 dark:border-red-900/60 dark:bg-red-950/35 dark:text-red-300",
+          high: "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/60 dark:bg-orange-950/30 dark:text-orange-300",
+          watch: "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900/60 dark:bg-yellow-950/25 dark:text-yellow-300",
+          neutral: "border-border bg-muted text-muted-foreground",
+          ok: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/25 dark:text-emerald-300",
+        };
+        return <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium leading-none", tones[tone])}>{children}</span>;
+      }
+
+      const alerts = [
+        {
+          level: "严重",
+          project: "交银国信·安宁固收B0011号集合资金信托计划",
+          entity: "杭州东部城市建设投资集团有限公司",
+          role: "借款人",
+          title: "新增大额被执行信息，执行金额显著高于近三个月均值",
+          summary: "公开司法渠道显示主体出现新增大额被执行记录，金额和发生频次均高于历史波动区间。",
+          impact: "可能削弱主动偿付安排，需核实现金流、财政回款及近期融资续接情况。",
+          sources: ["中国执行信息公开网", "Choice数据库"],
+          sourceType: "司法 / 财经资讯",
+          time: "2026-05-27",
+          highRelevance: true,
+          keywords: ["被执行", "大额执行", "现金流压力"],
+          evidence: [
+            { name: "司法记录", source: "中国执行信息公开网", url: "https://zxgk.court.gov.cn/", time: "2026-05-27", detail: "新增被执行记录与主体名称精确匹配，事件时间为 2026-05-27。", content: "公开执行信息显示，杭州东部城市建设投资集团有限公司出现新增被执行记录。该记录与名单主体名称匹配，执行金额处于较高水平，事件时间为 2026-05-27。结合主体为项目借款人的关系，该事项可能对短期偿付安排、现金流调度和外部融资沟通形成压力。" },
+            { name: "财经交叉验证", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-27", detail: "近期资讯中出现区域平台融资压力描述，与司法事件方向一致。", content: "财经资讯检索结果显示，近期区域平台融资环境和债务滚续压力受到市场关注。相关描述与新增司法执行记录方向一致，提示主体可能面临更高的融资续接难度，需要结合后续公开公告和资金安排继续跟踪。" },
+          ],
+        },
+        {
+          level: "严重",
+          project: "交银国信·安宁固收B0016号集合资金信托计划",
+          entity: "南京江北新区建设投资集团有限公司",
+          role: "借款人",
+          title: "担保链断裂预警，多家关联方同时触发评级负面观察",
+          summary: "区域内三家互保主体相继被纳入评级负面观察，担保链信用传导风险急剧上升。",
+          impact: "担保链条脆弱性暴露，可能引发区域内融资条件全面收紧，需立即启动应急排查。",
+          sources: ["中诚信国际", "联合资信", "Choice数据库", "中国货币网", "Wind终端", "企查查", "天眼查", "iFinD", "中信证券研究", "中国执行信息公开网"],
+          sourceType: "评级 / 司法 / 财经资讯",
+          time: "2026-05-27",
+          highRelevance: true,
+          keywords: ["担保链断裂", "评级负面", "互保风险", "信用传导"],
+          evidence: [
+            { name: "评级公告一", source: "中诚信国际", url: "https://www.ccxi.com.cn/", time: "2026-05-27", detail: "将江北新区建投列入信用评级观察名单，理由为担保对象出险。", content: "中诚信国际于2026年5月27日发布公告，将南京江北新区建设投资集团有限公司主体信用等级列入观察名单。公告指出，该主体为区域内多家平台提供连带责任担保，其中已有两家被担保方出现债务逾期。若被担保方风险持续暴露，将显著削弱公司代偿能力。" },
+            { name: "评级公告二", source: "联合资信", url: "https://www.lhratings.com/", time: "2026-05-27", detail: "同步下调互保关联方评级展望至负面，提及互保网络脆弱性。", content: "联合资信在同一日发布跟踪评级报告，将江北新区建投的两家互保关联方评级展望由稳定调整为负面。报告重点分析了互保网络的脆弱性，指出三家主体合计对外担保余额超过净资产的180%，交叉违约风险极高。" },
+            { name: "司法记录查询", source: "中国执行信息公开网", url: "https://zxgk.court.gov.cn/", time: "2026-05-26", detail: "被担保方之一出现新增被执行信息，标的金额约2.3亿元。", content: "中国执行信息公开网查询结果显示，江北新区建投担保的一家区级平台于5月26日新增两条被执行记录，合计执行标的约2.3亿元。该执行案件源于融资租赁合同纠纷，已触发担保条款。" },
+            { name: "企查查股权穿透", source: "企查查", url: "https://www.qcc.com/", time: "2026-05-27", detail: "穿透显示互保主体间存在多层股权关联，实际控制人均指向同一国资体系。", content: "企查查股权穿透分析显示，江北新区建投、江北产投集团和江北高新控股三家主体之间存在复杂的股权关联和人员兼任关系。三家主体在银行贷款、债券发行和融资租赁中互为担保，形成闭环互保网络，任一节点出险都将引发连锁反应。" },
+            { name: "天眼查司法风险", source: "天眼查", url: "https://www.tianyancha.com/", time: "2026-05-27", detail: "近三个月内关联主体司法风险信息增长67%，主要集中在合同纠纷领域。", content: "天眼查司法风险监测数据显示，江北新区建投及其关联主体近三个月新增司法案件23起，较上一季度增长67%。案件类型集中在建设工程合同纠纷、融资租赁合同纠纷和借款合同纠纷，合计涉案金额超过8亿元。" },
+            { name: "财经资讯舆情", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-26", detail: "区域平台融资环境恶化，多家银行收紧对互保网络成员的授信。", content: "Choice数据库检索到的近期财经资讯显示，受互保风险暴露影响，至少三家股份制银行已对江北新区平台类客户启动授信重检。部分银行暂停新增授信审批，存量授信到期后续作条件趋严，区域内平台整体融资环境明显恶化。" },
+            { name: "货币网债券异动", source: "中国货币网", url: "https://www.chinamoney.com.cn/", time: "2026-05-27", detail: "江北新区建投存量债券中债估值收益率跳升超150BP。", content: "中国货币网数据显示，江北新区建投存量中期票据（22江北建投MTN001）中债估值收益率在5月26-27日两天内跳升157BP至5.83%，与同评级城投债利差扩大至历史99分位数。债券二级市场出现异常抛压，流动性快速枯竭。" },
+            { name: "Wind负面舆情", source: "Wind终端", url: "https://www.wind.com.cn/", time: "2026-05-27", detail: "Wind资讯抓取到地方监管问询函，要求说明担保代偿能力。", content: "Wind金融终端舆情监测模块抓取到一份地方金融监管局发出的问询函。问询函要求江北新区建投就对外担保风险敞口、代偿资金来源及压力测试结果进行书面说明，并要求在10个工作日内回复。该信息尚未在公开渠道完整披露。" },
+            { name: "iFinD财务数据", source: "iFinD", url: "https://www.51ifind.com/", time: "2026-05-25", detail: "公司最新财报显示担保余额/净资产比率已突破监管预警线。", content: "iFinD终端提取的公司2025年度审计报告显示，截至2025年末，江北新区建投对外担保余额合计187.6亿元，占同期净资产的比重为192%。该比率不仅超过国资委设定的150%预警线，更逼近200%的监管红线。其中对互保关联方的担保占比高达68%。" },
+            { name: "券商风险提示", source: "中信证券研究", url: "https://www.cs.ecitic.com/", time: "2026-05-27", detail: "券商固收团队发布区域城投风险提示，建议规避江北新区互保网络。", content: "中信证券固定收益研究团队于5月27日盘中向机构客户推送风险提示。报告指出江北新区互保网络存在系统性脆弱性，建议持仓机构评估风险敞口，对涉及互保链条的城投债采取减仓或对冲策略。该提示在机构投资者中引发广泛关注。" },
+          ],
+        },
+        {
+          level: "严重",
+          project: "交银国信·安宁固收B0018号集合资金信托计划",
+          entity: "温州城市建设投资集团有限公司",
+          role: "借款人",
+          title: "区域平台债务违约风险上升，多笔融资到期集中偿付压力加大",
+          summary: "年内到期债务规模较大，叠加区域土地出让收入下滑，流动性压力显著。",
+          impact: "短期偿债能力承压，需关注再融资安排和财政资金调度。",
+          sources: ["中国债券信息网", "Choice数据库"],
+          sourceType: "债券 / 财经资讯",
+          time: "2026-05-26",
+          highRelevance: true,
+          keywords: ["债务集中到期", "土地出让", "流动性压力"],
+          evidence: [
+            { name: "债券到期统计", source: "中国债券信息网", url: "https://www.chinabond.com.cn/", time: "2026-05-26", detail: "年内到期债务规模合计超45亿元，其中第三季度集中到期28亿元。", content: "中国债券信息网数据统计显示，温州城投及其下属子公司年内到期债务合计超过45亿元，其中7-9月集中到期约28亿元。考虑到当前融资环境趋紧和区域土地出让不及预期，再融资接续压力较为突出。" },
+            { name: "财政数据交叉验证", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-26", detail: "温州市2026年一季度土地出让收入同比下降约34%。", content: "财经资讯中引用的财政数据显示，温州市2026年一季度土地出让收入同比下降约34%，低于年初预算进度。土地出让收入作为城投平台重要的偿债资金来源，其下滑趋势将直接影响主体的流动性缓冲能力。" },
+          ],
+        },
+        {
+          level: "较重",
+          project: "交银国信·安宁固收B0015号集合资金信托计划",
+          entity: "嵊州市投资控股有限公司",
+          role: "保证人",
+          title: "关联担保主体出现评级关注事项，涉及区域平台融资压力",
+          summary: "公开资讯提及担保主体相关评级关注事项，风险指向区域平台再融资能力。",
+          impact: "可能影响担保履约意愿和外部融资支持，需要穿透核查担保链条。",
+          sources: ["Choice数据库", "iFinD"],
+          sourceType: "财经资讯 / 金融终端",
+          time: "2026-05-26",
+          highRelevance: true,
+          keywords: ["评级关注", "担保履约", "再融资"],
+          evidence: [
+            { name: "资讯命中", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-26", detail: "命中评级关注与区域融资压力相关资讯。", content: "资讯检索命中担保主体评级关注事项，内容涉及区域平台融资压力、债务滚续和外部支持变化。该事项虽然不直接指向借款人违约，但可能削弱保证人的增信稳定性。" },
+            { name: "终端补充", source: "iFinD", url: "https://www.51ifind.com/", time: "2026-05-26", detail: "主体近期待跟踪事项与公开资讯方向一致。", content: "iFinD 终端补充信息显示，该主体近期公开跟踪事项与市场资讯方向一致，关注点集中在区域融资环境、主体信用表现和外部支持能力变化。" },
+          ],
+        },
+        {
+          level: "较重",
+          project: "交银国信·安宁固收B0019号集合资金信托计划",
+          entity: "绍兴柯桥区城建投资开发集团有限公司",
+          role: "借款人",
+          title: "工程款逾期诉讼升级，法院已受理财产保全申请",
+          summary: "多家施工企业联合起诉，涉案金额累计超5亿元，法院已受理财产保全。",
+          impact: "资产冻结可能影响日常经营周转和外部融资增信措施，需评估对信托计划的影响。",
+          sources: ["中国裁判文书网", "企查查"],
+          sourceType: "司法 / 企业信息",
+          time: "2026-05-26",
+          highRelevance: true,
+          keywords: ["工程款逾期", "财产保全", "联合诉讼"],
+          evidence: [
+            { name: "立案信息", source: "中国裁判文书网", url: "https://wenshu.court.gov.cn/", time: "2026-05-26", detail: "绍兴市中级人民法院已立案，案由为建设工程施工合同纠纷。", content: "裁判文书网立案信息显示，绍兴市中级人民法院已受理三家施工企业对柯桥城建投提起的诉讼，案由为建设工程施工合同纠纷。原告主张工程款及逾期利息合计约5.3亿元，同时申请财产保全。" },
+            { name: "企业风险信息", source: "企查查", url: "https://www.qcc.com/", time: "2026-05-26", detail: "企业司法风险信息条目近期骤增，涉及多条立案和开庭公告。", content: "企查查风险监控显示，柯桥城建投近30天内新增司法风险信息12条，涉及建设工程、借款合同等多种类型。多条立案和开庭公告集中在2026年5月下旬至6月，司法处置节奏明显加快。" },
+          ],
+        },
+        {
+          level: "较重",
+          project: "交银国信·安宁固收B0020号集合资金信托计划",
+          entity: "湖州南浔区城市投资发展集团有限公司",
+          role: "借款人",
+          title: "融资渠道收窄，银行授信额度被压缩约15%",
+          summary: "多家合作银行收紧对南浔区平台的授信条件，部分存量额度到期未续。",
+          impact: "融资续接不确定增加，可能影响年内到期债务的资金安排。",
+          sources: ["Wind终端", "中国货币网"],
+          sourceType: "金融终端 / 货币市场",
+          time: "2026-05-25",
+          highRelevance: true,
+          keywords: ["授信压缩", "融资渠道", "银行收紧"],
+          evidence: [
+            { name: "授信变动监控", source: "Wind终端", url: "https://www.wind.com.cn/", time: "2026-05-25", detail: "二季度以来三家主要合作银行合计压缩授信约8亿元。", content: "Wind终端银行授信数据显示，南浔城投二季度以来遭遇三家主要合作银行授信压缩，合计压缩规模约8亿元，占原有授信总额的15%。其中两家股份制银行的短期流贷额度到期后未予续作。" },
+            { name: "发行进度跟踪", source: "中国货币网", url: "https://www.chinamoney.com.cn/", time: "2026-05-25", detail: "原计划二季度发行的中期票据推迟，注册通知书临近到期。", content: "中国货币网信息显示，南浔城投原计划于2026年二季度发行的10亿元中期票据已推迟挂牌。该注册通知书有效期至2026年7月，若超期未发需重新注册，增加了发行完成的不确定性。" },
+          ],
+        },
+        {
+          level: "较重",
+          project: "交银国信·安宁固收B0021号集合资金信托计划",
+          entity: "嘉兴经济技术开发区投资发展集团有限公司",
+          role: "保证人",
+          title: "土地出让收入持续下滑，对偿债保障的支撑力度减弱",
+          summary: "嘉兴经开区一季度土地出让收入同比降幅扩大，直接关系主体流动性补充能力。",
+          impact: "保证人自身造血能力下降，可能影响担保代偿资源和意愿。",
+          sources: ["Choice数据库", "中指研究院"],
+          sourceType: "财经资讯 / 地产研究",
+          time: "2026-05-25",
+          highRelevance: true,
+          keywords: ["土地出让", "收入下滑", "代偿能力"],
+          evidence: [
+            { name: "土地市场数据", source: "中指研究院", url: "https://www.cih-index.com/", time: "2026-05-25", detail: "经开区一季度土地出让金同比下降42%，流拍率上升。", content: "中指研究院土地市场监测数据显示，嘉兴经济技术开发区2026年一季度土地出让金合计约6.8亿元，同比下降42%。住宅用地流拍率达35%，高于去年同期15个百分点。土地市场降温直接影响区域内平台的财政回款和流动性补充。" },
+            { name: "财经资讯印证", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-25", detail: "嘉兴房地产市场调整加深，平台类企业融资条件同步收紧。", content: "财经资讯分析指出，嘉兴房地产市场调整加深，新房去化周期延长至18个月。受此影响，区域内平台类企业的融资条件同步收紧，银行对以土地出让收入作为还款来源的融资产品审批趋严。" },
+          ],
+        },
+        {
+          level: "较重",
+          project: "交银国信·安宁固收B0010号集合资金信托计划",
+          entity: "诸暨市国有资产经营有限公司",
+          role: "借款人",
+          title: "公开渠道披露重大诉讼进展，涉及工程款支付争议",
+          summary: "裁判文书和公开资讯显示主体出现工程款支付争议，事件可能演化为资产冻结或履约压力。",
+          impact: "短期偿债安排可能受到司法处置和舆情压力影响。",
+          sources: ["中国裁判文书网", "Choice数据库"],
+          sourceType: "司法 / 财经资讯",
+          time: "2026-05-26",
+          highRelevance: false,
+          keywords: ["重大诉讼", "工程款", "资产冻结"],
+          evidence: [
+            { name: "裁判文书", source: "中国裁判文书网", url: "https://wenshu.court.gov.cn/", time: "2026-05-26", detail: "文书主体与事件类型为合同争议。", content: "裁判文书相关信息显示，诸暨市国有资产经营有限公司涉及工程款支付争议。该类争议可能带来司法处置、资产冻结或舆情压力，需要关注后续执行及和解进展。" },
+            { name: "资讯复核", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-26", detail: "公开资讯中出现相关争议进展。", content: "财经资讯检索中出现与工程款支付争议相关的进展信息。该信息与裁判文书方向一致，支持将该事件纳入较重级别跟踪。" },
+          ],
+        },
+        {
+          level: "较重",
+          project: "交银国信·安宁固收B0022号集合资金信托计划",
+          entity: "台州黄岩区国有资产投资集团有限公司",
+          role: "保证人",
+          title: "对外担保比例持续偏高，接近监管红线",
+          summary: "最新审计报告显示对外担保余额占净资产比重已达185%，接近200%的监管红线。",
+          impact: "担保能力接近上限，新增代偿事件将突破监管要求，需关注担保集中度风险。",
+          sources: ["iFinD", "中国货币网"],
+          sourceType: "金融终端 / 货币市场",
+          time: "2026-05-24",
+          highRelevance: false,
+          keywords: ["对外担保", "监管红线", "集中度风险"],
+          evidence: [
+            { name: "审计报告分析", source: "iFinD", url: "https://www.51ifind.com/", time: "2026-05-24", detail: "2025年度审计报告显示对外担保/净资产为185%。", content: "iFinD提取的2025年度审计报告数据显示，黄岩国资对外担保余额合计94.3亿元，占同期净资产的185%，较上年上升12个百分点。其中对区域内其他平台的担保占比超过70%，担保集中度风险显著。" },
+            { name: "募集说明书披露", source: "中国货币网", url: "https://www.chinamoney.com.cn/", time: "2026-05-24", detail: "最新募集说明书中披露的对外担保数据与年报一致，未见改善。", content: "中国货币网披露的最新债券募集说明书显示，截至募集说明书签署日，黄岩国资对外担保情况与2025年度审计报告数据基本一致，未见显著压降措施。说明书同时提及将逐步压缩对外担保规模，但未给出明确时间表。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0012号集合资金信托计划",
+          entity: "桐庐县国有资本投资运营控股集团有限公司",
+          role: "借款人",
+          title: "主体被纳入行政处罚公示，处罚事项与信息披露相关",
+          summary: "信用公示渠道显示主体存在行政处罚记录，目前未见直接偿付风险信号。",
+          impact: "暂未直接影响偿付，但需跟踪是否引发融资渠道收紧或评级关注。",
+          sources: ["信用中国"],
+          sourceType: "信用公示",
+          time: "2026-05-25",
+          highRelevance: false,
+          keywords: ["行政处罚", "信息披露", "信用公示"],
+          evidence: [
+            { name: "信用公示", source: "信用中国", url: "https://www.creditchina.gov.cn/", time: "2026-05-25", detail: "行政处罚记录与主体名称匹配。", content: "信用公示信息显示，桐庐县国有资本投资运营控股集团有限公司存在行政处罚记录，处罚事项与信息披露相关。当前未见直接偿付风险信号，但该事项可能影响外部信用观察。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0023号集合资金信托计划",
+          entity: "义乌市城市投资建设集团有限公司",
+          role: "借款人",
+          title: "评级机构将公司列入评级观察名单，理由为区域经济增速放缓",
+          summary: "中诚信国际将义乌城投列入评级观察名单，关注区域经济增速放缓和财政自给率变化。",
+          impact: "评级观察期间可能影响债券发行和银行授信审批节奏。",
+          sources: ["中诚信国际"],
+          sourceType: "评级",
+          time: "2026-05-24",
+          highRelevance: false,
+          keywords: ["评级观察", "经济放缓", "财政自给率"],
+          evidence: [
+            { name: "评级公告", source: "中诚信国际", url: "https://www.ccxi.com.cn/", time: "2026-05-24", detail: "将义乌城投列入信用评级观察名单，期限为3个月。", content: "中诚信国际发布公告，将义乌市城市投资建设集团有限公司主体信用等级列入观察名单。公告提到义乌市2026年一季度GDP增速放缓至4.2%，一般公共预算收入同比下降6%，财政自给率有所回落，需关注后续经济和财政走势对主体信用质量的影响。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0024号集合资金信托计划",
+          entity: "金华市城市建设投资集团有限公司",
+          role: "借款人",
+          title: "审计报告出具带强调事项段的无保留意见，涉及应收款项回收",
+          summary: "2025年度审计报告提及大额应收政府款项账龄延长，回收进度不及预期。",
+          impact: "应收款项回收延迟影响现金流，但政府信用背书仍提供一定保障。",
+          sources: ["iFinD"],
+          sourceType: "金融终端",
+          time: "2026-05-23",
+          highRelevance: false,
+          keywords: ["审计意见", "应收款项", "账龄延长"],
+          evidence: [
+            { name: "审计报告", source: "iFinD", url: "https://www.51ifind.com/", time: "2026-05-23", detail: "审计师对政府类应收款项的可回收性出具强调事项段。", content: "iFinD提取的2025年度审计报告显示，金华城投应收政府款项余额为32.6亿元，其中账龄超过1年的占比从上年末的18%上升至35%。审计师对此出具了带强调事项段的无保留意见，提示关注应收款项的可回收性和对流动性的影响。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0025号集合资金信托计划",
+          entity: "宁波鄞州区城市建设投资发展有限公司",
+          role: "借款人",
+          title: "重点项目施工进度滞后，回款周期可能延长",
+          summary: "受前期环保督查停工影响，两个代建项目工期延后约6个月。",
+          impact: "代建管理费回款将相应延后，短期现金流承压但尚在可控范围。",
+          sources: ["企查查", "Choice数据库"],
+          sourceType: "企业信息 / 财经资讯",
+          time: "2026-05-23",
+          highRelevance: false,
+          keywords: ["项目延期", "回款周期", "环保督查"],
+          evidence: [
+            { name: "项目公告", source: "企查查", url: "https://www.qcc.com/", time: "2026-05-23", detail: "两个代建项目工期延后约6个月。", content: "企查查招投标信息显示，鄞州城投承建的两个区级重点项目因前期环保督查要求停工整改，工期延后约6个月。项目代建管理费回款将相应推迟至2027年上半年，短期现金流存在一定缺口。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0026号集合资金信托计划",
+          entity: "舟山海洋产业投资发展有限公司",
+          role: "借款人",
+          title: "外部经营环境变化，海洋经济相关产业投资回报不及预期",
+          summary: "部分海洋产业投资项目产能利用率偏低，投资收益贡献低于可研预期。",
+          impact: "经营性收入承压，但财政补贴和股东支持仍能提供缓冲。",
+          sources: ["Choice数据库"],
+          sourceType: "财经资讯",
+          time: "2026-05-22",
+          highRelevance: false,
+          keywords: ["海洋经济", "产能利用率", "投资收益"],
+          evidence: [
+            { name: "行业资讯", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-22", detail: "海洋渔业和港口物流板块经营数据低于行业均值。", content: "Choice数据库行业研究数据显示，舟山海洋产业投资的海洋渔业和港口物流两大业务板块2025年产能利用率分别为62%和71%，低于行业均值。公司在建的海水淡化项目也因技术路线调整导致投产延迟，整体投资回报低于可研预期。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0027号集合资金信托计划",
+          entity: "衢州市交通投资集团有限公司",
+          role: "借款人",
+          title: "公司法定代表人及财务负责人同时变更",
+          summary: "公司公告法定代表人及财务负责人因工作调动同时变更，新任管理层尚未公开亮相。",
+          impact: "管理层稳定性和经营连续性需观察，短期对偿债能力影响有限。",
+          sources: ["企查查", "中国货币网"],
+          sourceType: "企业信息 / 货币市场",
+          time: "2026-05-22",
+          highRelevance: false,
+          keywords: ["高管变动", "法人变更", "管理层稳定"],
+          evidence: [
+            { name: "工商变更", source: "企查查", url: "https://www.qcc.com/", time: "2026-05-22", detail: "工商登记信息显示法定代表人已完成变更登记。", content: "企查查工商变更记录显示，衢州交投法定代表人及财务负责人已于2026年5月20日完成变更登记。变更原因为上级组织部门的工作调动安排。新任管理层尚未在公开场合亮相，其经营策略和融资思路有待观察。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0028号集合资金信托计划",
+          entity: "丽水市城市建设投资集团有限公司",
+          role: "保证人",
+          title: "政府主导的资产重组方案正在推进，涉及资产划转和债务剥离",
+          summary: "丽水市国资委主导的城投平台整合方案涉及丽水城投资产划转和部分债务剥离。",
+          impact: "资产重组有助于优化负债结构，但过渡期内管理整合风险需关注。",
+          sources: ["中国货币网", "Choice数据库"],
+          sourceType: "货币市场 / 财经资讯",
+          time: "2026-05-21",
+          highRelevance: false,
+          keywords: ["资产重组", "债务剥离", "平台整合"],
+          evidence: [
+            { name: "公告信息", source: "中国货币网", url: "https://www.chinamoney.com.cn/", time: "2026-05-21", detail: "存续债券持有人会议通知涉及资产重组方案。", content: "中国货币网公告显示，丽水城投将于6月上旬召开债券持有人会议，审议政府主导的资产重组方案。方案拟将部分公益性资产划出，同时承接市级优质经营性资产，并剥离部分隐性债务。重组完成后预计资产负债率下降8个百分点。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0029号集合资金信托计划",
+          entity: "永康市国有资产投资有限公司",
+          role: "借款人",
+          title: "2026年一季度财务报表披露延迟",
+          summary: "公司公告一季度财务报表将延迟至6月中旬披露，原因为审计师更换。",
+          impact: "财务信息披露延迟影响外部监控，但公司已提前公告且说明原因。",
+          sources: ["中国货币网"],
+          sourceType: "货币市场",
+          time: "2026-05-21",
+          highRelevance: false,
+          keywords: ["报表延迟", "审计师更换", "信息披露"],
+          evidence: [
+            { name: "延迟披露公告", source: "中国货币网", url: "https://www.chinamoney.com.cn/", time: "2026-05-21", detail: "一季度财务报表延迟至6月15日前披露。", content: "中国货币网公告信息显示，永康国资于5月20日发布一季度财务报表延迟披露公告，预计在6月15日前完成披露。延迟原因为新任审计师需要额外时间完成审阅程序。公司同时声明生产经营和财务状况未发生重大不利变化。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0030号集合资金信托计划",
+          entity: "慈溪市城市建设投资集团有限公司",
+          role: "借款人",
+          title: "获得新增银行综合授信额度20亿元",
+          summary: "公司公告近期与三家银行签署战略合作协议，合计新增综合授信20亿元。",
+          impact: "正面信号，新增授信有助于补充流动性并优化债务期限结构。",
+          sources: ["企查查"],
+          sourceType: "企业信息",
+          time: "2026-05-20",
+          highRelevance: false,
+          keywords: ["新增授信", "战略合作", "正面信号"],
+          evidence: [
+            { name: "合作协议公告", source: "企查查", url: "https://www.qcc.com/", time: "2026-05-20", detail: "与三家银行签署战略合作协议，新增综合授信20亿元。", content: "企查查企业动态显示，慈溪城投于5月中旬与三家银行签署战略合作协议，合计新增综合授信额度20亿元。新增授信主要用于置换高成本存量债务和补充营运资金，有助于优化债务结构并降低综合融资成本。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0031号集合资金信托计划",
+          entity: "德清县交通投资集团有限公司",
+          role: "借款人",
+          title: "行业政策调整，高速公路收费期限面临重新核定",
+          summary: "交通运输部新规可能影响公司所属高速公路的收费期限和收费标准。",
+          impact: "政策调整方向尚不明确，若收费期限缩短将影响长期现金流。",
+          sources: ["Choice数据库", "Wind终端"],
+          sourceType: "财经资讯 / 金融终端",
+          time: "2026-05-20",
+          highRelevance: false,
+          keywords: ["行业政策", "收费期限", "现金流影响"],
+          evidence: [
+            { name: "政策动态", source: "Choice数据库", url: "https://www.eastmoney.com/", time: "2026-05-20", detail: "交通运输部拟修订收费公路管理条例，涉及收费期限核定标准。", content: "财经资讯报道显示，交通运输部正在修订《收费公路管理条例》，拟对经营性高速公路的收费期限核定标准进行调整。德清交投所属的杭宁高速德清段剩余收费期限约8年，若新规缩短收费期限上限，将影响公司长期现金流预测。" },
+          ],
+        },
+        {
+          level: "关注",
+          project: "交银国信·安宁固收B0032号集合资金信托计划",
+          entity: "安吉县城市建设投资集团有限公司",
+          role: "保证人",
+          title: "被担保方经营状况改善，担保代偿风险下行",
+          summary: "前期为重点关注对象的被担保企业已完成债务重组，经营逐步恢复正常。",
+          impact: "正面信号，担保代偿概率降低，但需持续关注重组后经营表现。",
+          sources: ["iFinD", "企查查"],
+          sourceType: "金融终端 / 企业信息",
+          time: "2026-05-19",
+          highRelevance: false,
+          keywords: ["担保风险下行", "债务重组", "正面信号"],
+          evidence: [
+            { name: "债务重组进展", source: "iFinD", url: "https://www.51ifind.com/", time: "2026-05-19", detail: "被担保企业已完成银团贷款重组，恢复经营。", content: "iFinD数据终端显示，安吉城投担保的一家县级文旅平台已于4月底完成银团贷款重组，贷款期限延长5年并获2年宽限期。该企业一季度经营现金流已转正，担保代偿风险显著降低。但考虑到文旅行业恢复需要时间，仍需持续跟踪。" },
+          ],
+        },
+      ];
+
+      const demoAlerts = alerts.slice(0, 15).map((item) => (
+        item.entity === "南京江北新区建设投资集团有限公司"
+          ? { ...item, evidence: item.evidence.slice(0, 6) }
+          : item
+      ));
+
+      const searchTerms = Array.from(new Set(demoAlerts.flatMap((item) => [
+        item.project,
+        item.entity,
+        item.role,
+        item.level,
+        item.sourceType,
+        ...item.sources,
+        ...item.keywords,
+      ])));
+
+      const fallbackProjects = [
+        {
+          id: "B0011",
+          project: "交银国信·安宁固收B0011号集合资金信托计划",
+          borrower: "杭州东部城市建设投资集团有限公司",
+          guarantor: "杭州钱塘新区城市发展集团有限公司",
+        },
+        {
+          id: "B0015",
+          project: "交银国信·安宁固收B0015号集合资金信托计划",
+          borrower: "嵊州市交通投资发展集团有限公司",
+          guarantor: "嵊州市投资控股有限公司",
+        },
+        {
+          id: "B0010",
+          project: "交银国信·安宁固收B0010号集合资金信托计划",
+          borrower: "诸暨市国有资产经营有限公司",
+          guarantor: "",
+        },
+      ];
+      const initialProjects = (window.PROJECT_ROSTER || fallbackProjects).slice(0, 15);
+      const PROJECT_STORAGE_KEY = "risk_dashboard_project_database_demo15_v1";
+      const REQUIRED_PROJECT_HEADERS = ["项目名称", "借款人", "保证人"];
+
+      function loadProjectDatabase() {
+        try {
+          const stored = window.localStorage.getItem(PROJECT_STORAGE_KEY);
+          const parsed = stored ? JSON.parse(stored) : null;
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (error) {
+          console.warn("读取本地项目数据库失败", error);
+        }
+        return initialProjects;
+      }
+
+      function cleanExcelCell(value) {
+        const text = String(value ?? "").trim();
+        return text === "#N/A" || text === "N/A" ? "" : text;
+      }
+
+      function normalizeImportedProjectName(projectName) {
+        const name = cleanExcelCell(projectName);
+        if (!name) return "";
+        if (name.includes("集合资金信托计划") || name.startsWith("交银国信·")) return name;
+        return `交银国信·${name}集合资金信托计划`;
+      }
+
+      function projectIdentity(project) {
+        return [project.project, project.borrower, project.guarantor].map((value) => cleanExcelCell(value)).join("|");
+      }
+
+      function parseProjectExcel(arrayBuffer) {
+        if (!window.XLSX) {
+          throw new Error("Excel 解析库未加载完成，请刷新页面后重试。");
+        }
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        if (!sheetName) throw new Error("Excel 文件为空，未读取到工作表。");
+
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+          header: 1,
+          defval: "",
+          raw: false,
+        });
+        if (!rows.length) throw new Error("Excel 文件为空，未读取到项目数据。");
+
+        const headers = rows[0].slice(0, 3).map(cleanExcelCell);
+        const invalidHeader = REQUIRED_PROJECT_HEADERS.some((header, index) => headers[index] !== header);
+        if (invalidHeader) {
+          throw new Error(`模板不匹配。请使用表头为「${REQUIRED_PROJECT_HEADERS.join(" / ")}」的 Excel。`);
+        }
+
+        const rowErrors = [];
+        const importedProjects = [];
+        rows.slice(1).forEach((row, index) => {
+          const rowNumber = index + 2;
+          const [projectName, borrower, guarantor] = row.slice(0, 3).map(cleanExcelCell);
+          if (!projectName && !borrower && !guarantor) return;
+          if (!projectName || !borrower) {
+            rowErrors.push(`第 ${rowNumber} 行缺少${!projectName ? "项目名称" : "借款人"}`);
+            return;
+          }
+          importedProjects.push({
+            id: `UPLOAD-${Date.now()}-${index}`,
+            project: normalizeImportedProjectName(projectName),
+            borrower,
+            guarantor,
+          });
+        });
+
+        if (rowErrors.length) {
+          const suffix = rowErrors.length > 3 ? `等 ${rowErrors.length} 处错误` : "";
+          throw new Error(`${rowErrors.slice(0, 3).join("；")}${suffix ? `，${suffix}` : ""}。`);
+        }
+        if (!importedProjects.length) throw new Error("Excel 中没有可导入的项目数据。");
+        return importedProjects;
+      }
+
+      const navItems = [
+        { key: "home", label: "首页" },
+        { key: "region", label: "区域一览表" },
+        { key: "analysis", label: "贷后分析" },
+        { key: "projects", label: "项目维护" },
+      ];
+
+      const regionLookup = [
+        { match: "杭州", province: "浙江省", city: "杭州市", district: "钱塘区" },
+        { match: "南京", province: "江苏省", city: "南京市", district: "六合区" },
+        { match: "温州", province: "浙江省", city: "温州市", district: "鹿城区" },
+        { match: "嵊州", province: "浙江省", city: "绍兴市", district: "嵊州市" },
+        { match: "绍兴", province: "浙江省", city: "绍兴市", district: "柯桥区" },
+        { match: "湖州", province: "浙江省", city: "湖州市", district: "南浔区" },
+        { match: "嘉兴", province: "浙江省", city: "嘉兴市", district: "南湖区" },
+        { match: "诸暨", province: "浙江省", city: "绍兴市", district: "诸暨市" },
+        { match: "台州", province: "浙江省", city: "台州市", district: "黄岩区" },
+        { match: "桐庐", province: "浙江省", city: "杭州市", district: "桐庐县" },
+        { match: "义乌", province: "浙江省", city: "金华市", district: "义乌市" },
+        { match: "金华", province: "浙江省", city: "金华市", district: "婺城区" },
+        { match: "宁波", province: "浙江省", city: "宁波市", district: "鄞州区" },
+        { match: "舟山", province: "浙江省", city: "舟山市", district: "定海区" },
+        { match: "衢州", province: "浙江省", city: "衢州市", district: "柯城区" },
+      ];
+
+      function getRegion(item) {
+        const matched = regionLookup.find((region) => item.entity.includes(region.match)) || regionLookup[0];
+        return matched;
+      }
+
+      function buildRegionRows(items) {
+        return items.map((item) => {
+          const region = getRegion(item);
+          return {
+            ...region,
+            entity: item.entity,
+            project: item.project,
+            role: item.role,
+            riskLevel: item.level,
+            warningCount: item.evidence.length,
+            latestWarningTime: item.time,
+            source: item.sources,
+            lastUpdated: "2026-05-27 22:30",
+            sourceType: item.sourceType,
+          };
+        });
+      }
+
+      const RISK_ORDER = { "严重": 3, "较重": 2, "关注": 1, "无": 0 };
+
+      function aggregateRegionRows(rows, field) {
+        const map = new Map();
+        rows.forEach((row) => {
+          const key = row[field] || "未识别";
+          const current = map.get(key) || { name: key, value: 0, evidence: 0, severe: 0, high: 0, watch: 0, maxRisk: "无" };
+          current.value += 1;
+          current.evidence += row.warningCount || 0;
+          if (row.riskLevel === "严重") current.severe += 1;
+          else if (row.riskLevel === "较重") current.high += 1;
+          else if (row.riskLevel === "关注") current.watch += 1;
+          if (RISK_ORDER[row.riskLevel] > RISK_ORDER[current.maxRisk]) current.maxRisk = row.riskLevel;
+          map.set(key, current);
+        });
+        return Array.from(map.values()).sort((a, b) => b.severe - a.severe || b.high - a.high || b.value - a.value);
+      }
+
+      function resolveRegionScope(scope) {
+        if (scope === "全国") return { name: "全国", mapName: "全国", level: "country", parent: "" };
+        if (window.REGION_MAPS && window.REGION_MAPS[scope]) {
+          const current = window.REGION_MAPS[scope];
+          return { name: scope, mapName: scope, level: current.level, parent: current.parent || "全国" };
+        }
+        const district = window.REGION_PARENTS && window.REGION_PARENTS[scope];
+        if (district) return { name: scope, mapName: district.parent, level: "district", parent: district.parent };
+        return { name: "全国", mapName: "全国", level: "country", parent: "" };
+      }
+
+      function nextAggregateField(scopeMeta) {
+        if (scopeMeta.level === "country") return "province";
+        if (scopeMeta.level === "province") return "city";
+        return "district";
+      }
+
+      function scopeFromMapState(mapState) {
+        if (mapState.selectedDistrict) return { name: mapState.selectedDistrict, mapName: mapState.selectedCity, level: "district" };
+        if (mapState.selectedCity) return { name: mapState.selectedCity, mapName: mapState.selectedCity, level: "city" };
+        if (mapState.selectedProvince) return { name: mapState.selectedProvince, mapName: mapState.selectedProvince, level: "province" };
+        return { name: "全国", mapName: "全国", level: "country" };
+      }
+
+      function parentMapState(mapState) {
+        if (mapState.selectedDistrict) return { drillLevel: "city", selectedProvince: mapState.selectedProvince, selectedCity: mapState.selectedCity, selectedDistrict: "", hoveredRegion: "" };
+        if (mapState.selectedCity) return { drillLevel: "province", selectedProvince: mapState.selectedProvince, selectedCity: "", selectedDistrict: "", hoveredRegion: "" };
+        if (mapState.selectedProvince) return { drillLevel: "country", selectedProvince: "", selectedCity: "", selectedDistrict: "", hoveredRegion: "" };
+        return mapState;
+      }
+
+      function scopeContains(row, mapState) {
+        if (mapState.selectedDistrict && row.district !== mapState.selectedDistrict) return false;
+        if (mapState.selectedCity && row.city !== mapState.selectedCity) return false;
+        if (mapState.selectedProvince && row.province !== mapState.selectedProvince) return false;
+        return true;
+      }
+
+      function drillField(mapState) {
+        if (!mapState.selectedProvince) return "province";
+        if (!mapState.selectedCity) return "city";
+        return "district";
+      }
+
+      function applyRegionTarget(target, rows) {
+        const found = rows.find((row) => row.district === target || row.district.includes(target))
+          || rows.find((row) => row.city === target || row.city.includes(target))
+          || rows.find((row) => row.province === target || row.province.includes(target));
+        if (!found) return null;
+        if (found.district === target || found.district.includes(target)) {
+          return { drillLevel: "city", selectedProvince: found.province, selectedCity: found.city, selectedDistrict: found.district, hoveredRegion: "" };
+        }
+        if (found.city === target || found.city.includes(target)) {
+          return { drillLevel: "city", selectedProvince: found.province, selectedCity: found.city, selectedDistrict: "", hoveredRegion: "" };
+        }
+        return { drillLevel: "province", selectedProvince: found.province, selectedCity: "", selectedDistrict: "", hoveredRegion: "" };
+      }
+
+      function MapBreadcrumb({ mapState, setMapState }) {
+        const parts = [
+          { label: "全国", state: { drillLevel: "country", selectedProvince: "", selectedCity: "", selectedDistrict: "", hoveredRegion: "" } },
+        ];
+        if (mapState.selectedProvince) parts.push({ label: mapState.selectedProvince, state: { drillLevel: "province", selectedProvince: mapState.selectedProvince, selectedCity: "", selectedDistrict: "", hoveredRegion: "" } });
+        if (mapState.selectedCity) parts.push({ label: mapState.selectedCity, state: { drillLevel: "city", selectedProvince: mapState.selectedProvince, selectedCity: mapState.selectedCity, selectedDistrict: "", hoveredRegion: "" } });
+        if (mapState.selectedDistrict) parts.push({ label: mapState.selectedDistrict, state: mapState });
+        return (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            {parts.map((part, index) => (
+              <React.Fragment key={part.label}>
+                {index > 0 && <Icon name="ChevronRight" className="h-4 w-4 text-muted-foreground" />}
+                <button type="button" onClick={() => setMapState(part.state)} className={cn("font-medium", index === parts.length - 1 ? "text-foreground" : "text-cyan-700")}>{part.label}</button>
+              </React.Fragment>
+            ))}
+          </div>
+        );
+      }
+
+      function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegion, hoveredCompany }) {
+        const scope = scopeFromMapState(mapState);
+        const currentMap = (window.REGION_MAPS && window.REGION_MAPS[scope.mapName]) || { features: [] };
+        const aggregateField = drillField(mapState);
+        const mapRows = aggregateRegionRows(rows.filter((row) => scopeContains(row, mapState)), aggregateField);
+        const regionByName = new Map(mapRows.map((row) => [row.name, row]));
+
+        function nextState(feature) {
+          const featureName = feature.name;
+          if (!mapState.selectedProvince) return { drillLevel: "province", selectedProvince: featureName, selectedCity: "", selectedDistrict: "", hoveredRegion: "" };
+          if (!mapState.selectedCity) {
+            if (window.REGION_MAPS && window.REGION_MAPS[featureName]) return { drillLevel: "city", selectedProvince: mapState.selectedProvince, selectedCity: featureName, selectedDistrict: "", hoveredRegion: "" };
+            return { drillLevel: "city", selectedProvince: mapState.selectedProvince, selectedCity: "", selectedDistrict: featureName, hoveredRegion: "" };
+          }
+          return { ...mapState, selectedDistrict: featureName, hoveredRegion: "" };
+        }
+
+        function fillFor(feature, active) {
+          const row = regionByName.get(feature.name);
+          const companyHit = hoveredCompany && hoveredCompany.district === feature.name;
+          const selectedHit = mapState.selectedDistrict === feature.name;
+          if (active || companyHit || selectedHit) return "#6f9fb4";
+          if (row?.severe) return "#9fb9cc";
+          if (row?.high) return "#bfd2e0";
+          if (row?.watch) return "#d8e6f0";
+          if (row?.value) return "#e6eef4";
+          return "#eef4f8";
+        }
+
+        const hoverSummary = hoveredRegion ? regionByName.get(hoveredRegion) : null;
+        const canGoBack = Boolean(mapState.selectedProvince || mapState.selectedCity || mapState.selectedDistrict);
+
+        return (
+          <div className="relative min-h-[620px] overflow-hidden rounded-lg border border-border map-shell">
+            <div className="absolute left-5 right-5 top-5 z-10 flex items-center justify-between gap-4">
+              <MapBreadcrumb mapState={mapState} setMapState={setMapState} />
+              <div className="flex shrink-0 items-center gap-2">
+                <button type="button" disabled={!canGoBack} onClick={() => setMapState(parentMapState(mapState))} className={cn("rounded-lg border px-3 py-2 text-sm transition", canGoBack ? "border-border bg-card/90 text-muted-foreground hover:bg-muted" : "cursor-not-allowed border-border/70 bg-card/60 text-muted-foreground/45")}>返回上一层</button>
+                <button type="button" onClick={() => setMapState({ drillLevel: "country", selectedProvince: "", selectedCity: "", selectedDistrict: "", hoveredRegion: "" })} className="rounded-lg border border-border bg-card/90 px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted">返回全国</button>
+              </div>
+            </div>
+            <svg viewBox="0 0 820 720" className="absolute inset-0 h-full w-full pt-10" role="img" aria-label="区域风险地图">
+              <defs>
+                <filter id="regionMapShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="10" stdDeviation="14" floodColor="#123047" floodOpacity="0.08" />
+                </filter>
+              </defs>
+              <g key={scope.mapName} className="region-map-layer" filter="url(#regionMapShadow)">
+                {(currentMap.features || []).map((feature) => {
+                  const row = regionByName.get(feature.name);
+                  const active = hoveredRegion === feature.name || mapState.selectedDistrict === feature.name;
+                  return (
+                    <path
+                      key={feature.name}
+                      data-name={feature.name}
+                      d={feature.path}
+                      className="region-path cursor-pointer"
+                      fill={fillFor(feature, active)}
+                      stroke={active ? "#1f6477" : "#d7e4ed"}
+                      strokeWidth={active ? "2.2" : "0.8"}
+                      opacity={active ? "1" : "0.96"}
+                      onMouseEnter={() => setHoveredRegion(feature.name)}
+                      onMouseLeave={() => setHoveredRegion("")}
+                      onClick={() => setMapState(nextState(feature))}
+                    />
+                  );
+                })}
+              </g>
+            </svg>
+            <div className="absolute bottom-5 right-5 rounded-lg border border-border bg-card/90 px-3 py-3 text-xs text-muted-foreground shadow-soft backdrop-blur">
+              <p className="mb-2 font-medium text-foreground">交易对手热度</p>
+              <div className="grid gap-1.5">
+                <span className="flex items-center gap-2"><i className="h-3 w-5 rounded-sm border border-border bg-[#d8e6f0]" />关注</span>
+                <span className="flex items-center gap-2"><i className="h-3 w-5 rounded-sm border border-border bg-[#bfd2e0]" />较重</span>
+                <span className="flex items-center gap-2"><i className="h-3 w-5 rounded-sm border border-border bg-[#9fb9cc]" />严重</span>
+              </div>
+            </div>
+            {hoveredRegion && (
+              <div className="absolute bottom-5 left-5 min-w-[190px] rounded-lg border border-cyan-900/10 bg-card/95 px-4 py-3 text-sm text-foreground shadow-soft backdrop-blur">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-xs font-medium text-muted-foreground">当前区域</p>
+                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-700" />
+                </div>
+                <p className="mt-1 text-base font-semibold leading-6">{hoveredRegion}</p>
+                <div className="mt-2 flex items-center gap-3 border-t border-border pt-2 text-xs text-muted-foreground">
+                  <span>交易对手 <b className="font-semibold text-foreground">{hoverSummary?.value || 0}</b></span>
+                  <span className="h-3 w-px bg-border" />
+                  <span>预警 <b className="font-semibold text-foreground">{hoverSummary?.evidence || 0}</b></span>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function RegionOverview({ alerts }) {
+        const [mapState, setMapState] = React.useState({ drillLevel: "country", selectedProvince: "", selectedCity: "", selectedDistrict: "", hoveredRegion: "" });
+        const [hoveredRegion, setHoveredRegion] = React.useState("");
+        const [hoveredCompany, setHoveredCompany] = React.useState(null);
+        const rows = buildRegionRows(alerts);
+        const baseRows = rows;
+        const scopedRows = baseRows.filter((row) => scopeContains(row, mapState));
+        const scope = scopeFromMapState(mapState);
+        const aggregateField = drillField(mapState);
+        const regionRows = aggregateRegionRows(scopedRows, aggregateField);
+        const canGoBack = Boolean(mapState.selectedProvince || mapState.selectedCity || mapState.selectedDistrict);
+        const latestTime = scopedRows.map((row) => row.lastUpdated).sort().at(-1) || "-";
+        const stats = {
+          counterparties: scopedRows.length,
+          provinces: new Set(scopedRows.map((row) => row.province)).size,
+          cities: new Set(scopedRows.map((row) => row.city)).size,
+          districts: new Set(scopedRows.map((row) => row.district)).size,
+          riskSubjects: scopedRows.filter((row) => row.riskLevel !== "无").length,
+          warnings: scopedRows.reduce((sum, row) => sum + row.warningCount, 0),
+          severe: scopedRows.filter((row) => row.riskLevel === "严重").length,
+          high: scopedRows.filter((row) => row.riskLevel === "较重").length,
+          watch: scopedRows.filter((row) => row.riskLevel === "关注").length,
+        };
+
+        function locateCompany(row) {
+          setMapState({ drillLevel: "city", selectedProvince: row.province, selectedCity: row.city, selectedDistrict: row.district, hoveredRegion: "" });
+          setHoveredCompany(row);
+        }
+
+        return (
+          <section className="grid gap-5">
+            <Card className="grid overflow-hidden md:grid-cols-5">
+              <div className="border-b border-border px-5 py-4 md:border-b-0 md:border-r"><p className="text-xs text-muted-foreground">当前统计范围</p><p className="mt-2 text-xl font-semibold">{scope.name}</p></div>
+              <div className="border-b border-border px-5 py-4 md:border-b-0 md:border-r"><p className="text-xs text-muted-foreground">交易对手总数</p><p className="mt-2 text-xl font-semibold">{stats.counterparties}</p></div>
+              <div className="border-b border-border px-5 py-4 md:border-b-0 md:border-r"><p className="text-xs text-muted-foreground">覆盖范围</p><p className="mt-2 text-xl font-semibold">{stats.provinces} 省 / {stats.cities} 市 / {stats.districts} 区县</p></div>
+              <div className="border-b border-border px-5 py-4 md:border-b-0 md:border-r"><p className="text-xs text-muted-foreground">有预警主体</p><p className="mt-2 text-xl font-semibold">{stats.riskSubjects}</p></div>
+              <div className="px-5 py-4"><p className="text-xs text-muted-foreground">最近更新时间</p><p className="mt-2 text-xl font-semibold">{latestTime}</p></div>
+            </Card>
+
+            <section className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+              <Card className="overflow-hidden p-4">
+                <RegionMap rows={baseRows} mapState={mapState} setMapState={setMapState} hoveredRegion={hoveredRegion} setHoveredRegion={setHoveredRegion} hoveredCompany={hoveredCompany} />
+              </Card>
+
+              <Card className="overflow-hidden">
+                <div className="border-b border-border p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-2"><Icon name="Link2" className="h-5 w-5 shrink-0 text-cyan-700" /><h2 className="text-lg font-semibold">区域概览</h2></div>
+                    <button type="button" disabled={!canGoBack} onClick={() => setMapState(parentMapState(mapState))} className={cn("shrink-0 rounded-lg border px-3 py-2 text-sm transition", canGoBack ? "border-border bg-background text-muted-foreground hover:bg-muted" : "cursor-not-allowed border-border/70 bg-muted/40 text-muted-foreground/45")}>返回上一层</button>
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground">{scope.name} · {stats.counterparties} 个交易对手 · {stats.warnings} 条预警</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Badge tone="severe">严重 {stats.severe}</Badge>
+                    <Badge tone="high">较重 {stats.high}</Badge>
+                    <Badge tone="watch">关注 {stats.watch}</Badge>
+                  </div>
+                </div>
+                <div className="border-b border-border p-4">
+                  <p className="mb-3 text-xs text-muted-foreground">区域排行</p>
+                  <div className="max-h-[260px] space-y-2 overflow-auto pr-1">
+                    {regionRows.map((row) => (
+                      <button key={row.name} type="button" onMouseEnter={() => setHoveredRegion(row.name)} onMouseLeave={() => setHoveredRegion("")} onClick={() => setMapState(applyRegionTarget(row.name, rows) || mapState)} className={cn("w-full rounded-lg border px-3 py-2 text-left text-sm transition hover:bg-muted/60", hoveredRegion === row.name ? "border-primary bg-muted" : "border-border bg-background/70")}>
+                        <div className="flex items-center justify-between gap-3"><span className="font-medium">{row.name}</span><span className="tabular-nums text-muted-foreground">{row.value}</span></div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="max-h-[430px] overflow-auto p-4">
+                  <p className="mb-3 text-xs text-muted-foreground">交易对手列表</p>
+                  <div className="space-y-3">
+                    {scopedRows.slice(0, 10).map((row) => (
+                      <button key={row.entity + row.project} type="button" onMouseEnter={() => setHoveredCompany(row)} onMouseLeave={() => setHoveredCompany(null)} onClick={() => locateCompany(row)} className="block w-full rounded-lg border border-border bg-background/70 p-3 text-left transition hover:border-primary/50 hover:bg-muted/45">
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="font-semibold leading-5">{row.entity}</p>
+                          {row.riskLevel !== "无" && <Badge tone={row.riskLevel === "严重" ? "severe" : row.riskLevel === "较重" ? "high" : "watch"}>{row.riskLevel}</Badge>}
+                        </div>
+                        <p className="mt-2 text-xs leading-5 text-muted-foreground">{row.project}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{row.role} · {row.province} / {row.city} / {row.district}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">预警 {row.warningCount} · {row.latestWarningTime || "暂无预警"}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            </section>
+          </section>
+        );
+      }
+
+      function Field({ label, value, onChange, placeholder }) {
+        return (
+          <label className="block">
+            <span className="text-sm font-medium">{label}</span>
+            <input
+              value={value}
+              onChange={(event) => onChange(event.target.value)}
+              className="mt-2 h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+              placeholder={placeholder}
+            />
+          </label>
+        );
+      }
+
+      function ProjectMaintenance({
+        projects,
+        addForm,
+        updateAddForm,
+        saveNewProject,
+        importProjectsFromExcel,
+        editingId,
+        editForm,
+        setEditForm,
+        selectProject,
+        saveProjectEdit,
+      }) {
+        const editingProject = projects.find((project) => project.id === editingId);
+        const [projectQuery, setProjectQuery] = React.useState("");
+        const [projectPage, setProjectPage] = React.useState(1);
+        const filteredProjects = projects.filter((project) => {
+          const haystack = [project.project, project.borrower, project.guarantor].join(" ");
+          return haystack.toLowerCase().includes(projectQuery.trim().toLowerCase());
+        });
+        const projectPageSize = 4;
+        const projectTotalPages = Math.max(1, Math.ceil(filteredProjects.length / projectPageSize));
+        const currentProjectPage = Math.min(projectPage, projectTotalPages);
+        const visibleProjects = filteredProjects.slice(
+          (currentProjectPage - 1) * projectPageSize,
+          currentProjectPage * projectPageSize
+        );
+        const projectPagerItems = (() => {
+          if (projectTotalPages <= 7) {
+            return Array.from({ length: projectTotalPages }, (_, index) => index + 1);
+          }
+          const items = [1];
+          const start = Math.max(2, currentProjectPage - 1);
+          const end = Math.min(projectTotalPages - 1, currentProjectPage + 1);
+          if (start > 2) items.push("left-ellipsis");
+          for (let pageNumber = start; pageNumber <= end; pageNumber += 1) {
+            items.push(pageNumber);
+          }
+          if (end < projectTotalPages - 1) items.push("right-ellipsis");
+          items.push(projectTotalPages);
+          return items;
+        })();
+
+        React.useEffect(() => {
+          setProjectPage(1);
+        }, [projectQuery]);
+
+        return (
+          <section className="grid grid-cols-1 gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
+            <Card className="p-5">
+              <div>
+                <h2 className="text-xl font-semibold">新增项目</h2>
+                <p className="mt-2 text-sm text-muted-foreground">新增项目时填写项目名称、借款人和保证人名称。</p>
+              </div>
+              <div className="mt-6 grid gap-4">
+                <Field label="项目名称" value={addForm.project} onChange={(value) => updateAddForm("project", value)} placeholder="输入项目名称" />
+                <Field label="借款人名称" value={addForm.borrower} onChange={(value) => updateAddForm("borrower", value)} placeholder="输入借款人名称" />
+                <Field label="保证人名称" value={addForm.guarantor} onChange={(value) => updateAddForm("guarantor", value)} placeholder="输入保证人名称，可为空" />
+              </div>
+              <button onClick={saveNewProject} className="mt-6 w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground">
+                新增项目
+              </button>
+              <div className="mt-4 rounded-lg border border-dashed border-border bg-muted/30 p-4">
+                <div className="flex items-start gap-3">
+                  <Icon name="Upload" className="mt-0.5 h-5 w-5 text-muted-foreground" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">Excel 批量上传</p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">仅支持表头为「项目名称、借款人、保证人」的模板。</p>
+                  </div>
+                </div>
+                <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted/60">
+                  选择 Excel 文件
+                  <input
+                    type="file"
+                    accept=".xlsx,.xls,.xlsm"
+                    className="hidden"
+                    onChange={importProjectsFromExcel}
+                  />
+                </label>
+              </div>
+            </Card>
+
+            <Card className="overflow-hidden">
+              <div className="border-b border-border p-5">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold">修改已有项目</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">选择一个项目后，可修改项目名称、借款人和保证人名称。</p>
+                  </div>
+                  <div className="relative w-full lg:w-[420px]">
+                    <Icon name="Search" className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <input
+                      value={projectQuery}
+                      onChange={(event) => setProjectQuery(event.target.value)}
+                      className="h-11 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" onFocus={() => setInputFocused(true)} onBlur={() => setTimeout(() => setInputFocused(false), 150)}
+                      placeholder="模糊搜索项目、借款人或保证人"
+                    />
+                    <p className="mt-2 text-xs text-muted-foreground">当前匹配 {filteredProjects.length} 个项目</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px]">
+                <div className="flex min-h-[430px] flex-col border-b border-border lg:border-b-0 lg:border-r">
+                  <div className="divide-y divide-border">
+                  {visibleProjects.map((project) => (
+                    <button
+                      key={project.id}
+                      onClick={() => selectProject(project)}
+                      className={cn("block w-full px-5 py-4 text-left transition hover:bg-muted/45", editingId === project.id && "bg-muted/70")}
+                    >
+                      <p className="font-medium leading-6">{project.project}</p>
+                      <p className="mt-2 text-sm text-muted-foreground">借款人：{project.borrower || "-"}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">保证人：{project.guarantor || "-"}</p>
+                    </button>
+                  ))}
+                  </div>
+                  {filteredProjects.length === 0 && (
+                    <div className="p-8 text-center text-sm text-muted-foreground">没有匹配到项目。</div>
+                  )}
+                  {filteredProjects.length > projectPageSize && (
+                    <div className="mt-auto border-t border-border px-5 py-3">
+                      <div className="flex flex-col gap-3">
+                        <p className="text-xs text-muted-foreground">每页 {projectPageSize} 条，共 {filteredProjects.length} 个项目，第 {currentProjectPage} / {projectTotalPages} 页</p>
+                        <div className="flex max-w-full flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            disabled={currentProjectPage === 1}
+                            onClick={() => setProjectPage((page) => Math.max(1, page - 1))}
+                            className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-muted-foreground transition hover:bg-muted/60 disabled:cursor-not-allowed disabled:opacity-45"
+                          >
+                            上一页
+                          </button>
+                          {projectPagerItems.map((pageNumber) => (
+                            typeof pageNumber === "string" ? (
+                              <span key={pageNumber} className="flex h-8 min-w-8 items-center justify-center text-sm text-muted-foreground">...</span>
+                            ) : (
+                            <button
+                              key={pageNumber}
+                              type="button"
+                              onClick={() => setProjectPage(pageNumber)}
+                              className={cn("h-8 min-w-8 rounded-md border px-2 text-sm transition", currentProjectPage === pageNumber ? "border-primary bg-muted text-foreground" : "border-border bg-background text-muted-foreground hover:bg-muted/60")}
+                            >
+                              {pageNumber}
+                            </button>
+                            )
+                          ))}
+                          <button
+                            type="button"
+                            disabled={currentProjectPage === projectTotalPages}
+                            onClick={() => setProjectPage((page) => Math.min(projectTotalPages, page + 1))}
+                            className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-muted-foreground transition hover:bg-muted/60 disabled:cursor-not-allowed disabled:opacity-45"
+                          >
+                            下一页
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-5">
+                  <div className="rounded-lg border border-border bg-muted/35 p-4">
+                    <p className="text-sm text-muted-foreground">当前编辑</p>
+                    <p className="mt-2 font-medium">{editingProject ? editingProject.project : "请选择项目"}</p>
+                  </div>
+                  <div className="mt-5 grid gap-4">
+                    <Field
+                      label="项目名称"
+                      value={editForm.project}
+                      onChange={(value) => setEditForm((current) => ({ ...current, project: value }))}
+                      placeholder="输入项目名称"
+                    />
+                    <Field
+                      label="借款人名称"
+                      value={editForm.borrower}
+                      onChange={(value) => setEditForm((current) => ({ ...current, borrower: value }))}
+                      placeholder="输入借款人名称"
+                    />
+                    <Field
+                      label="保证人名称"
+                      value={editForm.guarantor}
+                      onChange={(value) => setEditForm((current) => ({ ...current, guarantor: value }))}
+                      placeholder="输入保证人名称，可为空"
+                    />
+                  </div>
+                  <button onClick={saveProjectEdit} className="mt-6 w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground">
+                    保存修改
+                  </button>
+                </div>
+              </div>
+            </Card>
+          </section>
+        );
+      }
+
+      function App() {
+        const [dark, setDark] = React.useState(false);
+        const appAlerts = demoAlerts;
+        const [selected, setSelected] = React.useState(appAlerts[0]);
+        const [query, setQuery] = React.useState("");
+        const [levelFilter, setLevelFilter] = React.useState("全部等级");
+        const [timeFilter, setTimeFilter] = React.useState("近三个月");
+        const [sourceModal, setSourceModal] = React.useState(null);
+        const [actionModal, setActionModal] = React.useState(null);
+        const [searchDetail, setSearchDetail] = React.useState(null);
+        const [inputFocused, setInputFocused] = React.useState(false);
+        const initialPage = new URLSearchParams(window.location.search).get("page") || "home";
+        const [activePage, setActivePage] = React.useState(initialPage);
+        const [workbenchPage, setWorkbenchPage] = React.useState(1);
+        const [searchPage, setSearchPage] = React.useState(1);
+        const storedProjects = React.useMemo(() => loadProjectDatabase(), []);
+        const [projects, setProjects] = React.useState(storedProjects);
+        const [addForm, setAddForm] = React.useState({ project: "", borrower: "", guarantor: "" });
+        const [editingId, setEditingId] = React.useState(storedProjects[0].id);
+        const [editForm, setEditForm] = React.useState({
+          project: storedProjects[0].project,
+          borrower: storedProjects[0].borrower,
+          guarantor: storedProjects[0].guarantor,
+        });
+
+        React.useEffect(() => {
+          document.documentElement.classList.toggle("dark", dark);
+        }, [dark]);
+
+        React.useEffect(() => {
+          try {
+            window.localStorage.setItem(PROJECT_STORAGE_KEY, JSON.stringify(projects));
+          } catch (error) {
+            console.warn("写入本地项目数据库失败", error);
+          }
+        }, [projects]);
+
+        React.useEffect(() => {
+          setSearchPage(1);
+        }, [query, levelFilter, timeFilter]);
+
+        const workbenchAlerts = appAlerts.filter((item) => item.level === "严重" || (item.level === "较重" && item.highRelevance));
+        const severeWorkbenchCount = workbenchAlerts.filter((item) => item.level === "严重").length;
+        const highWorkbenchCount = workbenchAlerts.filter((item) => item.level === "较重").length;
+        const homeStats = [
+          { label: "监控主体数", value: appAlerts.length, tone: "text-slate-900" },
+          { label: "近 7 日风险", value: workbenchAlerts.length, tone: "text-slate-900" },
+          { label: "严重事件", value: severeWorkbenchCount, tone: "text-red-700" },
+          { label: "较重事件", value: highWorkbenchCount, tone: "text-orange-700" },
+          { label: "更新时间", value: "22:30", tone: "text-slate-900" },
+        ];
+        const workbenchPageSize = 5;
+        const workbenchTotalPages = Math.max(1, Math.ceil(workbenchAlerts.length / workbenchPageSize));
+        const currentWorkbenchPage = Math.min(workbenchPage, workbenchTotalPages);
+        const visibleWorkbenchAlerts = workbenchAlerts.slice(
+          (currentWorkbenchPage - 1) * workbenchPageSize,
+          currentWorkbenchPage * workbenchPageSize
+        );
+        const timeWindowDays = timeFilter === "近一周" ? 7 : timeFilter === "近一个月" ? 30 : 90;
+        const filteredAlerts = appAlerts.filter((item) => {
+          const haystack = [item.project, item.entity, item.role, item.title, item.summary, item.sources.join(" ")].join(" ");
+          const daysAgo = (new Date("2026-05-27") - new Date(item.time)) / (1000 * 60 * 60 * 24);
+          const queryMatch = haystack.toLowerCase().includes(query.trim().toLowerCase());
+          const levelMatch = levelFilter === "全部等级" || item.level === levelFilter;
+          const timeMatch = daysAgo >= 0 && daysAgo <= timeWindowDays;
+          return queryMatch && levelMatch && timeMatch;
+        });
+
+
+        const searchPageSize = 10;
+        const searchTotalPages = Math.max(1, Math.ceil(filteredAlerts.length / searchPageSize));
+        const currentSearchPage = Math.min(searchPage, searchTotalPages);
+        const visibleFilteredAlerts = filteredAlerts.slice((currentSearchPage - 1) * searchPageSize, currentSearchPage * searchPageSize);
+
+        const suggestions = query.trim()
+          ? searchTerms
+              .filter((term) => term.toLowerCase().includes(query.trim().toLowerCase()))
+              .slice(0, 6)
+          : searchTerms.slice(0, 6);
+
+        function updateAddForm(field, value) {
+          setAddForm((current) => ({ ...current, [field]: value }));
+        }
+
+        function selectProject(project) {
+          setEditingId(project.id);
+          setEditForm({ project: project.project, borrower: project.borrower, guarantor: project.guarantor });
+        }
+
+        function saveNewProject() {
+          if (!addForm.project.trim() || !addForm.borrower.trim()) return;
+          const nextProject = {
+            id: `P${Date.now()}`,
+            project: addForm.project.trim(),
+            borrower: addForm.borrower.trim(),
+            guarantor: addForm.guarantor.trim(),
+          };
+          setProjects((current) => [nextProject, ...current]);
+          setAddForm({ project: "", borrower: "", guarantor: "" });
+          selectProject(nextProject);
+          setActionModal({
+            title: "新增项目已完成",
+            message: "项目已加入维护清单，并已自动切换到当前编辑状态。",
+          });
+        }
+
+        function saveProjectEdit() {
+          if (!editingId) return;
+          setProjects((current) => current.map((project) => (
+            project.id === editingId ? { ...project, ...editForm } : project
+          )));
+          setActionModal({
+            title: "修改已保存",
+            message: "当前项目的名称、借款人和保证人信息已更新完成。",
+          });
+        }
+
+        async function importProjectsFromExcel(event) {
+          const file = event.target.files && event.target.files[0];
+          event.target.value = "";
+          if (!file) return;
+
+          try {
+            const importedProjects = parseProjectExcel(await file.arrayBuffer());
+            const existingKeys = new Set(projects.map(projectIdentity));
+            const uploadKeys = new Set();
+            const projectsToAdd = [];
+
+            importedProjects.forEach((project) => {
+              const key = projectIdentity(project);
+              if (existingKeys.has(key) || uploadKeys.has(key)) return;
+              uploadKeys.add(key);
+              projectsToAdd.push(project);
+            });
+
+            if (projectsToAdd.length > 0) {
+              setProjects((current) => [...projectsToAdd, ...current]);
+              selectProject(projectsToAdd[0]);
+            }
+
+            const borrowers = new Set(projectsToAdd.map((project) => project.borrower).filter(Boolean)).size;
+            const guarantors = new Set(projectsToAdd.map((project) => project.guarantor).filter(Boolean)).size;
+            const skipped = importedProjects.length - projectsToAdd.length;
+
+            setActionModal({
+              type: "success",
+              title: "Excel 上传成功",
+              message: projectsToAdd.length
+                ? `已成功添加 ${projectsToAdd.length} 个项目，涉及 ${borrowers} 个借款人、${guarantors} 个保证人。${skipped ? `另有 ${skipped} 条重复项目已跳过。` : ""}`
+                : `模板读取成功，但项目均已存在，未重复添加。共跳过 ${skipped} 条重复项目。`,
+            });
+          } catch (error) {
+            setActionModal({
+              type: "error",
+              title: "Excel 读取失败",
+              message: error.message || "文件读取错误，请检查 Excel 模板后重试。",
+            });
+          }
+        }
+
+        return (
+          <main className="min-h-screen surface-grid">
+            <header className="sticky top-0 z-30 border-b border-border/70 bg-background/82 backdrop-blur-xl">
+              <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
+                <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-soft">
+                    <Icon name="ShieldCheck" className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h1 className="text-lg font-semibold tracking-normal sm:text-xl">贷后风险监控一览表</h1>
+                    <p className="text-xs text-muted-foreground">重要舆情工作台 · 证据链穿透展示</p>
+                  </div>
+                </div>
+                <nav className="hidden items-center rounded-xl border border-border/70 bg-card/90 p-1 text-sm text-muted-foreground shadow-soft lg:flex">
+                  {navItems.map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => setActivePage(item.key)}
+                      className={cn("rounded-md px-3 py-1.5 transition hover:text-foreground", activePage === item.key && "bg-muted text-foreground")}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </nav>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Badge tone="ok">数据源正常</Badge>
+                  <button className="hidden items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-muted-foreground sm:inline-flex">
+                    <Icon name="Clock3" className="h-4 w-4" />
+                    更新于 22:30
+                  </button>
+                  <button
+                    aria-label="切换深色模式"
+                    onClick={() => setDark(!dark)}
+                    className="rounded-lg border border-border bg-card p-2.5 text-muted-foreground transition hover:text-foreground"
+                  >
+                    {dark ? <Icon name="Sun" className="h-4 w-4" /> : <Icon name="Moon" className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            <div className="mx-auto grid max-w-[1440px] gap-6 px-4 py-6 sm:px-6">
+              {activePage === "projects" ? (
+                <ProjectMaintenance
+                  projects={projects}
+                  addForm={addForm}
+                  updateAddForm={updateAddForm}
+                  saveNewProject={saveNewProject}
+                  importProjectsFromExcel={importProjectsFromExcel}
+                  editingId={editingId}
+                  editForm={editForm}
+                  setEditForm={setEditForm}
+                  selectProject={selectProject}
+                  saveProjectEdit={saveProjectEdit}
+                />
+              ) : activePage === "region" ? (
+                <RegionOverview alerts={appAlerts} />
+              ) : (
+                <>
+              <section className="grid gap-3 rounded-2xl border border-border/70 bg-card/78 p-3 shadow-soft backdrop-blur md:grid-cols-5">
+                {homeStats.map((item) => (
+                  <div key={item.label} className="rounded-xl border border-border/60 bg-white/68 px-4 py-3">
+                    <p className="text-xs text-muted-foreground">{item.label}</p>
+                    <p className={cn("mt-1 text-xl font-semibold tabular-nums", item.tone)}>{item.value}</p>
+                  </div>
+                ))}
+              </section>
+
+              <section className="grid min-h-[640px] grid-cols-1 gap-6 sm:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_420px]">
+                <Card className="flex h-[820px] overflow-hidden shadow-cabin">
+                  <div className="flex min-w-0 flex-1 flex-col">
+                  <div className="shrink-0 border-b border-border/70 bg-white/46 p-5">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h2 className="w-full text-xl font-semibold sm:w-auto">重要舆情工作台｜近 7 天重大风险</h2>
+                          <Badge tone="severe">严重 {severeWorkbenchCount}</Badge>
+                          <Badge tone="high">较重 {highWorkbenchCount}</Badge>
+                        </div>
+                        <p className="mt-2 text-sm text-muted-foreground">仅展示严重及较重事件；关注类进入下方近三个月风险库。</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="min-h-0 flex-1 overflow-y-auto">
+                    {visibleWorkbenchAlerts.map((item) => {
+                      const tone = item.level === "严重" ? "severe" : "high";
+                      const active = selected.entity === item.entity && selected.title === item.title;
+                      return (
+                        <button
+                          key={item.entity + item.title}
+                          onClick={() => setSelected(item)}
+                          className={cn("relative block w-full border-b border-border/60 text-left transition", active ? "bg-red-50/55" : "hover:bg-white/55")}
+                        >
+                          {active && <span className="absolute bottom-3 left-0 top-3 w-[3px] rounded-r-full bg-red-600" />}
+                          <div className="px-5 py-3.5">
+                            <div className="flex items-start gap-2.5">
+                              <Badge tone={tone}>{item.level}</Badge>
+                              <p className="flex-1 text-sm font-medium leading-snug">{item.title}</p>
+                              <span className="shrink-0 text-xs text-muted-foreground whitespace-nowrap">{item.time}</span>
+                            </div>
+                            <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                              <span className="font-medium text-foreground">{item.entity}</span>
+                              <span className="text-muted-foreground/40">·</span>
+                              <span>{item.role}</span>
+                              <span className="text-muted-foreground/40">·</span>
+                              <span className="truncate">{item.project}</span>
+                            </div>
+                            <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                              <p className="text-xs text-muted-foreground flex-1 truncate">{item.impact}</p>
+                              <div className="flex shrink-0 flex-wrap gap-1">
+                                {item.sources.slice(0, 2).map((source) => <Badge key={source}>{source}</Badge>)}{item.sources.length > 2 && <Badge>+{item.sources.length - 2}</Badge>}
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {workbenchTotalPages > 1 && (
+                    <div className="shrink-0 border-t border-border/70 bg-white/42 px-5 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-xs text-muted-foreground">每页 {workbenchPageSize} 条，共 {workbenchAlerts.length} 条</p>
+                        <div className="flex items-center gap-2">
+                          {Array.from({ length: workbenchTotalPages }, (_, index) => index + 1).map((pageNumber) => (
+                            <button
+                              key={pageNumber}
+                              onClick={() => setWorkbenchPage(pageNumber)}
+                              className={cn("h-8 min-w-8 rounded-md border px-2 text-sm transition", currentWorkbenchPage === pageNumber ? "border-primary bg-muted text-foreground" : "border-border bg-background text-muted-foreground hover:bg-muted/60")}
+                            >
+                              {pageNumber}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  </div>
+                </Card>
+
+                <Card className="flex h-[820px] flex-col overflow-hidden p-5 shadow-cabin">
+                  <div className="shrink-0 border-b border-border/60 pb-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-xl font-semibold">证据链</h2>
+                      <p className="mt-2 text-sm text-muted-foreground">按事件发现、数据交叉验证和外部来源形成审计轨迹。</p>
+                    </div>
+                    <Icon name="Link2" className="h-5 w-5 text-muted-foreground" />
+                  </div>
+
+                  <div className="mt-5">
+                    <Badge tone={selected.level === "严重" ? "severe" : selected.level === "较重" ? "high" : "watch"}>{selected.level}</Badge>
+                    <p className="mt-3 text-base font-semibold">{selected.entity}</p>
+                  </div>
+                  </div>
+
+                  <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
+                    <div className="relative space-y-4 pl-5">
+                      <div className="absolute bottom-4 left-[7px] top-2 w-px bg-border" />
+                      {selected.evidence.map((item, index) => {
+                        const phase = index === 0 ? "原始事件发现" : index === 1 ? "数据交叉验证" : "补充佐证";
+                        return (
+                          <div key={item.name} className="relative rounded-xl border border-border/70 bg-white/62 p-4 shadow-soft">
+                            <span className={cn("absolute -left-[21px] top-5 h-3.5 w-3.5 rounded-full border-2 border-card", selected.level === "严重" ? "bg-red-600" : selected.level === "较重" ? "bg-orange-500" : "bg-emerald-600")} />
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">{phase}</span>
+                              <span className="text-xs text-muted-foreground">{item.time}</span>
+                            </div>
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                              <p className="font-medium">{item.name}</p>
+                              <Badge>{item.source}</Badge>
+                              <button
+                                type="button"
+                                aria-label={`打开${item.name}来源`}
+                                onClick={() => setSourceModal(item)}
+                                className="inline-flex items-center gap-1 rounded-full border border-border bg-card/90 px-2.5 py-1 text-xs text-muted-foreground transition hover:text-foreground"
+                              >
+                                打开来源
+                                <Icon name="ExternalLink" className="h-3 w-3" />
+                              </button>
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.detail}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="mt-5 rounded-xl border border-border/70 bg-white/60 p-4">
+                    <p className="text-sm font-medium">消息来源</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {selected.sources.map((source) => <Badge key={source}>{source}</Badge>)}
+                    </div>
+                  </div>
+                </Card>
+              </section>
+
+              <section>
+                <Card className="overflow-hidden">
+                  <div className="border-b border-border p-5">
+                    <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                      <div>
+                        <h2 className="text-lg font-semibold">舆情查询结果｜近 3 个月风险库</h2>
+                        <p className="mt-1 text-sm text-muted-foreground">覆盖严重、较重、关注事件；搜索和筛选结果直接展示主体、项目、事件和消息来源。</p>
+                      </div>
+                      <div className="relative w-full xl:w-[560px]">
+                        <Icon name="Search" className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <input
+                          value={query}
+                          onChange={(event) => setQuery(event.target.value)}
+                          className="h-11 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" onFocus={() => setInputFocused(true)} onBlur={() => setTimeout(() => setInputFocused(false), 150)}
+                          placeholder="模糊搜索项目、借款人、保证人或来源"
+                        />
+                        {inputFocused && query.trim() && (
+                          <div className="absolute left-0 right-0 top-12 z-20 overflow-hidden rounded-lg border border-border bg-card shadow-soft">
+                            {suggestions.map((term) => (
+                              <button
+                                key={term}
+                                onClick={() => setQuery(term)}
+                                className="block w-full px-4 py-2.5 text-left text-sm transition hover:bg-muted"
+                              >
+                                {term}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        <p className="mt-2 text-xs text-muted-foreground">当前匹配 {filteredAlerts.length} 条记录</p>
+                      </div>
+                    </div>
+                    <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                      <select value={levelFilter} onChange={(event) => setLevelFilter(event.target.value)} className="h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none">
+                        {["全部等级", "严重", "较重", "关注"].map((item) => <option key={item}>{item}</option>)}
+                      </select>
+                      <select value={timeFilter} onChange={(event) => setTimeFilter(event.target.value)} className="h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none">
+                        {["近三个月", "近一个月", "近一周"].map((item) => <option key={item}>{item}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="divide-y divide-border">
+                    {visibleFilteredAlerts.map((item) => (
+                      <button key={item.entity + item.title} onClick={() => setSearchDetail(item)} className="block w-full px-5 py-4 text-left transition hover:bg-muted/45">
+                        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <Badge tone={item.level === "严重" ? "severe" : item.level === "较重" ? "high" : "watch"}>{item.level}</Badge>
+                              <span className="text-sm font-medium">{item.entity}</span>
+                              <span className="text-xs text-muted-foreground">{item.role}</span>
+                            </div>
+                            <p className="mt-2 text-sm font-medium">{item.title}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">{item.project}</p>
+                          </div>
+                          <div className="flex max-w-[360px] flex-wrap gap-2">
+                            {item.sources.slice(0, 2).map((source) => <Badge key={source}>{source}</Badge>)}{item.sources.length > 2 && <Badge>+{item.sources.length - 2}</Badge>}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                    {filteredAlerts.length === 0 && (
+                      <div className="p-8 text-center text-sm text-muted-foreground">没有匹配到项目或主体。</div>
+                    )}
+                    {searchTotalPages > 1 && (
+                      <div className="shrink-0 border-t border-border/70 bg-white/42 px-5 py-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs text-muted-foreground">每页 {searchPageSize} 条，共 {filteredAlerts.length} 条</p>
+                          <div className="flex items-center gap-2">
+                            {Array.from({ length: searchTotalPages }, (_, index) => index + 1).map((pageNumber) => (
+                              <button
+                                key={pageNumber}
+                                onClick={() => setSearchPage(pageNumber)}
+                                className={cn("h-8 min-w-8 rounded-md border px-2 text-sm transition", currentSearchPage === pageNumber ? "border-primary bg-muted text-foreground" : "border-border bg-background text-muted-foreground hover:bg-muted/60")}
+                              >
+                                {pageNumber}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              </section>
+                </>
+              )}
+            </div>
+
+            {sourceModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4 backdrop-blur-sm" onClick={() => setSourceModal(null)}>
+                <div className="w-full max-w-xl rounded-lg border border-border bg-card p-6 shadow-soft" onClick={(event) => event.stopPropagation()}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <Badge>{sourceModal.source}</Badge>
+                      <h2 className="mt-4 text-xl font-semibold">{sourceModal.name}</h2>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{sourceModal.detail}</p>
+                    </div>
+                    <button type="button" onClick={() => setSourceModal(null)} className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-muted-foreground transition hover:text-foreground">关闭</button>
+                  </div>
+                  <div className="mt-6 rounded-lg border border-border bg-muted/40 p-4">
+                    <p className="text-sm font-medium">来源内容预览</p>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">{sourceModal.content}</p>
+                  </div>
+                  <div className="mt-4 grid gap-3 rounded-lg border border-border bg-background p-4 text-sm sm:grid-cols-[88px_minmax(0,1fr)]">
+                    <span className="text-muted-foreground">时间</span>
+                    <span>{sourceModal.time}</span>
+                    <span className="text-muted-foreground">来源</span>
+                    <span>{sourceModal.source}</span>
+                    <span className="text-muted-foreground">原文入口</span>
+                    <span className="break-all text-muted-foreground">{sourceModal.url}</span>
+                  </div>
+                  <div className="mt-6 flex justify-end">
+                    <a href={sourceModal.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+                      前往来源页面
+                      <Icon name="ExternalLink" className="h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+            {searchDetail && (
+              <div className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/35 px-4 py-12 backdrop-blur-sm overflow-y-auto" onClick={() => setSearchDetail(null)}>
+                <div className="w-full max-w-2xl rounded-xl border border-border bg-card shadow-cabin" onClick={(event) => event.stopPropagation()}>
+                  <div className="flex items-start justify-between gap-4 border-b border-border/60 p-5">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Badge tone={searchDetail.level === "严重" ? "severe" : searchDetail.level === "较重" ? "high" : "watch"}>{searchDetail.level}</Badge>
+                        <span className="text-xs text-muted-foreground">{searchDetail.time}</span>
+                      </div>
+                      <h2 className="mt-2 text-lg font-semibold leading-snug">{searchDetail.title}</h2>
+                      <p className="mt-1 text-sm text-muted-foreground">{searchDetail.entity} · {searchDetail.role}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{searchDetail.project}</p>
+                    </div>
+                    <button type="button" onClick={() => setSearchDetail(null)} className="shrink-0 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-muted-foreground transition hover:text-foreground">关闭</button>
+                  </div>
+                  <div className="p-5">
+                    <p className="text-sm font-medium">事件摘要</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{searchDetail.summary}</p>
+                    <p className="mt-3 text-sm font-medium">影响评估</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{searchDetail.impact}</p>
+                  </div>
+                  <div className="border-t border-border/60 p-5">
+                    <p className="text-sm font-medium">证据链</p>
+                    <div className="mt-4 relative space-y-4 pl-5 max-h-[400px] overflow-y-auto">
+                      <div className="absolute bottom-4 left-[7px] top-2 w-px bg-border" />
+                      {searchDetail.evidence.map((item, index) => {
+                        const phase = index === 0 ? "原始事件发现" : index === 1 ? "数据交叉验证" : "补充佐证";
+                        return (
+                          <div key={item.name} className="relative rounded-xl border border-border/70 bg-white/62 p-4 shadow-soft">
+                            <span className={cn("absolute -left-[21px] top-5 h-3.5 w-3.5 rounded-full border-2 border-card", searchDetail.level === "严重" ? "bg-red-600" : searchDetail.level === "较重" ? "bg-orange-500" : "bg-emerald-600")} />
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">{phase}</span>
+                              <span className="text-xs text-muted-foreground">{item.time}</span>
+                            </div>
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                              <p className="font-medium">{item.name}</p>
+                              <Badge>{item.source}</Badge>
+                              <button type="button" onClick={() => setSourceModal(item)} className="inline-flex items-center gap-1 rounded-full border border-border bg-card/90 px-2.5 py-1 text-xs text-muted-foreground transition hover:text-foreground">
+                                打开来源 <Icon name="ExternalLink" className="h-3 w-3" />
+                              </button>
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.detail}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="border-t border-border/60 p-5">
+                    <p className="text-sm font-medium">消息来源</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {searchDetail.sources.map((source) => <Badge key={source}>{source}</Badge>)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {actionModal && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/35 px-4 backdrop-blur-sm" onClick={() => setActionModal(null)}>
+                <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-xl" onClick={(event) => event.stopPropagation()}>
+                  <div className="flex items-start gap-3">
+                    <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-lg", actionModal.type === "error" ? "bg-red-500/12 text-red-600" : "bg-emerald-500/12 text-emerald-600")}>
+                      <Icon name={actionModal.type === "error" ? "TriangleAlert" : "CheckCircle2"} className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold">{actionModal.title}</h2>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{actionModal.message}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActionModal(null)}
+                    className="mt-6 w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+                  >
+                    知道了
+                  </button>
+                </div>
+              </div>
+            )}
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
