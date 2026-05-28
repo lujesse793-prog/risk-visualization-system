@@ -66,22 +66,15 @@
       body {
         font-family: "DIN Alternate", "Aptos", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
         overflow-x: hidden;
-        background: #f5f8fb;
+        background: #F7F9FC;
       }
 
       .surface-grid {
-        background-image:
-          linear-gradient(to right, rgba(64, 92, 124, 0.055) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(64, 92, 124, 0.055) 1px, transparent 1px),
-          linear-gradient(180deg, rgba(245, 248, 251, 0.96), rgba(236, 243, 249, 0.92));
-        background-size: 32px 32px, 32px 32px, auto;
+        background: linear-gradient(180deg, #F3F7FB 0%, #F7F9FC 260px);
       }
 
       .dark .surface-grid {
-        background-image:
-          linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
-          linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(15, 23, 42, 0.94));
+        background: linear-gradient(180deg, #141E2E 0%, #111827 260px);
       }
 
       .map-shell {
@@ -118,6 +111,14 @@
         }
       }
 
+
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748B; }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(71,85,105,0.50); }
       @media (prefers-reduced-motion: reduce) {
         .region-map-layer {
           animation: none;
@@ -166,13 +167,13 @@
 
       function Badge({ children, tone = "neutral" }) {
         const tones = {
-          severe: "border-red-200 bg-red-50 text-red-700 dark:border-red-900/60 dark:bg-red-950/35 dark:text-red-300",
-          high: "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/60 dark:bg-orange-950/30 dark:text-orange-300",
-          watch: "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900/60 dark:bg-yellow-950/25 dark:text-yellow-300",
+          severe: "border-[#FECDD3] bg-[#FFF1F2] text-[#BE123C] dark:border-red-900/60 dark:bg-red-950/35 dark:text-red-300",
+          high: "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C] dark:border-orange-900/60 dark:bg-orange-950/30 dark:text-orange-300",
+          watch: "border-[#FDE68A] bg-[#FFFBEB] text-[#A16207] dark:border-yellow-900/60 dark:bg-yellow-950/25 dark:text-yellow-300",
           neutral: "border-border bg-muted text-muted-foreground",
           ok: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/25 dark:text-emerald-300",
         };
-        return <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium leading-none", tones[tone])}>{children}</span>;
+        return <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium leading-[18px]", tones[tone])}>{children}</span>;
       }
 
       const alerts = [
@@ -1228,13 +1229,6 @@
         const workbenchAlerts = appAlerts.filter((item) => item.level === "严重" || (item.level === "较重" && item.highRelevance));
         const severeWorkbenchCount = workbenchAlerts.filter((item) => item.level === "严重").length;
         const highWorkbenchCount = workbenchAlerts.filter((item) => item.level === "较重").length;
-        const homeStats = [
-          { label: "监控主体数", value: appAlerts.length, tone: "text-slate-900" },
-          { label: "近 7 日风险", value: workbenchAlerts.length, tone: "text-slate-900" },
-          { label: "严重事件", value: severeWorkbenchCount, tone: "text-red-700" },
-          { label: "较重事件", value: highWorkbenchCount, tone: "text-orange-700" },
-          { label: "更新时间", value: "22:30", tone: "text-slate-900" },
-        ];
         const workbenchPageSize = 5;
         const workbenchTotalPages = Math.max(1, Math.ceil(workbenchAlerts.length / workbenchPageSize));
         const currentWorkbenchPage = Math.min(workbenchPage, workbenchTotalPages);
@@ -1346,7 +1340,7 @@
 
         return (
           <main className="min-h-screen surface-grid">
-            <header className="sticky top-0 z-30 border-b border-border/70 bg-background/82 backdrop-blur-xl">
+            <header className="sticky top-0 z-30 border-b border-[#E2E8F0]/80 bg-white/75 backdrop-blur-[12px]">
               <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
                 <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-soft">
@@ -1357,7 +1351,7 @@
                     <p className="text-xs text-muted-foreground">重要舆情工作台 · 证据链穿透展示</p>
                   </div>
                 </div>
-                <nav className="hidden items-center rounded-xl border border-border/70 bg-card/90 p-1 text-sm text-muted-foreground shadow-soft lg:flex">
+                <nav className="hidden items-center rounded-xl border border-[#E2E8F0]/70 bg-white/70 p-1 text-sm text-muted-foreground lg:flex">
                   {navItems.map((item) => (
                     <button
                       key={item.key}
@@ -1369,11 +1363,6 @@
                   ))}
                 </nav>
                 <div className="flex shrink-0 items-center gap-2">
-                  <Badge tone="ok">数据源正常</Badge>
-                  <button className="hidden items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-muted-foreground sm:inline-flex">
-                    <Icon name="Clock3" className="h-4 w-4" />
-                    更新于 22:30
-                  </button>
                   <button
                     aria-label="切换深色模式"
                     onClick={() => setDark(!dark)}
@@ -1403,32 +1392,33 @@
                 <RegionOverview alerts={appAlerts} />
               ) : (
                 <>
-              <section className="grid gap-3 rounded-2xl border border-border/70 bg-card/78 p-3 shadow-soft backdrop-blur md:grid-cols-5">
-                {homeStats.map((item) => (
-                  <div key={item.label} className="rounded-xl border border-border/60 bg-white/68 px-4 py-3">
-                    <p className="text-xs text-muted-foreground">{item.label}</p>
-                    <p className={cn("mt-1 text-xl font-semibold tabular-nums", item.tone)}>{item.value}</p>
-                  </div>
-                ))}
-              </section>
-
               <section className="grid min-h-[640px] grid-cols-1 gap-6 sm:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_420px]">
-                <Card className="flex h-[820px] overflow-hidden shadow-cabin">
+                <Card className="flex h-[820px] overflow-hidden shadow-cabin rounded-[16px]">
                   <div className="flex min-w-0 flex-1 flex-col">
-                  <div className="shrink-0 border-b border-border/70 bg-white/46 p-5">
-                    <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          <h2 className="w-full text-xl font-semibold sm:w-auto">重要舆情工作台｜近 7 天重大风险</h2>
-                          <Badge tone="severe">严重 {severeWorkbenchCount}</Badge>
-                          <Badge tone="high">较重 {highWorkbenchCount}</Badge>
+                  <div className="shrink-0 border-b border-[#EEF2F7] bg-white/50 p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <h2 className="text-xl font-semibold tracking-tight text-slate-900">重要舆情工作台｜近 7 天重大风险</h2>
+                        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] leading-relaxed text-[#64748B]">
+                          <span>数据源：司法公开渠道 / 评级公告 / Choice / iFinD / 资讯源</span>
+                          <span className="text-slate-300 select-none">·</span>
+                          <span>监控主体 <b className="font-semibold tabular-nums text-slate-700">{appAlerts.length}</b></span>
+                          <span className="text-slate-300 select-none">·</span>
+                          <span>近 7 日风险 <b className="font-semibold tabular-nums text-slate-700">{workbenchAlerts.length}</b></span>
+                          <span className="text-slate-300 select-none">·</span>
+                          <span>严重 <b className="font-semibold tabular-nums text-red-600">{severeWorkbenchCount}</b></span>
+                          <span className="text-slate-300 select-none">·</span>
+                          <span>较重 <b className="font-semibold tabular-nums text-orange-600">{highWorkbenchCount}</b></span>
                         </div>
-                        <p className="mt-2 text-sm text-muted-foreground">仅展示严重及较重事件；关注类进入下方近三个月风险库。</p>
+                      </div>
+                      <div className="shrink-0 flex items-center gap-1.5 text-xs text-[#94A3B8] pt-1">
+                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                        数据正常 · 22:30
                       </div>
                     </div>
                   </div>
 
-                  <div className="min-h-0 flex-1 overflow-y-auto">
+                  <div className="min-h-0 flex-1 overflow-y-auto custom-scrollbar">
                     {visibleWorkbenchAlerts.map((item) => {
                       const tone = item.level === "严重" ? "severe" : "high";
                       const active = selected.entity === item.entity && selected.title === item.title;
@@ -1436,25 +1426,25 @@
                         <button
                           key={item.entity + item.title}
                           onClick={() => setSelected(item)}
-                          className={cn("relative block w-full border-b border-border/60 text-left transition", active ? "bg-red-50/55" : "hover:bg-white/55")}
+                          className={cn("relative block w-full border-b border-[#EEF2F7] text-left transition", active ? "bg-[#FFF5F5]" : "hover:bg-slate-50/70")}
                         >
-                          {active && <span className="absolute bottom-3 left-0 top-3 w-[3px] rounded-r-full bg-red-600" />}
+                          {active && <span className="absolute bottom-3 left-0 top-3 w-1 rounded-r-full bg-red-600/80" />}
                           <div className="px-5 py-3.5">
                             <div className="flex items-start gap-2.5">
                               <Badge tone={tone}>{item.level}</Badge>
-                              <p className="flex-1 text-sm font-medium leading-snug">{item.title}</p>
+                              <p className={cn("flex-1 text-sm leading-snug", active ? "font-semibold" : "font-medium")}>{item.title}</p>
                               <span className="shrink-0 text-xs text-muted-foreground whitespace-nowrap">{item.time}</span>
                             </div>
                             <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                               <span className="font-medium text-foreground">{item.entity}</span>
-                              <span className="text-muted-foreground/40">·</span>
+                              <span className="text-slate-300 select-none">·</span>
                               <span>{item.role}</span>
-                              <span className="text-muted-foreground/40">·</span>
+                              <span className="text-slate-300 select-none">·</span>
                               <span className="truncate">{item.project}</span>
                             </div>
-                            <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                              <p className="text-xs text-muted-foreground flex-1 truncate">{item.impact}</p>
-                              <div className="flex shrink-0 flex-wrap gap-1">
+                            <div className="mt-2 space-y-1.5">
+                              <p className="text-xs leading-relaxed text-muted-foreground">{item.impact}</p>
+                              <div className="flex flex-wrap gap-1">
                                 {item.sources.slice(0, 2).map((source) => <Badge key={source}>{source}</Badge>)}{item.sources.length > 2 && <Badge>+{item.sources.length - 2}</Badge>}
                               </div>
                             </div>
@@ -1484,12 +1474,12 @@
                   </div>
                 </Card>
 
-                <Card className="flex h-[820px] flex-col overflow-hidden p-5 shadow-cabin">
+                <Card className="flex h-[820px] flex-col overflow-hidden p-5 shadow-cabin rounded-[16px]">
                   <div className="shrink-0 border-b border-border/60 pb-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="text-xl font-semibold">证据链</h2>
-                      <p className="mt-2 text-sm text-muted-foreground">按事件发现、数据交叉验证和外部来源形成审计轨迹。</p>
+                      <p className="mt-1 text-xs text-muted-foreground/70">事件发现 · 交叉验证 · 外部佐证</p>
                     </div>
                     <Icon name="Link2" className="h-5 w-5 text-muted-foreground" />
                   </div>
@@ -1500,14 +1490,14 @@
                   </div>
                   </div>
 
-                  <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
+                  <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1 custom-scrollbar">
                     <div className="relative space-y-4 pl-5">
                       <div className="absolute bottom-4 left-[7px] top-2 w-px bg-border" />
                       {selected.evidence.map((item, index) => {
                         const phase = index === 0 ? "原始事件发现" : index === 1 ? "数据交叉验证" : "补充佐证";
                         return (
                           <div key={item.name} className="relative rounded-xl border border-border/70 bg-white/62 p-4 shadow-soft">
-                            <span className={cn("absolute -left-[21px] top-5 h-3.5 w-3.5 rounded-full border-2 border-card", selected.level === "严重" ? "bg-red-600" : selected.level === "较重" ? "bg-orange-500" : "bg-emerald-600")} />
+                            <span className={cn("absolute -left-[21px] top-5 h-3.5 w-3.5 rounded-full border-2 border-card", selected.level === "严重" ? "bg-red-500" : selected.level === "较重" ? "bg-orange-400" : "bg-emerald-500")} />
                             <div className="flex flex-wrap items-center gap-2">
                               <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">{phase}</span>
                               <span className="text-xs text-muted-foreground">{item.time}</span>
