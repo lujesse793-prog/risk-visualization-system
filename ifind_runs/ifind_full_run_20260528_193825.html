@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iFinD 风控全量试跑报告</title>
+  <style>
+    body { margin: 0; font-family: "Microsoft YaHei UI", Arial, sans-serif; background: #f6f8fb; color: #182230; }
+    header { padding: 28px 34px; background: #132238; color: white; }
+    h1 { margin: 0 0 10px; font-size: 24px; }
+    .meta { color: #cbd5e1; font-size: 13px; line-height: 1.8; }
+    main { padding: 24px 34px 40px; }
+    .stats { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .stat { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+    .stat strong { display: block; font-size: 24px; }
+    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #e2e8f0; font-size: 12px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 9px 10px; vertical-align: top; text-align: left; }
+    th { position: sticky; top: 0; background: #eef3f8; z-index: 1; }
+    .entity { font-weight: 700; min-width: 220px; }
+    .badge { display: inline-flex; min-width: 44px; justify-content: center; border-radius: 999px; padding: 3px 8px; font-weight: 700; }
+    .严重 { color: #b91c1c; background: #fee2e2; }
+    .较重 { color: #c2410c; background: #ffedd5; }
+    .关注 { color: #a16207; background: #fef3c7; }
+    .无 { color: #047857; background: #d1fae5; }
+    a { color: #155eef; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>iFinD 风控全量试跑报告</h1>
+    <div class="meta">
+      生成时间：2026-05-28T19:38:41<br>
+      数据底稿：C:\Users\luyng\Documents\Codex\2026-05-28\github-2\risk-visualization-system\data\raw\企业名单.xlsx<br>
+      MCP：hexin-ifind-ds-news-mcp / search_news；限速：每次请求间隔不少于 0.55 秒，不超过 2 次/秒。
+    </div>
+  </header>
+  <main>
+    <section class="stats">
+      <div class="stat"><span>去重主体</span><strong>3</strong></div>
+      <div class="stat"><span>严重</span><strong>0</strong></div>
+      <div class="stat"><span>较重</span><strong>0</strong></div>
+      <div class="stat"><span>关注</span><strong>0</strong></div>
+      <div class="stat"><span>无</span><strong>3</strong></div>
+    </section>
+    <table>
+      <thead>
+        <tr><th>#</th><th>主体</th><th>角色</th><th>关联项目</th><th>等级</th><th>事件类型</th><th>命中词</th><th>iFinD 返回预览</th><th>原始</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class='entity'>杭州钱塘新区建设投资集团有限公司</td><td>借款人</td><td>安宁固收B0009号</td><td><span class='badge 无'>无</span></td><td>未发现重大负面舆情</td><td></td><td>{&quot;code&quot;:1,&quot;msg&quot;:&quot;success&quot;,&quot;subCode&quot;:null,&quot;subMsg&quot;:null,&quot;data&quot;:{&quot;data&quot;:&quot;[\n {\n \&quot;资讯标题\&quot;: \&quot;杭州钱塘新区产业发展集团有限公司：“23钱塘债”回售行权金额0.30亿元\&quot;,\n \&quot;资讯内容\&quot;: \&quot;3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘债”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-03-24\&quot;,\n \&quot;URL\&quot;: \&quot;http://news.10jqka.com.cn/19700121/c675510675.shtml\&quot;\n },\n {\n \&quot;资讯标题\&quot;: \&quot;杭州钱塘新区产业发展集团有限公司：“23钱塘产业债01”回售行权金额0.30亿元\&quot;,\n \&quot;资讯内容\&quot;: \&quot;3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘产业债01”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-03-24\&quot;,\n \&quot;URL\&quot;: \&quot;http://news.10jqka.com.cn/19700121/c675510670.shtml\&quot;\n },\n {\n \&quot;备注\&quot;: \&quot;出于对LLM上下文以及用户...</td><td><a href='./raw/001.json'>raw</a></td></tr><tr><td>2</td><td class='entity'>诸暨市国有资产经营有限公司</td><td>借款人</td><td>安宁固收B0010号</td><td><span class='badge 无'>无</span></td><td>未发现重大负面舆情</td><td></td><td>{&quot;error&quot;: &quot;&lt;urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)&gt;&quot;}</td><td><a href='./raw/002.json'>raw</a></td></tr><tr><td>3</td><td class='entity'>杭州东部城市建设投资集团有限公司</td><td>借款人</td><td>安宁固收B0011号</td><td><span class='badge 无'>无</span></td><td>未发现重大负面舆情</td><td></td><td>{&quot;error&quot;: &quot;&lt;urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)&gt;&quot;}</td><td><a href='./raw/003.json'>raw</a></td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

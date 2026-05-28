@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-05-28T19:38:41",
+  "excel_path": "C:\\Users\\luyng\\Documents\\Codex\\2026-05-28\\github-2\\risk-visualization-system\\data\\raw\\企业名单.xlsx",
+  "project_count": 3,
+  "borrower_records": 3,
+  "guarantor_records": 1,
+  "rows": [
+    {
+      "index": 1,
+      "entity": {
+        "name": "杭州钱塘新区建设投资集团有限公司",
+        "roles": [
+          "借款人"
+        ],
+        "projects": [
+          "安宁固收B0009号"
+        ]
+      },
+      "query": "杭州钱塘新区建设投资集团有限公司 近三个月 重大负面舆情 风险事件 失信 被执行 限制高消费 债务违约 展期 兑付困难 破产重整 重大诉讼 仲裁 资产冻结 查封 行政处罚 监管处罚 评级下调 评级关注 担保履约 融资压力",
+      "error": null,
+      "raw_path": "C:\\Users\\luyng\\Documents\\Codex\\2026-05-28\\github-2\\risk-visualization-system\\ifind_runs\\raw\\001.json",
+      "preview": "{\"code\":1,\"msg\":\"success\",\"subCode\":null,\"subMsg\":null,\"data\":{\"data\":\"[\\n {\\n \\\"资讯标题\\\": \\\"杭州钱塘新区产业发展集团有限公司：“23钱塘债”回售行权金额0.30亿元\\\",\\n \\\"资讯内容\\\": \\\"3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘债”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \\\",\\n \\\"日期\\\": \\\"2026-03-24\\\",\\n \\\"URL\\\": \\\"http://news.10jqka.com.cn/19700121/c675510675.shtml\\\"\\n },\\n {\\n \\\"资讯标题\\\": \\\"杭州钱塘新区产业发展集团有限公司：“23钱塘产业债01”回售行权金额0.30亿元\\\",\\n \\\"资讯内容\\\": \\\"3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘产业债01”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \\\",\\n \\\"日期\\\": \\\"2026-03-24\\\",\\n \\\"URL\\\": \\\"http://news.10jqka.com.cn/19700121/c675510670.shtml\\\"\\n },\\n {\\n \\\"备注\\\": \\\"出于对LLM上下文以及用户...",
+      "classification": {
+        "level": "无",
+        "highRelevance": false,
+        "score": 0,
+        "eventType": "未发现重大负面舆情",
+        "keywords": []
+      }
+    },
+    {
+      "index": 2,
+      "entity": {
+        "name": "诸暨市国有资产经营有限公司",
+        "roles": [
+          "借款人"
+        ],
+        "projects": [
+          "安宁固收B0010号"
+        ]
+      },
+      "query": "诸暨市国有资产经营有限公司 近三个月 重大负面舆情 风险事件 失信 被执行 限制高消费 债务违约 展期 兑付困难 破产重整 重大诉讼 仲裁 资产冻结 查封 行政处罚 监管处罚 评级下调 评级关注 担保履约 融资压力",
+      "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>",
+      "raw_path": "C:\\Users\\luyng\\Documents\\Codex\\2026-05-28\\github-2\\risk-visualization-system\\ifind_runs\\raw\\002.json",
+      "preview": "{\"error\": \"<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>\"}",
+      "classification": {
+        "level": "无",
+        "highRelevance": false,
+        "score": 0,
+        "eventType": "未发现重大负面舆情",
+        "keywords": []
+      }
+    },
+    {
+      "index": 3,
+      "entity": {
+        "name": "杭州东部城市建设投资集团有限公司",
+        "roles": [
+          "借款人"
+        ],
+        "projects": [
+          "安宁固收B0011号"
+        ]
+      },
+      "query": "杭州东部城市建设投资集团有限公司 近三个月 重大负面舆情 风险事件 失信 被执行 限制高消费 债务违约 展期 兑付困难 破产重整 重大诉讼 仲裁 资产冻结 查封 行政处罚 监管处罚 评级下调 评级关注 担保履约 融资压力",
+      "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>",
+      "raw_path": "C:\\Users\\luyng\\Documents\\Codex\\2026-05-28\\github-2\\risk-visualization-system\\ifind_runs\\raw\\003.json",
+      "preview": "{\"error\": \"<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>\"}",
+      "classification": {
+        "level": "无",
+        "highRelevance": false,
+        "score": 0,
+        "eventType": "未发现重大负面舆情",
+        "keywords": []
+      }
+    }
+  ]
+}
