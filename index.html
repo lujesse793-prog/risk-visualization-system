@@ -17,7 +17,6 @@
     <script src="./data/china_map_paths.js"></script>
     <script>
       tailwind.config = {
-        darkMode: "class",
         theme: {
           extend: {
             colors: {
@@ -52,17 +51,6 @@
         --primary-foreground: 210 40% 98%;
       }
 
-      .dark {
-        --background: 222 28% 8%;
-        --foreground: 210 30% 94%;
-        --card: 222 25% 11%;
-        --card-foreground: 210 30% 94%;
-        --muted: 221 22% 16%;
-        --muted-foreground: 215 12% 68%;
-        --border: 218 18% 22%;
-        --primary: 208 42% 70%;
-        --primary-foreground: 222 35% 10%;
-      }
 
       body {
         font-family: "DIN Alternate", "Aptos", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
@@ -74,9 +62,7 @@
         background: linear-gradient(180deg, #eff3f8 0%, #f8fafc 260px);
       }
 
-      .dark .surface-grid {
-        background: linear-gradient(180deg, #141E2E 0%, #111827 260px);
-      }
+
 
       .map-shell {
         background:
@@ -85,12 +71,7 @@
         background-size: auto, 72px 100%;
       }
 
-      .dark .map-shell {
-        background:
-          linear-gradient(180deg, rgba(20,30,46,.82), rgba(17,24,39,.78)),
-          linear-gradient(to right, rgba(148, 163, 184, .06) 1px, transparent 1px);
-        background-size: auto, 72px 100%;
-      }
+
 
       .region-map-layer {
         animation: mapLayerIn 260ms ease-out both;
@@ -117,9 +98,6 @@
       .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
       .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
       .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
-      .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
-      .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748B; }
-      .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(71,85,105,0.50); }
       @media (prefers-reduced-motion: reduce) {
         .region-map-layer {
           animation: none;
@@ -169,11 +147,11 @@
 
       function Badge({ children, tone = "neutral" }) {
         const tones = {
-          severe: "border-[#FECDD3] bg-[#FFF1F2] text-[#BE123C] dark:border-red-900/60 dark:bg-red-950/35 dark:text-red-300",
-          high: "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C] dark:border-orange-900/60 dark:bg-orange-950/30 dark:text-orange-300",
-          watch: "border-[#FDE68A] bg-[#FFFBEB] text-[#A16207] dark:border-yellow-900/60 dark:bg-yellow-950/25 dark:text-yellow-300",
+          severe: "border-[#FECDD3] bg-[#FFF1F2] text-[#BE123C]",
+          high: "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C]",
+          watch: "border-[#FDE68A] bg-[#FFFBEB] text-[#A16207]",
           neutral: "border-border bg-muted text-muted-foreground",
-          ok: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/25 dark:text-emerald-300",
+          ok: "border-emerald-200 bg-emerald-50 text-emerald-700",
         };
         return <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2 py-0 h-[22px] text-[11px] font-medium leading-[20px]", tones[tone])}>{children}</span>;
       }
@@ -1104,10 +1082,6 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   <button type="button" onClick={() => setMapMode("risk")} className={cn("rounded-md px-4 py-2 text-sm font-medium transition", mapMode === "risk" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>风险热力图</button>
                 </div>
               </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <button type="button" disabled={!canGoBack} onClick={() => setMapState(parentMapState(mapState))} className={cn("rounded-lg border px-3 py-2 text-sm transition", canGoBack ? "border-border bg-card/90 text-muted-foreground hover:bg-muted" : "cursor-not-allowed border-border/70 bg-card/60 text-muted-foreground/45")}>返回上一层</button>
-                <button type="button" onClick={() => setMapState({ drillLevel: "country", selectedProvince: "", selectedCity: "", selectedDistrict: "", hoveredRegion: "" })} className="rounded-lg border border-border bg-card/90 px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted">返回全国</button>
-              </div>
             </div>
             <svg viewBox="0 0 820 720" className="absolute inset-0 h-full w-full pt-10" role="img" aria-label="区域风险地图">
               <defs>
@@ -1732,9 +1706,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
         );
       }
 
-      function App() {
-        const [dark, setDark] = React.useState(false);
-        const appAlerts = liveAlerts;
+      function App() {        const appAlerts = liveAlerts;
         const [selected, setSelected] = React.useState(() => appAlerts.find((item) => item.level !== "无") || appAlerts[0]);
         const [query, setQuery] = React.useState("");
         const [levelFilter, setLevelFilter] = React.useState("全部等级");
@@ -1753,11 +1725,6 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
         const [editingId, setEditingId] = React.useState(storedProjects[0].id);
         const [editForm, setEditForm] = React.useState(() => editFormFromProject(storedProjects[0]));
         const [editErrors, setEditErrors] = React.useState({});
-
-        React.useEffect(() => {
-          document.documentElement.classList.toggle("dark", dark);
-        }, [dark]);
-
         React.useEffect(() => {
           try {
             window.localStorage.setItem(PROJECT_STORAGE_KEY, JSON.stringify(projects));
@@ -1986,15 +1953,6 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                     </button>
                   ))}
                 </nav>
-                <div className="flex shrink-0 items-center gap-2">
-                  <button
-                    aria-label="切换深色模式"
-                    onClick={() => setDark(!dark)}
-                    className="rounded-md border border-border bg-card p-2 text-muted-foreground transition hover:text-foreground"
-                  >
-                    {dark ? <Icon name="Sun" className="h-4 w-4" /> : <Icon name="Moon" className="h-4 w-4" />}
-                  </button>
-                </div>
               </div>
             </header>
 
@@ -2096,13 +2054,12 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="text-[15px] font-semibold">证据链</h2>
-                      <p className="mt-0.5 text-[11px] text-slate-400">事件发现 · 交叉验证 · 外部佐证</p>
                     </div>
                     <Icon name="Link2" className="h-4 w-4 text-muted-foreground" />
                   </div>
 
                                     <div className="mt-3 flex items-center gap-2">
-                    <p className="text-sm font-semibold">{selected.entity}</p>
+                    <p className="text-[16px] font-bold text-slate-900">{selected.entity}</p>
                     <Badge tone={levelTone(selected.level)}>{selected.level}</Badge>
                   </div>
                   </div>
@@ -2116,14 +2073,9 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                         </div>
                       )}
                       {selected.evidence.map((item, index) => {
-                        const phase = index === 0 ? "原始事件发现" : index === 1 ? "数据交叉验证" : "补充佐证";
                         return (
                           <div key={item.name} className="relative rounded-xl border border-[#e5e7eb] bg-white p-2 shadow-soft">
                             <span className={cn("absolute -left-[17px] top-4 h-[11px] w-[11px] rounded-full border-2 border-card", selected.level === "严重" ? "bg-red-500" : selected.level === "较重" ? "bg-orange-400" : "bg-emerald-500")} />
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{phase}</span>
-                              <span className="text-xs text-muted-foreground">{item.time}</span>
-                            </div>
                             <div className="mt-1.5 flex items-center gap-2">
                               <p className="font-medium">{item.name}</p>
                               <Badge>{displaySourceName(item.source)}</Badge>
@@ -2141,13 +2093,6 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                           </div>
                         );
                       })}
-                    </div>
-                  </div>
-
-                  <div className="mt-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
-                    <p className="text-sm font-medium">消息来源</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {selected.sources.map((source) => <Badge key={source}>{displaySourceName(source)}</Badge>)}
                     </div>
                   </div>
                 </Card>
@@ -2301,14 +2246,9 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                       <div className="mt-3 relative space-y-2 pl-5">
                         <div className="absolute bottom-3 left-[5px] top-1 w-px bg-border" />
                         {searchDetail.evidence.map((item, index) => {
-                          const phase = index === 0 ? "原始事件发现" : index === 1 ? "数据交叉验证" : "补充佐证";
                           return (
                             <div key={item.name} className="relative rounded-xl border border-[#e5e7eb] bg-white p-2 shadow-soft">
                               <span className={cn("absolute -left-[17px] top-4 h-[11px] w-[11px] rounded-full border-2 border-card", searchDetail.level === "严重" ? "bg-red-600" : searchDetail.level === "较重" ? "bg-orange-500" : "bg-emerald-600")} />
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{phase}</span>
-                                <span className="text-xs text-muted-foreground">{item.time}</span>
-                              </div>
                               <div className="mt-1.5 flex items-center gap-2">
                                 <p className="font-medium">{item.name}</p>
                                 <Badge>{displaySourceName(item.source)}</Badge>
