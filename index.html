@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
@@ -2002,29 +2002,38 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                     </div>
                   </div>
 
-                  <div className="min-h-0 flex-1">
+                  <div className="px-3 py-2 flex flex-col gap-3">
                     {visibleWorkbenchAlerts.map((item) => {
                       const tone = levelTone(item.level);
-                      const active = selected.entity === item.entity && selected.title === item.title;
+                      const active = selected.entity === item.entity && selected.level === item.level && selected.title === item.title;
                       return (
-                        <button
+                        <div
                           key={item.entity + item.title}
                           onClick={() => setSelected(item)}
-                          className={cn("relative block w-full text-left transition rounded-xl mb-2.5 border border-[#e5e7eb]", active ? "bg-[#FFF1F2] border-red-200" : "bg-white hover:bg-[#F8FAFC] hover:shadow-sm")}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(item); } }}
+                          className={cn(
+                            "relative w-full text-left transition cursor-pointer select-none",
+                            "rounded-lg border border-[#e2e8f0] shadow-sm",
+                            "hover:border-[#cbd5e1] hover:shadow-md",
+                            active ? "bg-[#FFF5F5] border-red-300 shadow-[0_0_0_1px_rgba(239,68,68,0.1)]" : "bg-white"
+                          )}
                         >
-                          {active && <span className="absolute bottom-0 left-0 top-0 w-[3px] rounded-r-full bg-red-500" />}
-                          <div className="px-4 py-3.5">
-                            <div className="flex items-center gap-2">
+                          {active && <span className="absolute bottom-0 left-0 top-0 w-[3px] rounded-r-full bg-red-500" aria-hidden="true" />}
+                          <div className="px-3.5 py-3">
+                            <div className="flex items-start gap-2">
                               <Badge tone={tone}>{item.level}</Badge>
-                              <p className={cn("flex-1 text-[15px] font-semibold leading-[22px]", active ? "text-slate-900" : "text-slate-800")}>{item.title}</p>
-                              <span className="shrink-0 text-[13px] text-slate-400 whitespace-nowrap">{item.time}</span>
+                              <p className={cn("flex-1 text-[15px] font-bold leading-[22px] tracking-tight min-w-0", active ? "text-slate-900" : "text-slate-800")}>{item.entity}</p>
+                              <span className="shrink-0 text-[11px] text-slate-400 whitespace-nowrap mt-0.5">{item.time}</span>
                             </div>
-                            <div className="mt-2 text-[13px] text-slate-600">项目号：{desensitizeProject(item.project)}</div>
-                            <div className="mt-2 flex flex-wrap gap-1.5">
-                                {(item.sources || []).map((source) => <Badge key={source}>{displaySourceName(source)}</Badge>)}
-                              </div>
+                            <p className="mt-1.5 text-[13px] leading-[19px] text-slate-600 line-clamp-2">{item.summary}</p>
+                            <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                              <span>项目号：{desensitizeProject(item.project)}</span>
+                              <span>来源：{(item.sources || []).map(displaySourceName).join(" / ") || item.sourceType}</span>
+                            </div>
                           </div>
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
