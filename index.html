@@ -1754,7 +1754,10 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
           const queryMatch = haystack.toLowerCase().includes(query.trim().toLowerCase());
           const levelMatch = levelFilter === "全部等级" || item.level === levelFilter;
           const timeMatch = daysAgo >= 0 && daysAgo <= timeWindowDays;
-          return queryMatch && levelMatch && timeMatch;
+          return queryMatch && levelMatch && timeMatch && item.level !== "严重" && item.level !== "较重";
+        }).sort((a, b) => {
+          const priority = { "关注": 0, "严重": 1, "较重": 2, "无": 3 };
+          return (priority[a.level] ?? 4) - (priority[b.level] ?? 4);
         });
 
 
@@ -2114,8 +2117,8 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   <div className="border-b border-border p-5">
                     <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                       <div>
-                        <h2 className="text-lg font-semibold">舆情查询结果｜近 3 个月风险库</h2>
-                        <p className="mt-1 text-sm text-muted-foreground">覆盖严重、较重、关注事件；搜索和筛选结果直接展示主体、项目、事件和消息来源。</p>
+                        <h2 className="text-lg font-semibold">近3个月舆情核验结果</h2>
+                        <p className="mt-1 text-sm text-muted-foreground">以下为近3个月主体舆情核验结果，仅展示关注、正常。</p>
                       </div>
                       <div className="relative w-full xl:w-[560px]">
                         <Icon name="Search" className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -2138,7 +2141,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                             ))}
                           </div>
                         )}
-                        <p className="mt-2 text-xs text-muted-foreground">当前匹配 {filteredAlerts.length} 条记录</p>
+                        <p className="mt-2 text-xs text-muted-foreground">当前匹配 {filteredAlerts.length} 条记录，仅展示关注、正常，列表展示主体名称、项目号、状态及信息来源。</p>
                       </div>
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -2151,23 +2154,28 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                     </div>
                   </div>
                   <div className="divide-y divide-border">
-                    {visibleFilteredAlerts.map((item) => (
-                      <button key={item.entity + item.title} onClick={() => setSearchDetail(item)} className="block w-full px-5 py-2 text-left transition hover:bg-muted/45">
-                        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                          <div>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <Badge tone={levelTone(item.level)}>{item.level}</Badge>
-                              <span className="text-xs font-medium text-muted-foreground">项目号：{desensitizeProject(item.project)}</span>
-                            </div>
-                            <p className="mt-2 text-sm font-medium">{item.title}</p>
-                            <p className="mt-1 text-xs text-muted-foreground">{item.entity} · {item.role}</p>
-                          </div>
-                          <div className="flex max-w-[360px] flex-wrap gap-2">
-                            {item.sources.slice(0, 2).map((source) => <Badge key={source}>{displaySourceName(source)}</Badge>)}{item.sources.length > 2 && <Badge>+{item.sources.length - 2}</Badge>}
-                          </div>
+                    {visibleFilteredAlerts.map((item) => {
+                      const isWatch = item.level === "关注";
+                      const isNormal = item.level === "无";
+                      const displayLevel = isNormal ? "正常" : item.level;
+                      const displayTone = isNormal ? "ok" : levelTone(item.level);
+                      const sourceCount = (item.sources || []).length;
+                      return (
+                      <button key={item.entity + item.title} onClick={() => setSearchDetail(item)} className={cn("block w-full px-4 py-2.5 text-left transition hover:bg-muted/30", isWatch && "bg-amber-50/60 border-l-[3px] border-l-amber-400 hover:bg-amber-50/80")}>
+                        <div className="flex items-center gap-2.5">
+                          <Badge tone={displayTone}>{displayLevel}</Badge>
+                          <span className="flex-1 text-[14px] font-semibold text-slate-800 truncate">{item.entity}</span>
+                          <span className="shrink-0 text-[12px] text-slate-400 whitespace-nowrap">项目号：{desensitizeProject(item.project)}</span>
+                        </div>
+                        <div className="mt-1 flex items-center gap-2 text-[12px] text-slate-400">
+                          {isWatch ? (
+                            <span className="text-amber-600/80">存在需持续跟踪事项 · </span>
+                          ) : null}
+                          <span>来源：{displaySourceName(item.sources[0]) || "同花顺iFinD"} 等{sourceCount}项</span>
                         </div>
                       </button>
-                    ))}
+                      );
+                    })}
                     {filteredAlerts.length === 0 && (
                       <div className="p-8 text-center text-sm text-muted-foreground">没有匹配到项目或主体。</div>
                     )}
