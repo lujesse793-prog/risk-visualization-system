@@ -10,9 +10,9 @@ window.IFIND_RISK_RUN_META = {
 window.IFIND_RISK_ALERTS = [
   {
     "level": "无",
-    "project": "安宁固收B0009号",
+    "project": "ANGS-B0009",
     "projects": [
-      "安宁固收B0009号"
+      "ANGS-B0009"
     ],
     "entity": "杭州钱塘新区建设投资集团有限公司",
     "role": "借款人",
@@ -35,10 +35,10 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0010号",
+    "project": "ANGS-B0010",
     "projects": [
-      "安宁固收B0010号",
-      "安宁固收B0014号"
+      "ANGS-B0010",
+      "ANGS-B0014"
     ],
     "entity": "诸暨市国有资产经营有限公司",
     "role": "借款人",
@@ -61,10 +61,10 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0011号",
+    "project": "ANGS-B0011",
     "projects": [
-      "安宁固收B0011号",
-      "安宁固收B0023号"
+      "ANGS-B0011",
+      "ANGS-B0023"
     ],
     "entity": "杭州东部城市建设投资集团有限公司",
     "role": "借款人",
@@ -87,10 +87,10 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0011号",
+    "project": "ANGS-B0011",
     "projects": [
-      "安宁固收B0011号",
-      "安宁固收B0023号"
+      "ANGS-B0011",
+      "ANGS-B0023"
     ],
     "entity": "杭州钱塘新区城市发展集团有限公司",
     "role": "保证人",
@@ -113,9 +113,9 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0012号",
+    "project": "ANGS-B0012",
     "projects": [
-      "安宁固收B0012号"
+      "ANGS-B0012"
     ],
     "entity": "桐庐县国有资本投资运营控股集团有限公司",
     "role": "借款人",
@@ -138,9 +138,9 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0015号",
+    "project": "ANGS-B0015",
     "projects": [
-      "安宁固收B0015号",
+      "ANGS-B0015",
       "丰产添益6号",
       "融诚1393号"
     ],
@@ -165,11 +165,11 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0015号",
+    "project": "ANGS-B0015",
     "projects": [
-      "安宁固收B0015号",
-      "安宁固收B0018号",
-      "安宁固收B0022号",
+      "ANGS-B0015",
+      "ANGS-B0018",
+      "ANGS-B0022",
       "丰产添益6号",
       "融诚1116号",
       "融诚1152号",
@@ -197,11 +197,11 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0020号",
+    "project": "ANGS-B0020",
     "projects": [
-      "安宁固收B0020号",
-      "安宁固收B0021号",
-      "安宁固收B0024号",
+      "ANGS-B0020",
+      "ANGS-B0021",
+      "ANGS-B0024",
       "丰产添益5号",
       "丰产增收-投管212号"
     ],
@@ -226,9 +226,9 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0021号",
+    "project": "ANGS-B0021",
     "projects": [
-      "安宁固收B0021号",
+      "ANGS-B0021",
       "丰产添益5号"
     ],
     "entity": "诸暨市城乡投资集团有限公司",
@@ -252,9 +252,9 @@ window.IFIND_RISK_ALERTS = [
   },
   {
     "level": "无",
-    "project": "安宁固收B0022号",
+    "project": "ANGS-B0022",
     "projects": [
-      "安宁固收B0022号"
+      "ANGS-B0022"
     ],
     "entity": "嵊州市市场发展有限公司",
     "role": "借款人",
