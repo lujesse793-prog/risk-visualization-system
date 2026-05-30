@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  risk-control:
+    build: .
+    container_name: risk-control-system
+    ports:
+      - "8080:8080"
+    environment:
+      - IFIND_MCP_AUTH_TOKEN=${IFIND_MCP_AUTH_TOKEN}
+      - SERVER_PORT=8080
+      - PRODUCTION=true
+      - CORS_ORIGIN=*
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
