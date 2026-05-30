@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
@@ -10615,7 +10615,7 @@ window.REGION_PARENTS = {"东城区":{"parent":"北京市","province":"北京市
 </script>
     
 <script>
-﻿// 证据解析器 v4 - 完整数据链路：rawEvidence -> parsedEvidence -> displayEvidence -> riskConclusion
+// 证据解析器 v4 - 完整数据链路：rawEvidence -> parsedEvidence -> displayEvidence -> riskConclusion
 // 禁止截断原始数据，区分摘要/全文，标记获取状态与来源可靠性
 
 function normalizeEvidenceItem(rawItem, currentSubjectName) {
@@ -11145,7 +11145,7 @@ function normalizeEvidenceItem(rawItem, currentSubjectName) {
     }
     .evidence-modal {
       width: min(960px, calc(100vw - 48px));
-      height: min(760px, calc(100vh - 48px));
+      height: auto;
       max-height: calc(100vh - 48px);
       background: #fff;
       border-radius: 16px;
@@ -11155,14 +11155,14 @@ function normalizeEvidenceItem(rawItem, currentSubjectName) {
       overflow: hidden;
     }
     .evidence-modal-header {
-      padding: 20px 24px;
+      padding: 18px 20px 16px;
       border-bottom: 1px solid #e5e7eb;
       flex-shrink: 0;
     }
     .evidence-modal-body {
       min-height: 0;
       overflow-y: auto;
-      padding: 20px 24px;
+      padding: 18px 20px 20px;
     }
     .evidence-section {
       border: 1px solid #e5e7eb;
@@ -11211,6 +11211,86 @@ function normalizeEvidenceItem(rawItem, currentSubjectName) {
       color: #64748b;
       white-space: pre-wrap;
       word-break: break-word;
+    }
+    .evidence-core-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 16px;
+    }
+    .evidence-core-item {
+      min-width: 0;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+    }
+    .evidence-core-label {
+      display: block;
+      font-size: 12px;
+      line-height: 1.3;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .evidence-core-value {
+      font-size: 14px;
+      line-height: 1.45;
+      color: #0f172a;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    .evidence-summary-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .evidence-summary-note {
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+    .evidence-validation-details {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 14px 16px;
+    }
+    .evidence-validation-details > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .evidence-validation-details > summary::-webkit-details-marker {
+      display: none;
+    }
+    .evidence-validation-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .evidence-validation-row {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+    .evidence-validation-row .label {
+      color: #94a3b8;
+    }
+    .evidence-validation-row .value {
+      color: #334155;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
     .evidence-detail-grid {
       display: grid;
@@ -12034,20 +12114,322 @@ function normalizeEvidenceItem(rawItem, currentSubjectName) {
         });
       }
 
-      const RISK_ORDER = { "严重": 3, "较重": 2, "关注": 1, "无": 0 };
+      const RISK_ORDER = { "严重": 3, "较重": 2, "关注": 1, "正常": 0, "无": 0 };
 
       function levelTone(level) {
         if (level === "严重") return "severe";
         if (level === "较重") return "high";
         if (level === "关注") return "watch";
-        if (level === "无") return "ok";
+        if (level === "正常" || level === "无") return "ok";
         return "neutral";
       }
 
       function displaySourceName(source) {
         if (source === "iFinD MCP") return "同花顺iFinD";
         if (source === "mx-skill") return "东方财富Choice";
+        if (source === "Choice/mx-finance-search") return "Choice";
         return source;
+      }
+
+      function displayEvidenceSourceLabel(source) {
+        const value = String(source || "").trim();
+        if (!value) return "公开信息";
+        const lower = value.toLowerCase();
+        if (lower.includes("ifind") || value.includes("同花顺")) return "iFind";
+        if (lower.includes("choice") || lower.includes("mx-skill") || value.includes("东方财富")) return "Choice";
+        return value;
+      }
+
+      function displayMatchLevelLabel(level) {
+        if (level === "strong") return "强匹配";
+        if (level === "medium") return "中匹配";
+        return "";
+      }
+
+      function displayMatchBasisLabel(basis) {
+        const values = (Array.isArray(basis) ? basis : [basis]).filter(Boolean);
+        const labels = values.map((item) => {
+          const text = String(item);
+          if (text.includes("统一社会信用代码")) return "统一社会信用代码命中";
+          if (text.includes("企业全称") || text.includes("公司全称") || text.toLowerCase() === "full_name") return "企业全称命中";
+          if (text.includes("债券简称") || text.includes("债券名称")) return "债券简称命中";
+          if (text.includes("别名") || text.includes("简称")) return "别名命中";
+          if (text.includes("地区") || text.includes("区域")) return "地区辅助匹配";
+          return text.endsWith("命中") || text.endsWith("匹配") ? text : `${text}命中`;
+        });
+        return Array.from(new Set(labels)).join(" / ");
+      }
+
+      function isClueOnlySource(source) {
+        const text = String(source || "").toLowerCase();
+        return text.includes("ifind") || text.includes("choice") || text.includes("mx-skill") || String(source || "").includes("同花顺") || String(source || "").includes("东方财富");
+      }
+
+      function displayPublicVerificationSource(sourceModal, ev) {
+        const candidates = [
+          sourceModal?.publicSource,
+          sourceModal?.public_source,
+          sourceModal?.raw?.public_source,
+          sourceModal?.raw?.public_source_type,
+          ev?.publicSource,
+          ev?.public_source,
+          ev?.publisher,
+          ev?.channel,
+          sourceModal?.source,
+          sourceModal?.sourceType,
+        ].filter(Boolean).map(String);
+        const joined = candidates.join(" ");
+        if (joined.includes("交易所")) return "交易所公告";
+        if (joined.includes("法院")) return "法院公告";
+        if (joined.includes("企业公告") || joined.includes("公司公告")) return "企业公告";
+        if (joined.includes("公告")) return "公开公告";
+        const firstPublic = candidates.find((item) => !isClueOnlySource(item));
+        if (firstPublic) return displayEvidenceSourceLabel(firstPublic);
+        return "公开信息";
+      }
+
+      function cleanSourceExcerpt(text) {
+        let value = String(text || "").replace(/\r\n/g, "\n").trim();
+        if (!value) return "";
+        value = value
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line && !/^(来源|数据来源|线索来源)[:：]\s*(iFinD|iFind|Choice|同花顺iFinD|东方财富Choice)\s*$/i.test(line))
+          .join("\n");
+        value = value.replace(/(?:^|[\s。；;])(?:来源|数据来源|线索来源)[:：]\s*(?:iFinD|iFind|Choice|同花顺iFinD|东方财富Choice)(?=$|[\s。；;,])/gi, " ");
+        value = value.replace(/[ \t]{2,}/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+        value = value.replace(/（。$/g, "").replace(/[（(]\s*$/g, "");
+        value = value.replace(/(?:更多|通过)(?:[。．.。…]*)$/g, "");
+        value = value.replace(/(?:\.{2,}|…{1,})$/g, "");
+        value = value.replace(/[。．.,，、;；:：\s]+$/g, "");
+        return value.trim();
+      }
+
+      function truncateExcerpt(text, expanded) {
+        const cleaned = cleanSourceExcerpt(text);
+        if (!cleaned || expanded || cleaned.length <= 300) return cleaned;
+        return `${cleaned.slice(0, 300).replace(/[。．.,，、;；:：\s]+$/g, "")}…`;
+      }
+
+      const VERIFIED_MATCH_LEVELS = new Set(["strong", "medium"]);
+      const PROCESS_EVIDENCE_TERMS = [
+        "交叉验证已完成",
+        "mx-skill",
+        "公开信息交叉验证",
+        "系统命中",
+        "keyword hit",
+        "cross verify completed",
+        "验证完成",
+        "已完成验证",
+      ];
+      const BUSINESS_EVENT_TERMS = [
+        "行政处罚",
+        "重大行政处罚",
+        "诉讼",
+        "重大诉讼",
+        "被执行",
+        "评级关注",
+        "评级观察",
+        "警示函",
+        "债券公告",
+        "重大事项",
+        "违约",
+        "逾期",
+      ];
+      const LEVEL_LABELS = new Set(["严重", "较重", "关注", "正常"]);
+
+      function isProcessEvidenceText(text) {
+        const value = String(text || "").toLowerCase();
+        return PROCESS_EVIDENCE_TERMS.some((term) => value.includes(term.toLowerCase()));
+      }
+
+      function isVerifiedSkillResult(result) {
+        if (!result || typeof result !== "object") return false;
+        const matchLevel = result.entity_match?.match_level || result.entityMatch?.matchLevel || "";
+        return result.verification_status === "verified" && VERIFIED_MATCH_LEVELS.has(matchLevel);
+      }
+
+      function normalizeRiskLevel(level) {
+        if (level === "严重" || level === "较重" || level === "关注" || level === "正常") return level;
+        if (level === "无") return "正常";
+        return "关注";
+      }
+
+      function inferBusinessEventTitle(text) {
+        const value = String(text || "");
+        if (value.includes("行政处罚") || value.includes("警示函")) return "行政处罚信息";
+        if (value.includes("诉讼")) return "重大诉讼公告";
+        if (value.includes("评级关注") || value.includes("评级观察")) return "评级关注公告";
+        if (value.includes("被执行")) return "被执行信息";
+        if (value.includes("债券") || value.includes("重大事项")) return "债券重大事项公告";
+        return "已确认舆情";
+      }
+
+      function conciseBusinessSummary(item, evidence) {
+        const joined = [
+          item.summary,
+          item.title,
+          item.eventType,
+          ...(item.keywords || []),
+          ...(evidence || []).map((entry) => `${entry.name || ""} ${entry.detail || ""}`),
+        ].join(" ");
+        const matched = BUSINESS_EVENT_TERMS.filter((term) => joined.includes(term));
+        const unique = Array.from(new Set(matched)).slice(0, 3);
+        if (unique.length) {
+          return `近 3 个月存在已确认的${unique.join("、")}相关公开信息。已通过公开渠道交叉验证。`;
+        }
+        return "近 3 个月存在已确认舆情信息。已通过公开渠道交叉验证。";
+      }
+
+      function normalizeVerifiedEvidence(result, baseAlert = {}) {
+        const titleText = result.title || result.name || result.displayTitle || baseAlert.title || "已确认舆情";
+        const source = result.source_type || result.source || result.publisher || result.channel || "公开信息";
+        const matchLevel = result.entity_match?.match_level || result.entityMatch?.matchLevel || "";
+        const matchBasis = result.entity_match?.basis || result.entityMatch?.basis || [];
+        return {
+          evidenceId: result.id || `${baseAlert.entity || ""}-${titleText}-${result.publish_date || result.time || ""}`,
+          name: inferBusinessEventTitle(titleText + " " + (result.source_excerpt || result.text_excerpt || "")),
+          title: titleText,
+          source,
+          sourceType: source,
+          url: result.url || "",
+          time: result.publish_date || result.time || baseAlert.time || "",
+          detail: result.source_excerpt || result.text_excerpt || result.summary || result.detail || "",
+          cardSummary: result.source_excerpt || result.text_excerpt || result.summary || result.detail || "",
+          fullTextId: result.full_text_id || "",
+          fullTextAvailable: Boolean(result.full_text_available),
+          matchLevel,
+          matchBasis: Array.isArray(matchBasis) ? matchBasis : [matchBasis].filter(Boolean),
+          raw: result,
+          normalized: {
+            evidenceType: "risk_event",
+            title: titleText,
+            displayTitle: titleText,
+            sourceExcerpt: result.source_excerpt || result.text_excerpt || result.summary || result.detail || "",
+            sourceFullText: result.text_excerpt || result.source_excerpt || "",
+            publishDate: result.publish_date || result.time || "",
+            publisher: result.source || "",
+            channel: source,
+            dataSource: source,
+            url: result.url || "",
+            fullTextId: result.full_text_id || "",
+            fullTextAvailable: Boolean(result.full_text_available),
+            matchLevel,
+            matchBasis: Array.isArray(matchBasis) ? matchBasis : [matchBasis].filter(Boolean),
+            fullRawText: "",
+            rawText: "",
+          },
+        };
+      }
+
+      function isConfirmedLegacyEvidence(raw, normalized) {
+        const text = [raw?.name, raw?.source, raw?.detail, raw?.content, normalized?.title, normalized?.riskSummary].join(" ");
+        if (isProcessEvidenceText(text)) return false;
+        if (!normalized.subjectMatched) return false;
+        if (normalized.evidenceType === "company_profile" || normalized.evidenceType === "cross_check" || normalized.evidenceType === "raw_unknown") return false;
+        if (normalized.parseStatus === "subject_not_matched") return false;
+        return normalized.evidenceType === "risk_event" || normalized.evidenceType === "weekly_digest";
+      }
+
+      function normalizeLegacyEvidence(raw, alert) {
+        const normalized = normalizeEvidenceItem(raw.raw || raw, alert.entity);
+        return {
+          evidenceId: normalized.evidenceId,
+          name: inferBusinessEventTitle(`${normalized.displayTitle} ${normalized.riskSummary} ${normalized.cardSummary}`),
+          title: normalized.displayTitle || normalized.title || "已确认舆情",
+          source: raw.source || normalized.publisher || normalized.channel || "公开信息",
+          sourceType: raw.source || normalized.publisher || normalized.channel || "公开信息",
+          url: raw.url || normalized.url || "",
+          time: raw.time || normalized.publishDate || alert.time || "",
+          detail: normalized.matchedExcerpt || normalized.sourceFullText || normalized.cardSummary || raw.detail || "",
+          cardSummary: normalized.cardSummary || raw.detail || "",
+          fullTextId: raw.full_text_id || "",
+          fullTextAvailable: Boolean(raw.full_text_available),
+          matchLevel: raw.entity_match?.match_level || (normalized.subjectMatched ? "strong" : ""),
+          matchBasis: raw.entity_match?.basis || ["企业全称"],
+          raw,
+          normalized,
+        };
+      }
+
+      function extractVerifiedEvidence(alert) {
+        const verifiedResults = [
+          ...(Array.isArray(alert.verified_results) ? alert.verified_results : []),
+          ...(Array.isArray(alert.opinion?.verified_results) ? alert.opinion.verified_results : []),
+          ...(Array.isArray(alert.crossVerify?.verified_results) ? alert.crossVerify.verified_results : []),
+        ].filter(isVerifiedSkillResult);
+        if (verifiedResults.length) {
+          return verifiedResults.map((result) => normalizeVerifiedEvidence(result, alert));
+        }
+        return (alert.evidence || [])
+          .map((entry) => ({ raw: entry, normalized: normalizeEvidenceItem(entry.raw || entry, alert.entity) }))
+          .filter(({ raw, normalized }) => isConfirmedLegacyEvidence(raw, normalized))
+          .map(({ raw }) => normalizeLegacyEvidence(raw, alert));
+      }
+
+      function buildConfirmedOpinionAlerts(items) {
+        return (items || []).map((item) => {
+          const evidence = extractVerifiedEvidence(item);
+          if (!evidence.length) return null;
+          const sources = Array.from(new Set(evidence.map((entry) => displaySourceName(entry.source)).filter(Boolean)));
+          const latestEvent = evidence
+            .map((entry) => entry.time)
+            .filter(Boolean)
+            .sort()
+            .pop() || item.time || "";
+          return {
+            ...item,
+            level: normalizeRiskLevel(item.risk_level || item.riskLevel || item.level),
+            title: item.title && !isProcessEvidenceText(item.title) ? item.title : evidence[0].name,
+            summary: conciseBusinessSummary(item, evidence),
+            impact: "",
+            sources: sources.length ? sources : ["公开信息"],
+            sourceType: sources.join(" / ") || item.sourceType || "公开信息",
+            time: latestEvent,
+            evidence,
+            verifiedCount: evidence.length,
+          };
+        }).filter(Boolean);
+      }
+
+      function buildLowerPriorityOpinionAlerts(sourceItems, confirmedItems) {
+        const confirmedKeys = new Set(confirmedItems.map((item) => `${item.project}|${item.entity}|${item.role}`));
+        const normalItems = (sourceItems || [])
+          .filter((item) => !confirmedKeys.has(`${item.project}|${item.entity}|${item.role}`))
+          .filter((item) => normalizeRiskLevel(item.risk_level || item.riskLevel || item.level) === "正常")
+          .map((item) => ({
+            ...item,
+            level: "正常",
+            title: "暂无已确认舆情",
+            summary: "近 3 个月暂无已确认舆情。",
+            impact: "",
+            sources: (item.sources || []).map(displaySourceName),
+            sourceType: (item.sources || []).map(displaySourceName).join(" / ") || item.sourceType || "公开信息",
+            evidence: [],
+            verifiedCount: 0,
+          }));
+        return [
+          ...confirmedItems.filter((item) => item.level !== "严重" && item.level !== "较重"),
+          ...normalItems,
+        ];
+      }
+
+      function formatBatchTime(value) {
+        if (!value) return "--";
+        return String(value).replace("T", " ").slice(0, 16);
+      }
+
+      function buildLatestOpinionStats(alerts, batchStatus) {
+        const meta = window.IFIND_RISK_RUN_META || {};
+        const latestSuccessFinishedAt = batchStatus?.latest_success_finished_at || batchStatus?.latest_effective_finished_at || meta.generatedAt || "";
+        return {
+          latestSuccessFinishedAt,
+          totalCompanies: batchStatus?.total_companies || batchStatus?.companies_total || meta.entityCount || alerts.length,
+          completedCompanies: batchStatus?.completed_companies || batchStatus?.companies_completed || meta.entityCount || alerts.length,
+          failedCompanies: batchStatus?.failed_companies || batchStatus?.companies_failed || 0,
+          verifiedCount: batchStatus?.verified_count || alerts.reduce((sum, item) => sum + (item.verifiedCount || item.evidence.length || 0), 0),
+          running: batchStatus?.status === "running" || batchStatus?.latest_batch_status === "running",
+        };
       }
 
       function desensitizeProject(projectName) {
@@ -12312,7 +12694,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
           provinces: new Set(scopedRows.map((row) => row.province)).size,
           cities: new Set(scopedRows.map((row) => row.city)).size,
           districts: new Set(scopedRows.map((row) => row.district)).size,
-          riskSubjects: scopedRows.filter((row) => row.riskLevel !== "无").length,
+          riskSubjects: scopedRows.filter((row) => row.riskLevel === "严重" || row.riskLevel === "较重" || row.riskLevel === "关注").length,
           warnings: scopedRows.reduce((sum, row) => sum + row.warningCount, 0),
           severe: scopedRows.filter((row) => row.riskLevel === "严重").length,
           high: scopedRows.filter((row) => row.riskLevel === "较重").length,
@@ -12825,18 +13207,158 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
         );
       }
 
+      function EvidenceDetailModal({ sourceModal, selected, fullTextView, onClose, onLoadFullText }) {
+        const [summaryExpanded, setSummaryExpanded] = React.useState(false);
+        React.useEffect(() => {
+          setSummaryExpanded(false);
+        }, [sourceModal?.evidenceId, sourceModal?.time, sourceModal?.entity]);
+
+        const ev = sourceModal.normalized || sourceModal.raw || sourceModal;
+        const matchLevel = sourceModal.matchLevel || ev.matchLevel || (ev.entity_match && ev.entity_match.match_level) || "";
+        const matchBasis = sourceModal.matchBasis || ev.matchBasis || (ev.entity_match && ev.entity_match.basis) || [];
+        const matchLabel = displayMatchLevelLabel(matchLevel);
+        const basisLabel = displayMatchBasisLabel(matchBasis);
+        const evidenceTitle = sourceModal.name || ev.displayTitle || ev.title || "已确认舆情";
+        const eventDate = sourceModal.time || ev.publishDate || ev.publish_date || "-";
+        const rawExcerpt = ev.sourceExcerpt || ev.source_excerpt || ev.matchedExcerpt || ev.sourceFullText || ev.sourceSummary || sourceModal.detail || sourceModal.cardSummary || "";
+        const cleanedExcerpt = cleanSourceExcerpt(rawExcerpt);
+        const excerptText = truncateExcerpt(rawExcerpt, summaryExpanded);
+        const canExpandSummary = cleanedExcerpt.length > 180;
+        const summaryClampStyle = summaryExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 6, WebkitBoxOrient: "vertical", overflow: "hidden" };
+        const sourceLabel = displayEvidenceSourceLabel(sourceModal.sourceType || sourceModal.source || ev.channel || ev.publisher || ev.dataSource || "公开信息");
+        const clueSource = displayEvidenceSourceLabel(sourceModal.source || sourceModal.sourceType || ev.dataSource || ev.channel || ev.publisher || "公开信息");
+        const publicSource = displayPublicVerificationSource(sourceModal, ev);
+        const entityName = sourceModal.entity || selected?.entity || "-";
+        const projectName = sourceModal.project || selected?.project || "-";
+        const riskLevel = sourceModal.level || selected?.level || "关注";
+        const sourceUrl = sourceModal.url || ev.url || "";
+        const fullTextAvailable = Boolean(sourceModal.fullTextAvailable || ev.fullTextAvailable);
+        const fullTextId = sourceModal.fullTextId || ev.fullTextId || "";
+
+        const validationRows = [
+          matchLabel ? ["主体匹配", matchLabel] : null,
+          basisLabel ? ["匹配依据", basisLabel] : null,
+          clueSource ? ["线索来源", clueSource] : null,
+          publicSource ? ["公开验证来源", publicSource] : null,
+        ].filter(Boolean);
+
+        return (
+          <div className="modal-overlay" style={{zIndex:70}} onClick={onClose}>
+            <div className="evidence-modal" onClick={function(event) { event.stopPropagation(); }}>
+              <div className="evidence-modal-header">
+                <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}}>
+                  <div style={{minWidth:0,flex:1}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8,flexWrap:"wrap"}}>
+                      <Badge>{sourceLabel}</Badge>
+                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">{eventDate}</span>
+                    </div>
+                    <h2 style={{fontSize:18,fontWeight:650,lineHeight:1.35,color:"#0f172a"}}>{evidenceTitle}</h2>
+                  </div>
+                  <button type="button" onClick={onClose} style={{minWidth:58,whiteSpace:"nowrap",borderRadius:8,border:"1px solid #e5e7eb",background:"#fff",padding:"6px 12px",fontSize:13,color:"#64748b",cursor:"pointer"}}>关闭</button>
+                </div>
+              </div>
+              <div className="evidence-modal-body">
+                <div className="evidence-section">
+                  <div className="evidence-core-grid">
+                    <div className="evidence-core-item">
+                      <span className="evidence-core-label">企业名称</span>
+                      <span className="evidence-core-value">{entityName}</span>
+                    </div>
+                    <div className="evidence-core-item">
+                      <span className="evidence-core-label">项目号</span>
+                      <span className="evidence-core-value">{desensitizeProject(projectName)}</span>
+                    </div>
+                    <div className="evidence-core-item">
+                      <span className="evidence-core-label">风险等级</span>
+                      <span className="evidence-core-value"><Badge tone={levelTone(riskLevel)}>{riskLevel}</Badge></span>
+                    </div>
+                    <div className="evidence-core-item">
+                      <span className="evidence-core-label">事件日期</span>
+                      <span className="evidence-core-value">{eventDate}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="evidence-section">
+                  <p className="modal-section-title">公开来源摘要</p>
+                  <p className="modal-text" style={summaryClampStyle}>{excerptText || "暂无摘要"}</p>
+                  {canExpandSummary && (
+                    <button type="button" onClick={function() { setSummaryExpanded((value) => !value); }} className="mt-2 text-[12px] text-slate-600 underline-offset-2 hover:underline">
+                      {summaryExpanded ? "收起" : "展开全文"}
+                    </button>
+                  )}
+                  <p className="evidence-summary-note">以下内容来自公开来源摘录，仅用于展示已确认舆情依据。</p>
+                  <div className="evidence-summary-toolbar">
+                    {sourceUrl && (
+                      <button type="button" onClick={function() { window.open(sourceUrl, "_blank", "noopener,noreferrer"); }} className="inline-flex h-[32px] items-center gap-1 rounded-full border border-slate-200 bg-white px-3 text-[12px] text-slate-600 transition hover:border-slate-300 hover:text-slate-800">打开来源 <Icon name="ExternalLink" className="h-3 w-3" /></button>
+                    )}
+                    {fullTextAvailable && fullTextId && (
+                      <button type="button" onClick={function() { onLoadFullText({ ...sourceModal, fullTextId }); }} className="inline-flex h-[32px] items-center gap-1 rounded-full border border-slate-200 bg-white px-3 text-[12px] text-slate-600 transition hover:border-slate-300 hover:text-slate-800">查看全文</button>
+                    )}
+                  </div>
+                </div>
+
+                {validationRows.length > 0 && (
+                  <details className="evidence-validation-details">
+                    <summary>
+                      <span>验证详情</span>
+                      <span className="text-[12px] font-normal text-slate-400">展开查看匹配与来源信息</span>
+                    </summary>
+                    <div className="evidence-validation-grid">
+                      {validationRows.map(([label, value]) => (
+                        <div className="evidence-validation-row" key={label}>
+                          <span className="label">{label}</span>
+                          <span className="value">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+
+                {fullTextView && (
+                  <div className="evidence-section" style={{marginTop:16}}>
+                    <p className="modal-section-title">原文</p>
+                    {fullTextView.loading ? <p className="modal-text">正在加载全文...</p> : (
+                      <p className="modal-text">{fullTextView.text || fullTextView.error || "暂无全文"}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
       function App() {
-        const appAlerts = liveAlerts;
+        const [batchStatus, setBatchStatus] = React.useState(null);
+        React.useEffect(() => {
+          let alive = true;
+          fetch("/api/opinion/batch/latest")
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => { if (alive) setBatchStatus(data || null); })
+            .catch(() => {});
+          return () => { alive = false; };
+        }, []);
+        const appAlerts = React.useMemo(() => buildConfirmedOpinionAlerts(liveAlerts), []);
+        const lowerPriorityAlerts = React.useMemo(() => buildLowerPriorityOpinionAlerts(liveAlerts, appAlerts), [appAlerts]);
+        const regionOverviewAlerts = React.useMemo(() => {
+          const bySubject = new Map();
+          [...lowerPriorityAlerts, ...appAlerts].forEach((item) => {
+            bySubject.set(`${item.project}|${item.entity}|${item.role}`, item);
+          });
+          return Array.from(bySubject.values());
+        }, [appAlerts, lowerPriorityAlerts]);
         const workbenchAlerts = appAlerts
-          .filter((item) => item.level === "严重" || (item.level === "较重" && item.highRelevance))
-          .sort((a, b) => (b.level === "严重" ? 1 : 0) - (a.level === "严重" ? 1 : 0));
-        const [selected, setSelected] = React.useState(() => workbenchAlerts[0] || appAlerts.find((item) => item.level !== "无") || appAlerts[0]);
+          .filter((item) => item.level === "严重" || item.level === "较重" || item.level === "关注")
+          .sort((a, b) => (RISK_ORDER[b.level] || 0) - (RISK_ORDER[a.level] || 0) || (b.time || "").localeCompare(a.time || ""));
+        const [selected, setSelected] = React.useState(() => workbenchAlerts[0] || appAlerts[0] || null);
         const [query, setQuery] = React.useState("");
         const [levelFilter, setLevelFilter] = React.useState("全部等级");
         const [timeFilter, setTimeFilter] = React.useState("近三个月");
         const [sourceModal, setSourceModal] = React.useState(null);
         const [actionModal, setActionModal] = React.useState(null);
         const [searchDetail, setSearchDetail] = React.useState(null);
+        const [fullTextView, setFullTextView] = React.useState(null);
         const [inputFocused, setInputFocused] = React.useState(false);
         const initialPage = new URLSearchParams(window.location.search).get("page") || "home";
         const [activePage, setActivePage] = React.useState(initialPage);
@@ -12860,9 +13382,15 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
           setSearchPage(1);
         }, [query, levelFilter, timeFilter]);
 
+        React.useEffect(() => {
+          if (!selected && workbenchAlerts.length > 0) setSelected(workbenchAlerts[0]);
+        }, [selected, workbenchAlerts]);
+
         // workbenchAlerts defined above
         const severeWorkbenchCount = workbenchAlerts.filter((item) => item.level === "严重").length;
         const highWorkbenchCount = workbenchAlerts.filter((item) => item.level === "较重").length;
+        const watchWorkbenchCount = workbenchAlerts.filter((item) => item.level === "关注").length;
+        const latestOpinionStats = buildLatestOpinionStats(appAlerts, batchStatus);
         const workbenchPageSize = 5;
         const workbenchTotalPages = Math.max(1, Math.ceil(workbenchAlerts.length / workbenchPageSize));
         const currentWorkbenchPage = Math.min(workbenchPage, workbenchTotalPages);
@@ -12871,15 +13399,15 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
           currentWorkbenchPage * workbenchPageSize
         );
         const timeWindowDays = timeFilter === "近一周" ? 7 : timeFilter === "近一个月" ? 30 : 90;
-        const filteredAlerts = appAlerts.filter((item) => {
+        const filteredAlerts = lowerPriorityAlerts.filter((item) => {
           const haystack = [item.project, item.entity, item.role, item.title, item.summary, item.sources.join(" "), (item.keywords || []).join(" ")].join(" ");
           const daysAgo = ((new Date()) - new Date(item.time)) / (1000 * 60 * 60 * 24);
           const queryMatch = haystack.toLowerCase().includes(query.trim().toLowerCase());
           const levelMatch = levelFilter === "全部等级" || item.level === levelFilter;
           const timeMatch = daysAgo >= 0 && daysAgo <= timeWindowDays;
-          return queryMatch && levelMatch && timeMatch && item.level !== "严重" && item.level !== "较重";
+          return queryMatch && levelMatch && timeMatch;
         }).sort((a, b) => {
-          const priority = { "关注": 0, "严重": 1, "较重": 2, "无": 3 };
+          const priority = { "关注": 0, "正常": 1 };
           return (priority[a.level] ?? 4) - (priority[b.level] ?? 4);
         });
 
@@ -12904,11 +13432,19 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
           return items;
         })();
 
+        const businessSearchTerms = React.useMemo(() => Array.from(new Set(lowerPriorityAlerts.flatMap((item) => [
+          item.project,
+          item.entity,
+          item.role,
+          item.level,
+          item.sourceType,
+          ...item.sources,
+        ].filter(Boolean)))), [lowerPriorityAlerts]);
         const suggestions = query.trim()
-          ? searchTerms
+          ? businessSearchTerms
               .filter((term) => term.toLowerCase().includes(query.trim().toLowerCase()))
               .slice(0, 6)
-          : searchTerms.slice(0, 6);
+          : businessSearchTerms.slice(0, 6);
 
         function updateAddForm(field, value) {
           setAddForm((current) => ({ ...current, [field]: value }));
@@ -12982,6 +13518,24 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
             title: "修改已保存",
             message: "当前项目的名称、借款人和保证人信息已更新完成。",
           });
+        }
+
+        function openEvidenceDetail(item, owner = {}) {
+          setFullTextView(null);
+          setSourceModal({ ...item, ...owner });
+        }
+
+        async function loadFullText(item) {
+          if (!item?.fullTextId) return;
+          setFullTextView({ loading: true, text: "", error: "" });
+          try {
+            const res = await fetch(`/api/opinion/full-text/${encodeURIComponent(item.fullTextId)}`);
+            if (!res.ok) throw new Error("全文接口暂不可用");
+            const data = await res.json();
+            setFullTextView({ loading: false, text: data.text || data.full_text || "", error: "" });
+          } catch (error) {
+            setFullTextView({ loading: false, text: "", error: error.message || "全文读取失败" });
+          }
         }
 
 
@@ -13065,7 +13619,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   </div>
                   <div className="min-w-0">
                     <h1 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-slate-900">贷后风险监控一览表</h1>
-                    <p className="text-[11px] text-slate-500">重要舆情工作台 · 证据链穿透展示</p>
+                    <p className="text-[11px] text-slate-500">已确认舆情工作台 · 证据链穿透展示</p>
                   </div>
                 </div>
                 <nav className="hidden items-center gap-1.5 mx-auto rounded-full bg-slate-100/80 p-1 text-sm lg:flex">
@@ -13099,7 +13653,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   deleteProject={handleDeleteProject}
                 />
               ) : activePage === "region" ? (
-                <RegionOverview alerts={appAlerts} />
+                <RegionOverview alerts={regionOverviewAlerts} />
               ) : (
                 <>
               <section className="grid grid-rows-1 grid-cols-1 gap-4 sm:grid-cols-[minmax(0,1.7fr)_1fr] xl:grid-cols-[minmax(0,1.7fr)_1fr] h-[calc(100vh-72px-8px)] pb-2">
@@ -13110,9 +13664,14 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                       <div className="min-w-0">
                         <h2 className="text-[18px] font-bold tracking-tight text-slate-900">重要舆情工作台</h2>
                         <p className="mt-1.5 text-[12px] leading-relaxed text-slate-500">
-                          近 7 天重大风险 · 监控主体 <b className="font-semibold tabular-nums text-slate-700">{appAlerts.length}</b> · 风险 <b className="font-semibold tabular-nums text-slate-700">{workbenchAlerts.length}</b> 条 · 严重 <b className="font-semibold tabular-nums text-red-600">{severeWorkbenchCount}</b> · 较重 <b className="font-semibold tabular-nums text-orange-600">{highWorkbenchCount}</b>
+                          最近成功更新：<b className="font-semibold tabular-nums text-slate-700">{formatBatchTime(latestOpinionStats.latestSuccessFinishedAt)}</b> · 覆盖主体：<b className="font-semibold tabular-nums text-slate-700">{latestOpinionStats.totalCompanies}</b> 家 · 已确认舆情：<b className="font-semibold tabular-nums text-slate-700">{latestOpinionStats.verifiedCount}</b> 条 · 失败主体：<b className="font-semibold tabular-nums text-slate-700">{latestOpinionStats.failedCompanies}</b> 家
                         </p>
-                        <p className="mt-2 text-[12px] text-slate-500">风险信号已按预设规则自动分级，点击项目可查看证据链与交叉验证结果。</p>
+                        {latestOpinionStats.running && (
+                          <p className="mt-2 inline-flex rounded-md bg-sky-50 px-2 py-1 text-[12px] text-sky-700">
+                            新一轮更新中：{latestOpinionStats.completedCompanies} / {latestOpinionStats.totalCompanies}
+                          </p>
+                        )}
+                        <p className="mt-2 text-[12px] text-slate-500">仅展示已确认舆情，点击主体查看公开来源摘录与证据链。</p>
 
 
 
@@ -13123,7 +13682,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                       </div>
                       <div className="shrink-0 flex items-center gap-1.5 text-xs text-[#94A3B8] pt-1">
                         <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                        数据正常 · {window.IFIND_RISK_RUN_META?.generatedAt?.slice(11, 16) || "20:09"}
+                        严重 {severeWorkbenchCount} · 较重 {highWorkbenchCount} · 关注 {watchWorkbenchCount}
                       </div>
                     </div>
                   </div>
@@ -13131,10 +13690,10 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   <div className="px-3 py-2 flex flex-col gap-3">
                     {visibleWorkbenchAlerts.map((item) => {
                       const tone = levelTone(item.level);
-                      const active = selected.entity === item.entity && selected.level === item.level && selected.title === item.title;
+                      const active = selected && selected.entity === item.entity && selected.level === item.level && selected.title === item.title;
                       return (
                         <div
-                          key={item.entity + item.title}
+                          key={`${item.project}|${item.entity}|${item.level}|${item.time}`}
                           onClick={() => setSelected(item)}
                           role="button"
                           tabIndex={0}
@@ -13162,6 +13721,11 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                         </div>
                       );
                     })}
+                    {workbenchAlerts.length === 0 && (
+                      <div className="rounded-lg border border-dashed border-[#cbd5e1] bg-white px-4 py-8 text-center text-sm text-slate-500">
+                        暂无已确认舆情
+                      </div>
+                    )}
                   </div>
                   {workbenchTotalPages > 1 && (
                     <div className="shrink-0 border-t border-[#e5e7eb] bg-white/50 px-3.5 py-2">
@@ -13194,47 +13758,53 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   </div>
 
                                     <div className="mt-3 flex items-center gap-2">
-                    <p className="text-[16px] font-bold text-slate-900">{selected.entity}</p>
-                    <Badge tone={levelTone(selected.level)}>{selected.level}</Badge>
-                      {selected.evidence && selected.evidence.some(function(e){return e.accessLevel === "full_text";}) && (
-                        <span style={{fontSize:10,color:"#059669",background:"#ecfdf5",padding:"1px 6px",borderRadius:3,marginLeft:4}}>已核验</span>
-                      )}
-                      {selected.evidence && selected.evidence.every(function(e){return e.accessLevel !== "full_text";}) && selected.evidence.length > 0 && (
-                        <span style={{fontSize:10,color:"#d97706",background:"#fffbeb",padding:"1px 6px",borderRadius:3,marginLeft:4}}>待核验</span>
-                      )}
+                    <p className="text-[16px] font-bold text-slate-900">{selected?.entity || "暂无已确认舆情"}</p>
+                    {selected && <Badge tone={levelTone(selected.level)}>{selected.level}</Badge>}
+                    {selected && (
+                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">
+                        已确认 {selected.evidence.length} 条
+                      </span>
+                    )}
                   </div>
                   </div>
 
                   <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1 custom-scrollbar">
                     <div className="relative space-y-3 pl-4">
                       <div className="absolute bottom-3 left-[3px] top-1 w-px bg-slate-200" />
-                      {selected.evidence.length === 0 && (
+                      {(!selected || selected.evidence.length === 0) && (
                         <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 text-sm leading-6 text-slate-500 shadow-soft">
-                          当前主体近三个月未发现主体全称精确匹配的重大负面舆情，保留常规监测。
+                          暂无已确认舆情
                         </div>
                       )}
-                      {selected.evidence.map((item, index) => {
+                      {(selected?.evidence || []).map((item, index) => {
                         return (
-                          <div key={item.name} className="relative rounded-xl border border-[#eef2f7] bg-white p-3">
-                            <span className={cn("absolute -left-[15px] top-3.5 h-[8px] w-[8px] rounded-full border-2 border-card", selected.level === "严重" ? "bg-red-500" : selected.level === "较重" ? "bg-orange-400" : "bg-emerald-500")} />
-                            <p className="text-[15px] font-semibold leading-snug text-slate-800">{item.name}</p>
-                            <div className="mt-2 flex items-center justify-between">
-                              <div className="flex items-center gap-2">
+                          <div key={item.evidenceId || `${item.title || item.name}|${item.source}|${item.time}|${index}`} className="relative rounded-xl border border-[#eef2f7] bg-white p-3">
+                            <span className={cn("absolute -left-[15px] top-3.5 h-[8px] w-[8px] rounded-full border-2 border-card", selected.level === "严重" ? "bg-red-500" : selected.level === "较重" ? "bg-orange-400" : selected.level === "关注" ? "bg-amber-400" : "bg-emerald-500")} />
+                            <p className="text-[15px] font-semibold leading-snug text-slate-800">{item.name || item.title}</p>
+                            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                              <div className="flex min-w-0 flex-wrap items-center gap-2">
                                 <Badge>{displaySourceName(item.source)}</Badge>
-                                {item.accessLevel && item.accessLevel !== "full_text" && (
-                                  <span style={{fontSize:10,color:"#ef4444",background:"#fef2f2",padding:"1px 5px",borderRadius:3}} title={item.warning || "仅摘要"}>仅摘要</span>
-                                )}
                                 <span className="text-[11px] text-slate-400">{item.time}</span>
                               </div>
-                              <button
-                                type="button"
-                                aria-label={`打开${item.name}来源`}
-                                onClick={() => setSourceModal(item)}
-                                className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 h-[28px] text-[12px] text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
-                              >
-                                打开来源
-                                <Icon name="ExternalLink" className="h-3 w-3" />
-                              </button>
+                              <div className="flex shrink-0 items-center gap-1.5">
+                                {item.url && (
+                                  <button
+                                    type="button"
+                                    onClick={() => window.open(item.url, "_blank", "noopener,noreferrer")}
+                                    className="inline-flex h-[28px] items-center gap-1 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+                                  >
+                                    打开来源
+                                    <Icon name="ExternalLink" className="h-3 w-3" />
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => openEvidenceDetail(item, { entity: selected.entity, project: selected.project, level: selected.level, source: item.source, time: item.time })}
+                                  className="inline-flex h-[28px] items-center gap-1 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+                                >
+                                  {item.fullTextAvailable ? "查看全文" : "查看详情"}
+                                </button>
+                              </div>
                             </div>
                             <p className="mt-2 text-[13px] leading-relaxed text-slate-500 line-clamp-3">{item.cardSummary || item.detail}</p>
                           </div>
@@ -13249,8 +13819,8 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   <div className="border-b border-border p-5">
                     <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                       <div>
-                        <h2 className="text-lg font-semibold">近3个月舆情核验结果</h2>
-                        <p className="mt-1 text-sm text-muted-foreground">以下为近3个月主体舆情核验结果，仅展示关注、正常。</p>
+                        <h2 className="text-lg font-semibold">近3个月关注 / 正常主体</h2>
+                        <p className="mt-1 text-sm text-muted-foreground">以下仅展示关注、正常主体，不展示严重、较重主体或过程记录。</p>
                       </div>
                       <div className="relative w-full xl:w-[560px]">
                         <Icon name="Search" className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -13273,12 +13843,12 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                             ))}
                           </div>
                         )}
-                        <p className="mt-2 text-xs text-muted-foreground">当前匹配 {filteredAlerts.length} 条记录，仅展示关注、正常，列表展示主体名称、项目号、状态及信息来源。</p>
+                        <p className="mt-2 text-xs text-muted-foreground">当前匹配 {filteredAlerts.length} 条记录，列表展示关注、正常主体的名称、项目号、等级及来源。</p>
                       </div>
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
                       <select value={levelFilter} onChange={(event) => setLevelFilter(event.target.value)} className="h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none">
-                        {["全部等级", "严重", "较重", "关注", "无"].map((item) => <option key={item}>{item}</option>)}
+                        {["全部等级", "关注", "正常"].map((item) => <option key={item}>{item}</option>)}
                       </select>
                       <select value={timeFilter} onChange={(event) => setTimeFilter(event.target.value)} className="h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none">
                         {["近三个月", "近一个月", "近一周"].map((item) => <option key={item}>{item}</option>)}
@@ -13288,12 +13858,12 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   <div className="divide-y divide-border">
                     {visibleFilteredAlerts.map((item) => {
                       const isWatch = item.level === "关注";
-                      const isNormal = item.level === "无";
-                      const displayLevel = isNormal ? "正常" : item.level;
+                      const isNormal = item.level === "正常";
+                      const displayLevel = item.level;
                       const displayTone = isNormal ? "ok" : levelTone(item.level);
                       const sourceCount = (item.sources || []).length;
                       return (
-                      <button key={item.entity + item.title} onClick={() => setSearchDetail(item)} className={cn("block w-full px-4 py-2.5 text-left transition hover:bg-muted/30", isWatch && "bg-amber-50/60 border-l-[3px] border-l-amber-400 hover:bg-amber-50/80")}>
+                      <button key={`${item.project}|${item.entity}|${item.level}|${item.time}`} onClick={() => setSearchDetail(item)} className={cn("block w-full px-4 py-2.5 text-left transition hover:bg-muted/30", isWatch && "bg-amber-50/60 border-l-[3px] border-l-amber-400 hover:bg-amber-50/80")}>
                         <div className="flex items-center gap-2.5">
                           <Badge tone={displayTone}>{displayLevel}</Badge>
                           <span className="flex-1 text-[14px] font-semibold text-slate-800 truncate">{item.entity}</span>
@@ -13301,7 +13871,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-[12px] text-slate-400">
                           {isWatch ? (
-                            <span className="text-amber-600/80">存在需持续跟踪事项 · </span>
+                            <span className="text-amber-600/80">已确认关注事项 · </span>
                           ) : null}
                           <span>来源：{displaySourceName(item.sources[0]) || "同花顺iFinD"} 等{sourceCount}项</span>
                         </div>
@@ -13309,7 +13879,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                       );
                     })}
                     {filteredAlerts.length === 0 && (
-                      <div className="p-8 text-center text-sm text-muted-foreground">没有匹配到项目或主体。</div>
+                      <div className="p-8 text-center text-sm text-muted-foreground">暂无已确认舆情</div>
                     )}
                     {searchTotalPages > 1 && (
                       <div className="shrink-0 border-t border-[#e5e7eb] bg-white/50 px-3.5 py-2">
@@ -13340,11 +13910,22 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
               )}
             </div>
 
-            {sourceModal && (function() {
-            var ev = sourceModal.normalized || normalizeEvidenceItem(sourceModal.raw || sourceModal, selected ? selected.entity : "");
-            console.log("modal evidence", {evidenceType: ev.evidenceType, accessLevel: ev.accessLevel, sourceReliability: ev.sourceReliability, subjectMatched: ev.isSubjectMatched, parseStatus: ev.parseStatus, warning: ev.warning, len_riskSummary: ev.riskSummary && ev.riskSummary.length, len_matchedExcerpt: ev.matchedExcerpt && ev.matchedExcerpt.length, len_sourceFullText: ev.sourceFullText && ev.sourceFullText.length, len_fullRawText: ev.fullRawText && ev.fullRawText.length, len_cardSummary: ev.cardSummary && ev.cardSummary.length});
-            var isProfile = ev.evidenceType === "company_profile";
-            var isWeekly = ev.evidenceType === "weekly_digest";
+            {sourceModal && (
+              <EvidenceDetailModal
+                sourceModal={sourceModal}
+                selected={selected}
+                fullTextView={fullTextView}
+                onClose={function() { setSourceModal(null); setFullTextView(null); }}
+                onLoadFullText={loadFullText}
+              />
+            )}
+
+            {false && sourceModal && (function() {
+            var ev = sourceModal.normalized || sourceModal.raw || sourceModal;
+            var matchLevel = sourceModal.matchLevel || ev.matchLevel || (ev.entity_match && ev.entity_match.match_level) || "";
+            var matchBasis = sourceModal.matchBasis || ev.matchBasis || (ev.entity_match && ev.entity_match.basis) || [];
+            var evidenceTitle = sourceModal.name || ev.displayTitle || ev.title || "已确认舆情";
+            var sourceExcerpt = ev.sourceExcerpt || ev.source_excerpt || ev.matchedExcerpt || ev.sourceFullText || ev.sourceSummary || sourceModal.detail || sourceModal.cardSummary || "";
             return (
               <div className="modal-overlay" style={{zIndex:70}} onClick={function() { setSourceModal(null); }}>
                 <div className="evidence-modal" onClick={function(event) { event.stopPropagation(); }}>
@@ -13352,52 +13933,46 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                     <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}}>
                       <div style={{minWidth:0,flex:1}}>
                         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8,flexWrap:"wrap"}}>
-                          {isProfile ? <Badge>主体档案</Badge> : <Badge>{ev.channel}</Badge>}
-                          {!isProfile && ev.tags.slice(0,4).map(function(tg) { return <span key={tg} style={{fontSize:11,color:"#d97706",background:"#fffbeb",padding:"2px 6px",borderRadius:4}}>{tg}</span>; })}
-                          {isWeekly && <span style={{fontSize:11,color:"#94a3b8",background:"#f1f5f9",padding:"2px 6px",borderRadius:4}}>周度汇总</span>}
-                          {isWeekly && !ev.isSubjectMatched && <span style={{fontSize:11,color:"#ef4444",background:"#fef2f2",padding:"2px 6px",borderRadius:4}}>未精确匹配</span>}
+                          <Badge>{displaySourceName(sourceModal.sourceType || ev.channel || ev.publisher || "公开信息")}</Badge>
+                          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">{sourceModal.time || ev.publishDate || "-"}</span>
                         </div>
-                        <h2 style={{fontSize:18,fontWeight:600,lineHeight:1.4}}>{ev.title}</h2>
+                        <h2 style={{fontSize:18,fontWeight:600,lineHeight:1.4}}>{evidenceTitle}</h2>
                       </div>
                       <button type="button" onClick={function() { setSourceModal(null); }} style={{minWidth:64,whiteSpace:"nowrap",borderRadius:8,border:"1px solid #e5e7eb",background:"#fff",padding:"6px 12px",fontSize:14,color:"#64748b",cursor:"pointer"}}>关闭</button>
                     </div>
                   </div>
                   <div className="evidence-modal-body">
-                    {isProfile ? (
-                      <div>
-                        <div className="evidence-section">
-                          <p className="modal-section-title">主体基础信息</p>
-                          <p className="modal-text">{ev.sourceSummary || ev.matchedExcerpt || "暂无数据"}</p>
-                        </div>
-                        <div className="evidence-section evidence-detail-grid">
-                          <span className="label">数据来源</span><span className="value">{ev.publisher || ev.channel || "-"}</span>
-                          <span className="label">采集渠道</span><span className="value">{ev.channel}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="evidence-section">
-                          <p className="modal-section-title">{isWeekly ? "命中原文" : "来源原文"}{ev.accessLevel && ev.accessLevel !== "full_text" && (<span style={{marginLeft:8,fontSize:11,color:"#ef4444",background:"#fef2f2",padding:"2px 8px",borderRadius:4}}>{ev.accessLevel === "snippet_only" ? "仅摘要" : ev.accessLevel === "source_blocked" ? "来源受限" : ev.accessLevel}</span>)}</p>
-                          <p className="modal-text">{ev.matchedExcerpt || ev.sourceFullText || ev.sourceSummary || "暂无原文"}</p>
-                            {ev.warning && (<p style={{marginTop:8,fontSize:12,color:"#b45309",background:"#fffbeb",padding:"8px 12px",borderRadius:6,borderLeft:"3px solid #f59e0b"}}>{ev.warning}</p>)}
-                          {ev.isTruncatedBySource && (
-                            <p style={{marginTop:8,fontSize:12,color:"#d97706"}}>当前来源返回内容可能已被截断，请查看原始返回内容或访问来源链接。</p>
-                          )}
-                        </div>
-                        <div className="evidence-section evidence-detail-grid">
-                          <span className="label">资讯日期</span><span className="value">{ev.publishDate || "-"}</span>
-                          <span className="label">系统命中</span><span className="value">{ev.hitDate || "-"}</span>
-                          {ev.publisher && <><span className="label">信息来源</span><span className="value">{ev.publisher}</span></>}
-                          {ev.dataSource && <><span className="label">数据来源</span><span className="value">{ev.dataSource}</span></>}
-                          <span className="label">采集渠道</span><span className="value">{ev.channel}</span>
-                          {isWeekly && <><span className="label">主体匹配</span><span className="value">{ev.isSubjectMatched ? "已命中: " + (ev.matchedSubjectName || "") : "未精确匹配"}</span></>}
-                        </div>
+                    <div className="evidence-section">
+                      <p className="modal-section-title">公开来源摘要</p>
+                      <p className="modal-text">{sourceExcerpt || "暂无摘要"}</p>
+                      <p className="mt-2 text-[12px] text-slate-500">以下内容来自公开来源摘录，仅用于展示已确认舆情依据。</p>
+                    </div>
+                    <div className="evidence-section evidence-detail-grid">
+                      <span className="label">企业名称</span><span className="value">{sourceModal.entity || selected?.entity || "-"}</span>
+                      <span className="label">风险等级</span><span className="value">{sourceModal.level || selected?.level || "关注"}</span>
+                      <span className="label">项目号</span><span className="value">{sourceModal.project || selected?.project || "-"}</span>
+                      <span className="label">事件日期</span><span className="value">{sourceModal.time || ev.publishDate || "-"}</span>
+                      <span className="label">来源</span><span className="value">{displaySourceName(sourceModal.source || ev.channel || ev.publisher || "公开信息")}</span>
+                      <span className="label">主体匹配等级</span><span className="value">{matchLevel || "-"}</span>
+                      <span className="label">匹配依据</span><span className="value">{Array.isArray(matchBasis) ? matchBasis.filter(Boolean).join("、") || "-" : matchBasis || "-"}</span>
+                      <span className="label">来源类型</span><span className="value">{sourceModal.sourceType || ev.dataSource || ev.channel || "公开信息"}</span>
+                    </div>
+                    <div className="evidence-section" style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                      {sourceModal.url && (
+                        <button type="button" onClick={function() { window.open(sourceModal.url, "_blank", "noopener,noreferrer"); }} className="inline-flex h-[32px] items-center gap-1 rounded-full border border-slate-200 bg-white px-3 text-[12px] text-slate-600 transition hover:border-slate-300 hover:text-slate-800">打开来源 <Icon name="ExternalLink" className="h-3 w-3" /></button>
+                      )}
+                      {sourceModal.fullTextAvailable && sourceModal.fullTextId && (
+                        <button type="button" onClick={function() { loadFullText(sourceModal); }} className="inline-flex h-[32px] items-center gap-1 rounded-full border border-slate-200 bg-white px-3 text-[12px] text-slate-600 transition hover:border-slate-300 hover:text-slate-800">查看全文</button>
+                      )}
+                    </div>
+                    {fullTextView && (
+                      <div className="evidence-section">
+                        <p className="modal-section-title">原文</p>
+                        {fullTextView.loading ? <p className="modal-text">正在加载全文...</p> : (
+                          <p className="modal-text">{fullTextView.text || fullTextView.error || "暂无全文"}</p>
+                        )}
                       </div>
                     )}
-                    <details className="evidence-section" style={{cursor:"pointer"}}>
-                      <summary style={{fontSize:14,fontWeight:500,color:"#64748b"}}>查看原始返回内容</summary>
-                      <pre className="raw-content-box">{ev.fullRawText || ev.rawText}</pre>
-                    </details>
                   </div>
                 </div>
               </div>
@@ -13413,8 +13988,8 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                           <Badge tone={levelTone(searchDetail.level)}>{searchDetail.level}</Badge>
                           <span style={{fontSize:12,color:"#64748b"}}>{searchDetail.time}</span>
                         </div>
-                        <h2 style={{marginTop:8,fontSize:18,fontWeight:600,lineHeight:1.4}}>{searchDetail.title}</h2>
-                        <p style={{marginTop:4,fontSize:14,color:"#64748b"}}>项目号：{desensitizeProject(searchDetail.project)} · {searchDetail.entity} · {searchDetail.role}</p>
+                        <h2 style={{marginTop:8,fontSize:18,fontWeight:600,lineHeight:1.4}}>{searchDetail.entity}</h2>
+                        <p style={{marginTop:4,fontSize:14,color:"#64748b"}}>项目号：{desensitizeProject(searchDetail.project)} · 已确认舆情 {searchDetail.evidence.length} 条 · 来源：{searchDetail.sources.map(displaySourceName).join(" / ")}</p>
                       </div>
                       <button type="button" onClick={() => setSearchDetail(null)} style={{minWidth:64,whiteSpace:"nowrap",borderRadius:8,border:"1px solid #e5e7eb",background:"#fff",padding:"6px 12px",fontSize:14,color:"#64748b",cursor:"pointer"}}>关闭</button>
                     </div>
@@ -13422,24 +13997,29 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                   <div className="evidence-modal-body">
                     <p className="modal-section-title">事件摘要</p>
                     <p className="modal-text-sm" style={{marginBottom:16}}>{searchDetail.summary}</p>
-                    <p className="modal-section-title">影响评估</p>
-                    <p className="modal-text-sm" style={{marginBottom:16}}>{searchDetail.impact}</p>
                     <div style={{borderTop:"1px solid #e5e7eb",paddingTop:16,marginTop:8}}>
                       <p className="modal-section-title">证据链</p>
                       <div style={{position:"relative",paddingLeft:20,marginTop:12}}>
                         <div style={{position:"absolute",bottom:12,left:5,top:4,width:1,background:"#e5e7eb"}} />
+                        {searchDetail.evidence.length === 0 && (
+                          <div style={{borderRadius:12,border:"1px dashed #cbd5e1",background:"#fff",padding:12,marginBottom:8,color:"#64748b",fontSize:13}}>
+                            暂无已确认舆情
+                          </div>
+                        )}
                         {searchDetail.evidence.map((item, index) => {
                           return (
-                            <div key={item.name} style={{position:"relative",borderRadius:12,border:"1px solid #e5e7eb",background:"#fff",padding:12,marginBottom:8}}>
-                              <span style={{position:"absolute",left:-17,top:16,height:11,width:11,borderRadius:"50%",border:"2px solid #fff",background:searchDetail.level === "严重" ? "#dc2626" : searchDetail.level === "较重" ? "#f97316" : "#059669"}} />
-                              <div style={{display:"flex",alignItems:"center",gap:8,marginTop:6}}>
-                                <p style={{fontWeight:500}}>{item.name}</p>
+                            <div key={item.evidenceId || `${item.title || item.name}|${item.source}|${item.time}|${index}`} style={{position:"relative",borderRadius:12,border:"1px solid #e5e7eb",background:"#fff",padding:12,marginBottom:8}}>
+                              <span style={{position:"absolute",left:-17,top:16,height:11,width:11,borderRadius:"50%",border:"2px solid #fff",background:searchDetail.level === "严重" ? "#dc2626" : searchDetail.level === "较重" ? "#f97316" : searchDetail.level === "关注" ? "#f59e0b" : "#16a34a"}} />
+                              <div style={{display:"flex",alignItems:"center",gap:8,marginTop:6,flexWrap:"wrap",rowGap:6}}>
+                                <p style={{fontWeight:500,minWidth:0}}>{item.name}</p>
                                 <Badge>{displaySourceName(item.source)}</Badge>
-                                {item.accessLevel && item.accessLevel !== "full_text" && (
-                                  <span style={{fontSize:10,color:"#ef4444",background:"#fef2f2",padding:"1px 5px",borderRadius:3}} title={item.warning || "仅摘要"}>仅摘要</span>
-                                )}
-                                <button type="button" onClick={() => setSourceModal(item)} style={{display:"inline-flex",alignItems:"center",gap:4,borderRadius:9999,border:"1px solid #e5e7eb",background:"#f8fafc",padding:"2px 8px",fontSize:11,color:"#64748b",cursor:"pointer"}}>
+                                {item.url && (
+                                  <button type="button" onClick={() => window.open(item.url, "_blank", "noopener,noreferrer")} style={{display:"inline-flex",alignItems:"center",gap:4,whiteSpace:"nowrap",flexShrink:0,borderRadius:9999,border:"1px solid #e5e7eb",background:"#f8fafc",padding:"2px 8px",fontSize:11,color:"#64748b",cursor:"pointer"}}>
                                   打开来源 <Icon name="ExternalLink" style={{height:12,width:12}} />
+                                  </button>
+                                )}
+                                <button type="button" onClick={() => openEvidenceDetail(item, { entity: searchDetail.entity, project: searchDetail.project, level: searchDetail.level, source: item.source, time: item.time })} style={{display:"inline-flex",alignItems:"center",gap:4,whiteSpace:"nowrap",flexShrink:0,borderRadius:9999,border:"1px solid #e5e7eb",background:"#f8fafc",padding:"2px 8px",fontSize:11,color:"#64748b",cursor:"pointer"}}>
+                                  {item.fullTextAvailable ? "查看全文" : "查看详情"}
                                 </button>
                               </div>
                               <p className="modal-text-sm" style={{marginTop:8}}>{item.cardSummary || item.detail}</p>
