@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iFinD 风控全量试跑报告</title>
+  <style>
+    body { margin: 0; font-family: "Microsoft YaHei UI", Arial, sans-serif; background: #f6f8fb; color: #182230; }
+    header { padding: 28px 34px; background: #132238; color: white; }
+    h1 { margin: 0 0 10px; font-size: 24px; }
+    .meta { color: #cbd5e1; font-size: 13px; line-height: 1.8; }
+    main { padding: 24px 34px 40px; }
+    .stats { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .stat { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+    .stat strong { display: block; font-size: 24px; }
+    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #e2e8f0; font-size: 12px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 9px 10px; vertical-align: top; text-align: left; }
+    th { position: sticky; top: 0; background: #eef3f8; z-index: 1; }
+    .entity { font-weight: 700; min-width: 220px; }
+    .badge { display: inline-flex; min-width: 44px; justify-content: center; border-radius: 999px; padding: 3px 8px; font-weight: 700; }
+    .严重 { color: #b91c1c; background: #fee2e2; }
+    .较重 { color: #c2410c; background: #ffedd5; }
+    .关注 { color: #a16207; background: #fef3c7; }
+    .无 { color: #047857; background: #d1fae5; }
+    a { color: #155eef; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>iFinD 风控全量试跑报告</h1>
+    <div class="meta">
+      生成时间：2026-05-30T01:10:07<br>
+      数据底稿：C:\Users\luyng\Documents\风控可视化系统\data\raw\企业名单.xlsx<br>
+      MCP：hexin-ifind-ds-news-mcp / search_news；限速：每次请求间隔不少于 0.55 秒，不超过 2 次/秒。
+    </div>
+  </header>
+  <main>
+    <section class="stats">
+      <div class="stat"><span>去重主体</span><strong>5</strong></div>
+      <div class="stat"><span>严重</span><strong>0</strong></div>
+      <div class="stat"><span>较重</span><strong>0</strong></div>
+      <div class="stat"><span>关注</span><strong>0</strong></div>
+      <div class="stat"><span>无</span><strong>5</strong></div>
+    </section>
+    <table>
+      <thead>
+        <tr><th>#</th><th>主体</th><th>角色</th><th>关联项目</th><th>等级</th><th>事件类型</th><th>命中词</th><th>iFinD 返回预览</th><th>原始</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class='entity'>杭州钱塘新区建设投资集团有限公司</td><td>借款人</td><td>ANGS-B0009</td><td><span class='badge 无'>无</span></td><td>未发现主体精确匹配重大负面舆情</td><td></td><td>{&quot;code&quot;:1,&quot;msg&quot;:&quot;success&quot;,&quot;subCode&quot;:null,&quot;subMsg&quot;:null,&quot;data&quot;:{&quot;data&quot;:&quot;[\n {\n \&quot;资讯标题\&quot;: \&quot;杭州钱塘新区产业发展集团有限公司：“23钱塘债”回售行权金额0.30亿元\&quot;,\n \&quot;资讯内容\&quot;: \&quot;3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘债”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-03-24\&quot;,\n \&quot;URL\&quot;: \&quot;http://news.10jqka.com.cn/19700121/c675510675.shtml\&quot;\n },\n {\n \&quot;资讯标题\&quot;: \&quot;杭州钱塘新区产业发展集团有限公司：“23钱塘产业债01”回售行权金额0.30亿元\&quot;,\n \&quot;资讯内容\&quot;: \&quot;3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘产业债01”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-03-24\&quot;,\n \&quot;URL\&quot;: \&quot;http://news.10jqka.com.cn/19700121/c675510670.shtml\&quot;\n },\n {\n \&quot;资讯标题\&quot;: \&quot;钱塘新区金砖国家特殊经...</td><td><a href='./raw/001.json'>raw</a></td></tr><tr><td>2</td><td class='entity'>诸暨市国有资产经营有限公司</td><td>借款人</td><td>ANGS-B0010</td><td><span class='badge 无'>无</span></td><td>未发现主体精确匹配重大负面舆情</td><td></td><td>{&quot;code&quot;:1,&quot;msg&quot;:&quot;success&quot;,&quot;subCode&quot;:null,&quot;subMsg&quot;:null,&quot;data&quot;:{&quot;data&quot;:&quot;[\n {\n \&quot;资讯标题\&quot;: \&quot;诸暨市人民法院：（2024）浙0681破103号——诸暨市贝佳包装有限公司\&quot;,\n \&quot;资讯内容\&quot;: \&quot;浙 江 省 诸 暨 市 人 民 法 院。公 告。（2024）浙 0681 破 103 号。2024 年 12 月 12 日，本院裁定受理诸暨市贝佳包装有限公司破产清算一案。 本院查明：经管理人调查核实，截至 2026 年1 月 6 日，诸暨市贝佳包装有限公司债务合计 19064722.68 元，资产合计为 15765439.01 元，净资产总额为-3299283.67 元， 诸暨市贝佳包装有限公司的资产总额远低于负债总额。本院认为，诸暨市贝佳包装有限公司不能清偿到期债务，且已严重资不抵债。本院在审理诸暨市贝佳包装有限公司破产清算案件期间，相关权利人也未提出和解、重整的申请。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-04-27\&quot;,\n \&quot;URL\&quot;: \&quot;https://www.sohu.com/a/1015077216_122455196\&quot;\n },\n {\n \&quot;资讯标题\&quot;: \&quot;ST金鸿顺: 金鸿顺关于公司股票被实施其他风险警示相关事项的进展公告\&quot;,\n \&quot;资讯内容\&quot;: \...</td><td><a href='./raw/002.json'>raw</a></td></tr><tr><td>3</td><td class='entity'>杭州东部城市建设投资集团有限公司</td><td>借款人</td><td>ANGS-B0011</td><td><span class='badge 无'>无</span></td><td>未发现主体精确匹配重大负面舆情</td><td></td><td>{&quot;code&quot;:1,&quot;msg&quot;:&quot;success&quot;,&quot;subCode&quot;:null,&quot;subMsg&quot;:null,&quot;data&quot;:{&quot;data&quot;:&quot;[\n {\n \&quot;资讯标题\&quot;: \&quot;沣东控股、沣东发展新增终本案件 | 每日债市舆情\&quot;,\n \&quot;资讯内容\&quot;: \&quot;公司债务负担一般，以长期债务为主，对非标融资有一定依赖，备用流动性较弱，短期偿债压力大，对外担保中部分被担保对象存在被执行人等负面舆情，存在一定的或有风险。 目前，公司仅有一只存续债，余额为4.00亿元，一年内行权规模2.00亿元，估值收益率超5.20%，市场认可度差。 公司2025年大额计提资产减值，主要系部分房地产项目销售价格未达预期，公司基于市场公允价格扣除相关成本及税费后测算确认减值金额，该事项仅影响当期利润，不涉及经营性现金流变动，对公司整体信用水平未构成显著负面影响， 但对合作开发房地产项目公司提供的借款予以展期，表明项目开发主体存在一定经营困难，经营风险较高，需关注后续资金回收情况。 公司主营业务主要包括地产业务、工程施工、纺织服装等，其中房地产业务受行业政策与市场周期影响较为显著，在建项目存在资金支出压力，当前房地产市场仍处于低位运行阶段，后续项目开发节奏与去化表现存在较大不确定性。 西咸新区债务负担较重，2025年以来区域内多家城投发生票据逾期、委托贷款逾期等事项，区域风险有所抬升，且再融资环境恶化逐渐...</td><td><a href='./raw/003.json'>raw</a></td></tr><tr><td>4</td><td class='entity'>杭州钱塘新区城市发展集团有限公司</td><td>保证人</td><td>ANGS-B0011</td><td><span class='badge 无'>无</span></td><td>未发现主体精确匹配重大负面舆情</td><td></td><td>{&quot;code&quot;:1,&quot;msg&quot;:&quot;success&quot;,&quot;subCode&quot;:null,&quot;subMsg&quot;:null,&quot;data&quot;:{&quot;data&quot;:&quot;[\n {\n \&quot;资讯标题\&quot;: \&quot;杭州钱塘新区产业发展集团有限公司：“23钱塘债”回售行权金额0.30亿元\&quot;,\n \&quot;资讯内容\&quot;: \&quot;3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘债”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-03-24\&quot;,\n \&quot;URL\&quot;: \&quot;http://news.10jqka.com.cn/19700121/c675510675.shtml\&quot;\n },\n {\n \&quot;资讯标题\&quot;: \&quot;杭州钱塘新区产业发展集团有限公司：“23钱塘产业债01”回售行权金额0.30亿元\&quot;,\n \&quot;资讯内容\&quot;: \&quot;3月24日，杭州钱塘新区产业发展集团有限公司发布公告称，“23钱塘产业债01”有效登记数量30万张，回售行权金额0.30亿元，资金兑付日为5月6日。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-03-24\&quot;,\n \&quot;URL\&quot;: \&quot;http://news.10jqka.com.cn/19700121/c675510670.shtml\&quot;\n },\n {\n \&quot;资讯标题\&quot;: \&quot;融创房地产新增到期未偿...</td><td><a href='./raw/004.json'>raw</a></td></tr><tr><td>5</td><td class='entity'>桐庐县国有资本投资运营控股集团有限公司</td><td>借款人</td><td>ANGS-B0012</td><td><span class='badge 无'>无</span></td><td>未发现重大负面舆情</td><td></td><td>{&quot;code&quot;:1,&quot;msg&quot;:&quot;success&quot;,&quot;subCode&quot;:null,&quot;subMsg&quot;:null,&quot;data&quot;:{&quot;data&quot;:&quot;[\n {\n \&quot;资讯标题\&quot;: \&quot;桐庐县国有资本投资运营控股集团有限公司20.00亿元私募项目状态更新为“通过”\&quot;,\n \&quot;资讯内容\&quot;: \&quot;4月29日，上交所债券项目信息平台显示“桐庐县国有资本投资运营控股集团有限公司2026年面向专业投资者非公开发行公司债券”项目状态更新为“通过”。 该项目品种为私募，拟发行金额为20.00亿元，发行主体为桐庐县国有资本投资运营控股集团有限公司。 \&quot;,\n \&quot;日期\&quot;: \&quot;2026-03-31\&quot;,\n \&quot;URL\&quot;: \&quot;http://news.10jqka.com.cn/19700121/c676417479.shtml\&quot;\n },\n {\n \&quot;资讯标题\&quot;: \&quot;河南太龙药业股份有限公司关于为下属全资及控股子公司融资提供担保的公告\&quot;,\n \&quot;资讯内容\&quot;: \&quot;担保额度范围内，公司全资及控股子公司（含授权期限内新设立或纳入合并范围的全资及控股子公司）可根据实际经营需要进行担保额度调剂。 5、反担保情况：无四、担保的必要性和合理性上述担保是为了满足公司下属全资及控股子公司的经营发展和融资需求，有利于提高公司整体融资效率，促进公司业务开展，符合公司发展战略； 五、董事会意见...</td><td><a href='./raw/005.json'>raw</a></td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
