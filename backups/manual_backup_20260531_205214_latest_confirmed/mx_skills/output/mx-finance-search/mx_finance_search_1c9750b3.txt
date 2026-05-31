@@ -1,0 +1,253 @@
+{
+  "data": [
+    {
+      "code": "AN202604301821861009_180",
+      "title": "24涪陵01:重庆市涪陵国有资产投资经营集团有限公司2025年度审计报告",
+      "content": " 重庆市涪陵实业发展集团有限公司 20,000.00 2025 年 1 月 22 日 2026 年 1 月 16 日 否\n 重庆市涪陵实业发展集团有限公司 50,000.00 2025 年 6 月 19 日 2027 年 6 月 19 日 否\n 重庆市涪陵实业发展集团有限公司 40,000.00 2025 年 6 月 17 日 2026 年 12 月 17 日 否\n 重庆市涪陵实业发展集团有限公司 30,000.00 2025 年 6 月 30 日 2026 年 4 月 22 日 否\n 重庆市涪陵实业发展集团有限公司 60,000.00 2025 年 9 月 30 日 2026 年 9 月 29 日 否\n 重庆市涪陵实业发展集团有限公司 41,800.00 2025 年 11 月 5 日 2034 年 11 月 4 日 否\n 重庆市涪陵实业发展集团有限公司 60,000.00 2025 年 12 月 24 日 2028 年 12 月 23 日 否\n 重庆市涪陵实业发展集团有限公司 49,800.00 2025 年 1 月 2 日 2028 年 1 月 1 日 否\n",
+      "date": "2026-04-30 19:47:44",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821861009_1.PDF",
+      "rankScore": "Infinity",
+      "indexAttention": false,
+      "attachType": "PDF",
+      "recallIndex": "an_BaseRecallV2-41;"
+    },
+    {
+      "code": "AN202604301821861009_179",
+      "title": "24涪陵01:重庆市涪陵国有资产投资经营集团有限公司2025年度审计报告",
+      "content": " 重庆市涪陵实业发展集团有限公司 11,600.00 2023 年 9 月 25 日 2026 年 9 月 24 日 否\n 重庆市涪陵实业发展集团有限公司 5,000.00 2025 年 1 月 26 日 2026 年 1 月 18 日 否\n 重庆市涪陵实业发展集团有限公司 20,000.00 2025 年 6 月 24 日 2026 年 6 月 22 日 否\n 重庆市涪陵实业发展集团有限公司 4,000.00 2025 年 9 月 29 日 2026 年 9 月 29 日 否\n 重庆市涪陵实业发展集团有限公司 15,000.00 2025 年 9 月 30 日 2026 年 8 月 24 日 否\n 重庆市涪陵实业发展集团有限公司 100.00 2025 年 12 月 17 日 2026 年 12 月 17 日 否\n 重庆市涪陵实业发展集团有限公司 60,000.00 2025 年 5 月 28 日 2026 年 7 月 6 日 否\n 重庆市涪陵实业发展集团有限公司 50,000.00 2025 年 5 月 28 日 2026 年 5 月 27 日 否\n",
+      "date": "2026-04-30 19:47:44",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821861009_1.PDF",
+      "rankScore": 0.9999999777774617,
+      "indexAttention": false,
+      "attachType": "PDF",
+      "recallIndex": "an_BaseRecallV2-38;"
+    },
+    {
+      "code": "AN202604301821861007_2",
+      "title": "24涪陵01:重庆市涪陵国有资产投资经营集团有限公司公司债券2025年度报告",
+      "content": "指\n深圳证券交易所的营业日\n《管理办法》\n指\n《公司债券发行与交易管理办法》\n债券持有人\n指\n通过认购、交易、受让、继承、承继或其他合法方式取得并持有本期债券的专业投资者\n董事会\n指\n重庆市涪陵国有资产投资经营集团有限公司董事会\n股东\n指\n重庆市涪陵实业发展集团有限公司\n深交所\n指\n深圳证券交易所\n《公司法》\n指\n《中华人民共和国公司法》\n《证券法》\n指\n《中华人民共和国证券法》\n华鑫证券\n指\n华鑫证券有限责任公司\n国投证券\n指\n国投证券股份有限公司\n中邮证券\n指\n中邮证券有限责任公司\n中诚信\n指\n中诚信国际信用评级有限公司\n报告期\n指\n2025 年 1 月 1 日至 2025 年 12 月 31 日\n报告期末\n指\n2025 年 12 月 31 日\n元\n指\n人民币元，特别注明的除外\n注：本报告中，部分合计数与各加数直接相加之和因四舍五入在尾数上略有差异，并非计算错误。\n第一节 公司基本情况\n一、公司基本信息\n币种：人民币\n中文名称\n重庆市涪陵国有资产投资经营集团有限公司\n中文简称\n涪陵国投\n外文名称（如有）\n",
+      "date": "2026-04-30 19:47:26",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821861007_1.PDF",
+      "rankScore": 0.9997014608163961,
+      "indexAttention": false,
+      "attachType": "PDF",
+      "recallIndex": "an_BaseWithTimelinessV2-19;"
+    },
+    {
+      "code": "AN202604301821861007_3",
+      "title": "24涪陵01:重庆市涪陵国有资产投资经营集团有限公司公司债券2025年度报告",
+      "content": "CHONGQING FULING STATE-OWNED ASSETS INVESTMENT MANAGEMENT GROUP CORPORATION LIMITED\n外文名称缩写（如有）\nFLGT\n法定代表人\n李泽军\n注册资本（万元）\n200,000\n实缴资本（万元）\n200,000\n注册地址\n重庆市涪陵区中山路 9 号(金科世界走廊)A 区 27-1\n办公地址\n重庆市涪陵区中山路 9 号(金科世界走廊)A 区 27-1\n公司网址（如有）\nhttp://www.cqflgt.cn/\n电子信箱\n434524183@qq.com\n二、信息披露事务负责人基本信息\n姓名\n欧云剑\n在公司所任职务类型\n董事 □高级管理人员\n信息披露事务负责人具体职位\n职工董事、融资业务部经理\n联系地址\n重庆市涪陵区中山路 9 号（金科世界走廊）A 区 27-1\n电话\n023-85668087\n传真\n023-85668087\n电子信箱\notown@126.com\n三、报告期内控股股东、实际控制人及变更情况\n（一） 报告期末控股股东、实际控制人\n1．控股股东基本信息\n币种：人民币\n名称\n重庆市涪陵实业发展集团有限公司\n主要业务\n",
+      "date": "2026-04-30 19:47:26",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821861007_1.PDF",
+      "rankScore": 0.9906084987487475,
+      "indexAttention": false,
+      "attachType": "PDF",
+      "recallIndex": "an_BaseWithTimelinessV2-9;"
+    },
+    {
+      "code": "AN202604301821819986_40",
+      "title": "中交一公局集团有限公司2025年年度报告",
+      "content": "三、查询网站\n1、投资人可以在下列互联网网址查阅上述备查文件：\n上海清算所网站:http://www.shclearing.com.cn\n中国货币网:http://www.chinamoney.com.cn\n项 目\n本年发生额\n上年发生额\n收入\n成本\n收入\n成本\n1、主营业务小计\n114,791,626,546.11\n103,316,255,118.38\n130,886,156,121.53\n116,850,480,957.52\n基建业务\n112,040,369,709.48\n100,866,286,406.01\n128,910,382,432.34\n115,132,464,295.60\n设计、试验检测\n181,159,048.41\n154,112,095.54\n225,985,545.66\n190,206,451.91\n商品销售\n1,006,100,403.57\n820,209,659.71\n343,735,978.04\n253,924,679.29\n运营收入\n764,350,617.05\n805,064,613.96\n729,021,267.81\n717,391,937.55\n监理业务\n",
+      "date": "2026-04-30 14:27:29",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821819986_1.pdf",
+      "rankScore": 0.966876364134533,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-396;"
+    },
+    {
+      "code": "AN202602021819364761_1",
+      "title": "重庆市涪陵实业发展集团有限公司2025年半年度财务报表(初稿)",
+      "content": "重庆市涪陵实业发展集团有限公司2025年半年度财务报表(初稿)",
+      "date": "2026-02-02 18:18:25",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202602021819364761_1.pdf",
+      "rankScore": 0.9627621474978938,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseRecallV2-6;"
+    },
+    {
+      "code": "AN202604301821845309_53",
+      "title": "中建丝路建设投资有限公司2025年年度报告",
+      "content": "三、查询网站\n投资者可通过中国债券信息网（http://www.chinabond.com.cn）、中国货币网 （ http://www.chinamoney.com.cn ） 、 上 海 清 算 所 网（https://www.shclearing.com.cn）及其他交易商协会认可的渠道查询发行人公开披露过的文件。\n（以下无正文）\n",
+      "date": "2026-04-30 17:39:11",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821845309_1.pdf",
+      "rankScore": 0.961669400340381,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-102;"
+    },
+    {
+      "code": "AN202604301821860523_84",
+      "title": "荣盛房地产发展股份有限公司2025年年度报告",
+      "content": "三、查询网站\n投资者也可通过中国货币网（http://www.chinamoney.com.cn）或上海清算所网站（http://www.shclearing.com）查询本报告。\n本公司承诺所披露信息真实、准确、完整、及时，并将按照中国人民银行《银行间债券市场非金融企业债务融资工具管理办法》及《银行间债券市场非金融企业债务融资工具信息披露规则》等银行间债券市场自律规则指引的规定，在存续期内做好信息披露的工作，请投资者密切关注。\n特此公告。\n（以下无正文）\n",
+      "date": "2026-04-30 19:41:26",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821860523_1.pdf",
+      "rankScore": 0.9593734177032344,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-244;"
+    },
+    {
+      "code": "AN202604301821819613_57",
+      "title": "华能澜沧江水电股份有限公司2025年年度报告",
+      "content": "三、查询网站\n1．中国货币网（http://www.chinamoney.com.cn）\n2．上海清算所网站（www.shclearing.com.cn）\n3．北京金融资产交易所网站（https://www.cfae.cn）\n4．中国债券信息网（http://www.chinabond.com.cn）\n",
+      "date": "2026-04-30 14:20:31",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821819613_1.pdf",
+      "rankScore": 0.9589420889643164,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-109;"
+    },
+    {
+      "code": "AN202604301821865911_16",
+      "title": "桐昆控股集团有限公司2025年年度报告",
+      "content": "适用 不适用\n第四章 财务报告\n第五章 备查文件\n一、载有公司负责人、主管会计工作负责人、会计机构负责人（会计主管人员）签名并盖章的合并及母公司财务报表；\n二、载有会计师事务所盖章、注册会计师签名并盖章的审计报告原件；\n三、报告期内在交易商协会指定网站上公开披露过的所有公司文件的正本及公告的原稿；\n四、按照境内外其他监管机构的要求公开披露的年度报告信息。\n查询地址：中国货币网（www.chinamoney.com.cn）上海清算所网站（www.shclearing.com.cn）\n",
+      "date": "2026-04-30 20:44:17",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821865911_1.pdf",
+      "rankScore": 0.9586601115984756,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-79;"
+    },
+    {
+      "code": "AN202604301821853466_81",
+      "title": "中国石油化工集团有限公司2025年度报告",
+      "content": "二、查询地址\n中国石油化工集团有限公司\n地址：中国北京朝阳区朝阳门北大街 22 号\n联系人：练钢\n电话：010-59969321\n传真：010-59969314\n投资者可通过中国货币网（http://www.chinamoney.com.cn）或北京金融资产交易所网站（www.cfae.cn）下载本年度报告，或在工作日的一般办公时间，到上述地点查阅本年度报告全文及上述备查文件。\n",
+      "date": "2026-04-30 18:41:18",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821853466_1.pdf",
+      "rankScore": 0.9585492707335301,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-46;"
+    },
+    {
+      "code": "AN202604301821813342_34",
+      "title": "重庆市璧山区城市建设投资有限公司2025年年度报告",
+      "content": "一、查询文件\n1、《重庆市璧山区城市建设投资有限公司 2025 年度财务报告》2、《重庆市璧山区城市建设投资有限公司 2025 年度审计报告》二、查询地址\n地址：重庆市璧山区双星大道 50 号 7 幢 6 楼\n联系电话：023-68159540\n联系人：夏宁鲔\n三、查询网站\n投资者可通过中国债券信息网（http://www.chinabond.com.cn）、中国货币网（http：//www.chinamoney.com.cn）或上海清算所网站（http：//www.shclearing.com）等网站查询公司公开披露过的文件。\n",
+      "date": "2026-04-30 12:18:35",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821813342_1.pdf",
+      "rankScore": 0.9584840852875155,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-298;"
+    },
+    {
+      "code": "AN202604301821856315_65",
+      "title": "重庆市合川工业投资(集团)有限公司2025年年度报告",
+      "content": "三、查询网址\n投资者可通过中国货币网（www.chinamoney.com.cn）或上海清算所网站（www.shclearing.com）等交易商协会认可的网站下载本报告，或者在办公时间，到上述地点查阅本报告全文及上述备查文件。\n附件一：重庆市合川工业投资(集团)有限公司 2025 年度经审计的合并及母公司财务报告及附注\n",
+      "date": "2026-04-30 19:09:31",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821856315_1.pdf",
+      "rankScore": 0.9582642602916157,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-145;"
+    },
+    {
+      "code": "AN202604301821817740_28",
+      "title": "浏阳现代制造产业建设投资开发有限公司2025年度报告",
+      "content": "三、查询网站\n投资者可通过中国债券信息网（http://www.chinabond.com.cn）、中国货币网（http://www.chinamoney.com.cn）、上海清算所网站（http://www.shclearing.com）及其他交易商协会认可的渠道查询发行人公开披露过的文件\n（以下无正文）\nChina Audit Asia Pacific Certified Public Accountants LLP\n审 计 报 告\nAUDIT\nREPORT\n浏阳现代制造产业建设投资开发有限公司\n2025 年度财务报表审计\n中国·北京\nBEIJING CHINA\n目\n录\n",
+      "date": "2026-04-30 14:07:32",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821817740_1.pdf",
+      "rankScore": 0.9582370848946977,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-332;"
+    },
+    {
+      "code": "AN202604301821842614_27",
+      "title": "中国石油天然气集团有限公司2025年年度报告",
+      "content": "二、查询地址\n办公地址：北京市东城区东直门北大街 9 号。\n投资者可通过中国货币网（http://www.chinamoney.com.cn）或上海清算所网站（http://www.shclearing.com）下载上述备查文件，或在债券存续期内工作日的一般办公时间，到上述地点查阅上述备查文件。\n中 国 石 油 天 然 气 集 团 有 限 公 司\n审 计 报 告\n天 职 业 字 [2026]23650 号\n目\n录\n审 计 报 告\n1\n2025 年度财务报表\n4\n2025 年度财务报表附注\n14\n审计报告\n天职业字[2026]23650 号\n中国石油天然气集团有限公司全体股东：\n",
+      "date": "2026-04-30 17:14:02",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821842614_1.pdf",
+      "rankScore": 0.9581997861781232,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-327;"
+    },
+    {
+      "code": "AN202604291821737182_38",
+      "title": "际华集团股份有限公司2025年年度报告",
+      "content": "第六章备查文件\n一、载有公司负责人、主管会计工作负责人、会计机构负责人（会计主管人员）签名并盖章的财务报表；\n二、载有符合法律规定的会计师事务所和至少两名注册会计师签章的审计报告；\n三、发行人根据《银行间债券市场非金融企业债务融资工具信息披露规则》及其他自律规则披露的信息披露文件原件；\n四、查询地址：北京市大兴区广茂大街 44 号院 2 号楼；\n五、查询网站：投资者也可通过中国货币网（http://www.chinamoney.com.cn）或上海清算所网站（http://www.shclearing.com）查询本财务报告。\n（以下无正文）\n",
+      "date": "2026-04-29 15:32:31",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604291821737182_1.pdf",
+      "rankScore": 0.9581406127981686,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-280;"
+    },
+    {
+      "code": "AN202604301821810562_227",
+      "title": "北京广安控股集团有限公司2025年年度报告",
+      "content": "三、查询网站\n投资者可通过中国货币网（http://www.chinamoney.com.cn）、北京金融资产交易所网站（ http://www.cfae.cn ）、上海清算所网站（http://www.shclearing.com）及其他交易商协会认可的渠道查询发行人公开披露的文件。\n（以下无正文）\n",
+      "date": "2026-04-30 11:39:12",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821810562_1.pdf",
+      "rankScore": 0.9580242700838212,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-122;"
+    },
+    {
+      "code": "AN202604301821810692_34",
+      "title": "衡阳高新控股集团有限公司2025年年度报告",
+      "content": "三、查询网站\n投资者可通过中国货币网（http://www.chinamoney.com.cn）或上海清算所网站（http://www.shclearing.com）查询本公司公开披露过的文件。\nChina Audit Asia Pacific Certified Public Accountants LLP\n审 计 报 告\nAUDIT\nREPORT\n衡阳高新控股集团有限公司\n2025 年度财务报表审计\n中国·北京\nBEIJING CHINA\n目\n录\n",
+      "date": "2026-04-30 11:39:12",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604301821810692_1.pdf",
+      "rankScore": 0.9580072386175883,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-128;"
+    },
+    {
+      "code": "AN202604291821780514_42",
+      "title": "恒安国际集团有限公司2025年年度报告",
+      "content": "二、查询地址及网站\n发行人：恒安国际集团有限公司\n地址：香港金钟海富中心第一座 21 楼 2101D 室\n联系人：施小丽、王锦波\n电话：+852 27980770、0595-85720638\n传真：+852 27997372、0595-85708790\n投资者可通过中国货币网（www.chinamoney.com.cn）或上海清算所网站（www.shclearing.com）等交易商协会认可的网站下载本报告，或者在办公时间，到上述地点查阅本报告全文及上述备查文件。\n",
+      "date": "2026-04-29 22:02:10",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604291821780514_1.pdf",
+      "rankScore": 0.9578431089952991,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-183;"
+    },
+    {
+      "code": "AN202604241821529782_148",
+      "title": "中国光大绿色环保有限公司2025年年度报告",
+      "content": "三、查询网站\n投资者可通过中国货币网（http://www.chinamoney.com.cn）或上海清算所网站（http://www.shclearing.com.cn）查询本公司2025 年年度报告及信息披露事务管理制度。可通过香港联合交易所有限公司网站（https://www.hkexnews.hk/index_c.htm）查询本公司 2025 年年报及独立核数师报告。\n（以下无正文）\n",
+      "date": "2026-04-24 10:40:57",
+      "informationType": "NOTICE",
+      "jumpUrl": "https://pdf.dfcfw.com/pdf/H2_AN202604241821529782_1.pdf",
+      "rankScore": 0.9578380820427324,
+      "indexAttention": false,
+      "attachType": "pdf",
+      "recallIndex": "an_BaseWithTimelinessV2-75;"
+    }
+  ],
+  "traceId": "3f6e6de13562b2b59bc94d03e9ba0f50-0e47fe9a-7fef-4ba3-97ee-bf025c549331",
+  "code": 0,
+  "status": 0,
+  "message": "OK",
+  "extraInfos": {
+    "decomposedQueries": [
+      "重庆市涪陵实业发展集团有限公司2025年年度报告 中国货币网 URL"
+    ]
+  }
+}

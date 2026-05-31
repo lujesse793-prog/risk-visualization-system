@@ -1,0 +1,439 @@
+<div class="section-pg" id="page-search-market-form">
+
+    <div class="section-fm" id="form-search-market">
+                
+        <div class="san-form-row">
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">债券简称</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <input type="text" class="san-input-text" id="psa-bond-bond-name" name="" value="">
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">债券代码</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <input type="text" class="san-input-text" id="psa-bond-bond-code" name="" value="">
+                    <label class="san-input-static p-t-0 p-b-0 text-help">若查询大额存单信息，请输入自律机制备案编码</label>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7">发行人/受托机构</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <input type="text" class="san-input-text" id="psa-bond-issue-enty" name="" value="">
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">债券类型</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <select class="san-select" id="psa-bond-bond-type" >
+							<option value="">请选择</option>
+					</select>
+                </div>
+				
+            </div>
+
+            <!-- <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">专项品种</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <select class="san-select" id="psa-bond-bondSpclPrjctVrty"><option value="">请选择</option></select>
+                    <label class="san-input-static p-t-0 p-b-0 text-help">“DCM”是指在银行间交易商协会注册发行的债务融资工具</label>
+                </div>
+            </div> -->
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">息票类型</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <select class="san-select" id="psa-bond-coupon-type"><option value="">请选择</option></select>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">发行年份</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <select class="san-select" id="psa-bond-issue-year"><option value="">请选择</option></select>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">主承销商</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <select class="san-select" id="psa-bond-enty"><option value="">请选择</option></select>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-7 label-ch-s-4">评级等级</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <select class="san-select" id="psa-bond-issue-rtng-shrt"><option value="">请选择</option></select>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12 m-t-10 AC">
+                <a class="san-btn san-btn-primary" href="javascript:void(0);" onclick="bondsearch2();">查询</a>
+                <a class="san-btn san-btn-primary" href="javascript:void(0);" onclick="resetAll();">重置</a>
+            </div>
+        </div>
+    
+    </div>
+
+</div>
+<div id="noteText" style="display:none;"></div>
+<style>
+ .tb{
+    background: url(/r/cms/chinese/chinamoney/assets/images/3-135.png) 0 50% no-repeat;
+    background-size: 13px;
+    height: 20px;
+    padding-left: 16px;
+    display: inline;
+    margin-left: 3px;
+    padding: 8px 8px;
+ }
+.pd{
+padding: 2px 0px !important;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	resetAll();
+	// 初始化下拉框(除主承销商)
+	initBondBaseInfoSearchCondition();
+	// 初始化下拉框(主承销商)
+	initEntyFullName();
+	var searchText=decodeURI(decodeURI(getFrameSrc("searchValue")==null?'':getFramesSrc("searchValue")));
+		if($.trim(searchText)!=''){
+			$('#psa-bond-bond-name').val(searchText);
+			bondsearch2();
+		}
+		
+	addBondNote();
+});
+
+//重置
+function resetAll(){
+	//$("input").val("");
+	$("select").val("");
+	$("#psa-bond-bond-name").val("");
+	$("#psa-bond-bond-code").val("");
+	$("#psa-bond-issue-enty").val("");
+	
+	$("#btn1").val("查询");
+	$("#btn2").val("重置");
+}
+
+function addBondNote(){
+	 //获取悬浮注释
+		$.ajax({
+			type : "get",//无此配置，提交中文乱码
+			url:DURL+'note/note-5022.json',
+			cache: false,
+			dataType : "json",
+			success : function(data) {
+	                        bondNote=data.data.rmkCn; 
+	                        $('#noteText').html(bondNote);
+		          }
+		 });
+	 }	
+
+function initBondBaseInfoSearchCondition() {
+	$.ajax({
+		url:NT_URL + "/cm-u-bond-md/BondBaseInfoSearchCondition",
+        type:"POST",
+        dataType:'json',
+        cache:false,
+        success:function(data){
+        	var bondType = "";
+            var bondTypeLen = data.data.bondType.length;
+            for(var i=0; i<bondTypeLen; i++){
+            	bondType += "<option value='"+data.data.bondType[i].bondTypeCode+"'>"+data.data.bondType[i].bondDisplayType+"</option>";
+            }
+            $("#psa-bond-bond-type").append(bondType);
+            var couponType = "";
+            var couponTypeLen = data.data.couponType.length;
+            for(var i=0; i<couponTypeLen; i++){
+            	couponType += "<option value='"+data.data.couponType[i].couponTypeCode+"'>"+data.data.couponType[i].couponType+"</option>";
+            }
+            $("#psa-bond-coupon-type").append(couponType);
+            var issueYear = "";
+            var issueYearLen = data.data.issueYear.length;
+            for(var i=issueYearLen-2; i>=0; i--){
+            	issueYear += "<option value='"+data.data.issueYear[i]+"'>"+data.data.issueYear[i]+"</option>";
+            }
+            $("#psa-bond-issue-year").append(issueYear);
+            var bondRtngShrt = "";
+            var bondRtngShrtLen = data.data.bondRtngShrt.length;
+            for(var i=0; i<bondRtngShrtLen; i++){
+            	bondRtngShrt += "<option value='"+data.data.bondRtngShrt[i]+"'>"+data.data.bondRtngShrt[i]+"</option>";
+            }
+            $("#psa-bond-issue-rtng-shrt").append(bondRtngShrt);
+            
+            /*var bondSpclPrjctVrty = "";
+            var bondSpclPrjctVrtyLen = data.data.bondSpclPrjctVrty.length;
+            for(var i=0; i<bondSpclPrjctVrtyLen; i++){
+            	if(data.data.bondSpclPrjctVrty[i].bondTypeCode!="605" && data.data.bondSpclPrjctVrty[i].bondTypeCode!="606" && data.data.bondSpclPrjctVrty[i].bondTypeCode!="607"){
+                	bondSpclPrjctVrty += "<option value='"+data.data.bondSpclPrjctVrty[i].bondTypeCode+"'>"+data.data.bondSpclPrjctVrty[i].bondDisplayType+"</option>";
+            	}
+            }
+            $("#psa-bond-bondSpclPrjctVrty").append(bondSpclPrjctVrty);*/
+            
+        }        
+	});
+}
+
+function initEntyFullName() {
+	$.ajax({
+		url:NT_URL + "/cm-u-bond-md/EntyFullNameSearchCondition",
+        type:"POST",
+        dataType:'json',
+        cache:false,
+        success:function(data){
+            var enty = "";
+            var entyLen = data.data.enty.length;
+            for(var i=0; i<entyLen; i++){
+            	enty += "<option value='"+data.data.enty[i].entyDefinedCode+"'>"+data.data.enty[i].entyFullName+"</option>";
+            }
+            $("#psa-bond-enty").append(enty);
+        }        
+	});
+}
+
+function bondsearch2() {
+	$('#search-results-content').sanJumpto({
+	url:"/r/cms/chinese/chinamoney/html/ses/search-market-results.html",
+	onDone: function(){
+	bondsearch();
+	}
+	});
+}
+
+
+
+
+function bondsearch() {
+	renderData_new("1");
+}
+
+//搜索
+function renderData_new(pageNo){
+	$("#bond-info-tb").empty();
+	$("#bond-search-condition").html();
+    $("#bond-result-count").html();
+	var bondName = document.getElementById("psa-bond-bond-name").value;
+	var bondCode = document.getElementById("psa-bond-bond-code").value;
+	var issueEnty = document.getElementById("psa-bond-issue-enty").value;
+	var patrn=/[\"\'<>``!@#$%^&*+-\/\/\/\\//?,.]/;
+	var bondNoteText=$('#noteText span').html()+""=="undefined"?"''":$('#noteText span').html();
+	if(patrn.exec(bondName)){
+		alert("查询信息不能包含特殊字符!!");
+		document.getElementById("psa-bond-bond-name").focus();
+		return false;			
+	}
+	if(patrn.exec(bondCode)){
+		alert("查询信息不能包含特殊字符!!");
+		document.getElementById("psa-bond-bond-code").focus();
+		return false;			
+	}
+	if(patrn.exec(issueEnty)){
+		alert("查询信息不能包含特殊字符!!");
+		document.getElementById("psa-bond-issue-enty").focus();
+		return false;			
+	}
+	bondName=bondName.replace('_', "\\_");
+	bondCode=bondCode.replace('_', "\\_");
+	issueEnty=issueEnty.replace('_', "\\_");
+	
+	var bondType = $("#psa-bond-bond-type").val();
+	//var bondSpclPrjctVrty = $("#psa-bond-bondSpclPrjctVrty").val();
+	var bondSpclPrjctVrty ="";
+	var couponType = $("#psa-bond-coupon-type").val();
+	var issueYear = $("#psa-bond-issue-year").val();
+	var entyDefinedCode = $("#psa-bond-enty").val();
+	var rtngShrt = $("#psa-bond-issue-rtng-shrt").val();
+	
+	var $sheet = $('#sheet-search-market-results'),
+	//sheet-search-market-results,sheet-bond-market
+        $pagi = $('#pagi-search-market-results');
+
+    var sheetSet = getsheetWidthCase($sheet, setSheetWidth($sheet)),
+        rw = sheetSet.width,
+        strCol = sheetSet.colHtml;
+    $sheet.find('colgroup').html(strCol);
+	
+	san.tools.getJsonData({
+        url: NT_URL + "/cm-u-bond-md/BondMarketInfoList2",
+		type: "POST",
+		timestamp: false,
+        data: {
+        		"pageNo":pageNo,
+        		"pageSize":"15",
+        		"bondName":bondName,
+        		"bondCode":bondCode,
+        		"issueEnty":issueEnty,
+        		"bondType":bondType,
+				"bondSpclPrjctVrty":bondSpclPrjctVrty,
+        		"couponType":couponType,
+        		"issueYear":issueYear,
+        		"entyDefinedCode":entyDefinedCode,
+        		"rtngShrt":rtngShrt
+        		},
+        onDone: function(data){
+            var _data = data.data,
+                records = _data.resultList;
+				//console.log(_data.resultList);
+            $('#bond-market-search-total').text(_data.total);
+			var pgTotal = data.data.pageTotal;
+        	var rdTotal = data.data.total;
+            var conditionStr = "";
+            if(""!=bondName){
+            	conditionStr += bondName;
+            }
+            if(""!=bondCode) {
+            	if(conditionStr.length>0) {
+            		conditionStr += " ";
+            	}
+            	conditionStr += bondCode;
+            }
+            if(""!=issueEnty) {
+            	if(conditionStr.length>0) {
+            		conditionStr += " ";
+            	}
+            	conditionStr += issueEnty;
+            }
+			//如果为一条数据，跳转详细信息
+			var bondBaseInfoLen = _data.total;
+			if(bondBaseInfoLen==1) {
+				// 判断是否为大额存单
+				if("100058"==records[0].bondTypeCode) {
+					window.open("/chinese/decdn/?bondDefinedCode=" + records[0].bondDefinedCode);
+				} else if("100060"==records[0].bondTypeCode || "100081"==records[0].bondTypeCode){
+					window.open("/chinese/hspzyljpj/?bondDefinedCode=" + records[0].bondDefinedCode);
+				} else {
+					window.open("/chinese/zqjc/?bondDefinedCode=" + records[0].bondDefinedCode);
+				}
+			}			
+			
+        
+            $sheet.sanDatasheet({
+                dataSource: 'local',
+                url: records,
+                dataHandler: function(data){
+                    var $sheet = this;
+                    $.each(data, function(n, v){
+                       // 判断是否为大额存单
+						if("100058"==v.bondTypeCode) {
+						  if(v.inptTp+""=="2"){
+							  //bondBaseInfo += '<td class="cell p-l-10"><span class="cell-value pd">' + hrefStr + sanCharEntity(data[i].bondName) + '</a></span><div title='+bondNoteText+'   class="tb"></div></td>'; 
+							   v.bondName = '{{html}}<a href="/chinese/decdn/?bondDefinedCode='+v.bondDefinedCode+'" target="_blank" title="' + v.bondName + '">' + v.bondName + '</a></span><div class="tb" title='+bondNoteText+'></div></td>';
+						  }	else{
+								v.bondName = '{{html}}<a href="/chinese/decdn/?bondDefinedCode='+v.bondDefinedCode+'" target="_blank" title="' + v.bondName + '">' + v.bondName + '</a>';
+						  }							
+						} else if("100060"==v.bondTypeCode || "100081"==v.bondTypeCode){
+							 if(v.inptTp+""=="2"){
+								  v.bondName = '{{html}}<a href="/chinese/hspzyljpj/?bondDefinedCode='+v.bondDefinedCode+'" target="_blank" title="' + v.bondName + '">' + v.bondName + '</a></span><div title='+bondNoteText+'   class="tb"></div></td>';
+								 }else{
+								  v.bondName = '{{html}}<a href="/chinese/hspzyljpj/?bondDefinedCode='+v.bondDefinedCode+'" target="_blank" title="' + v.bondName + '">' + v.bondName + '</a>';
+								 }
+								
+							}
+						else {
+							 if(v.inptTp+""=="2"){
+							  v.bondName = '{{html}}<a href="/chinese/zqjc/?bondDefinedCode='+v.bondDefinedCode+'" target="_blank" title="' + v.bondName + '">' + v.bondName + '</a></span><div title='+bondNoteText+'   class="tb"></div></td>';
+							 }else{
+							  v.bondName = '{{html}}<a href="/chinese/zqjc/?bondDefinedCode='+v.bondDefinedCode+'" target="_blank" title="' + v.bondName + '">' + v.bondName + '</a>';
+							 }
+							
+						}
+						
+                       if(v.entyFullName!=null){
+                    	   v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';   
+                       }else{
+                    	   v.entyFullName = '---';
+                       }
+                        
+                    });
+					$("#bond-search-condition").html(conditionStr);
+					$("#bond-result-count").html(rdTotal);
+					$pagi.sanPagination();
+					pagination3("pagi-search-market-results",pgTotal,rdTotal,pageNo);
+					$('#bond-search-result1').show();					
+                    return _example_dataFormatter($sheet, '', data);
+                },
+                mediaListening: true,
+                onMediaChange: function(){
+                    var newOpt = {
+                        fixedLayout: true,
+                        fixedLayoutType: 'column',
+                        fixedBodyWidth : rw
+                    }
+                    sheetSet = getsheetWidthCase($sheet, setSheetWidth($sheet));
+                    rw = sheetSet.width;
+                    strCol = sheetSet.colHtml;
+                    $sheet.find('colgroup').html(strCol);
+                    return {
+                        'XL': {
+                            fixedLayout: false
+                        },
+                        'default': newOpt
+                    }
+                }
+            });
+			
+			
+			
+			
+            
+        }
+    });
+	
+}
+
+function setSheetWidth($sheet) {
+        var $tr = $sheet.find('thead:eq(0)>tr').children(),
+            // 各列宽度
+            w = [], _w;
+        $tr.each(function(i){
+            switch (i) {
+                case 0:
+                    _w = 180;
+                    if (MEDIA_CASE == 'XS') {
+                        _w = 150;
+                    }
+                    break;
+                case 2:
+                    _w = 220;
+                    break;
+                case 3:
+                    _w = 160;
+                    break;
+                case 5:
+                    _w = 130;
+                    break;
+                default:
+                    _w = 110;
+                    break;
+            }
+            w.push(_w);
+        });
+        return w;
+    }
+</script>

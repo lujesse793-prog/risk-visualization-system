@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>诸暨市建设集团有限公司 | 贷后分析试跑</title>
+  <style>
+    :root {
+      --ink: #18201d;
+      --muted: #64716b;
+      --line: #d7ded8;
+      --paper: #fbfaf4;
+      --panel: #ffffff;
+      --sage: #6d8f76;
+      --clay: #b85f42;
+      --amber: #c28b31;
+      --blue: #3d6f89;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(24,32,29,.04) 1px, transparent 1px) 0 0 / 32px 32px,
+        linear-gradient(rgba(24,32,29,.035) 1px, transparent 1px) 0 0 / 32px 32px,
+        var(--paper);
+      font-family: "Microsoft YaHei", "Noto Sans CJK SC", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+    .shell { max-width: 1240px; margin: 0 auto; padding: 36px 28px 56px; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(320px, .8fr);
+      gap: 24px;
+      align-items: stretch;
+      border-top: 6px solid var(--ink);
+      padding-top: 24px;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1.02;
+      font-weight: 900;
+    }
+    .sub { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; max-width: 860px; }
+    .status {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 16px 36px rgba(24,32,29,.08);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+      background: #f5fafb;
+    }
+    .summary {
+      margin-top: 14px;
+      padding: 16px;
+      border-left: 4px solid var(--clay);
+      background: #fff6f1;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 24px; }
+    .card {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    h2 { margin: 0 0 14px; font-size: 20px; }
+    h3 { margin: 18px 0 10px; font-size: 15px; }
+    .meta { display: grid; grid-template-columns: 150px 1fr; gap: 10px 14px; font-size: 14px; }
+    .meta b { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; overflow-wrap: anywhere; }
+    th, td { padding: 10px 9px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #eef4ef; font-size: 12px; color: #31443a; }
+    tr:last-child td { border-bottom: 0; }
+    .metric {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .metric div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fcfdf9;
+    }
+    .metric strong { display: block; font-size: 24px; margin-bottom: 6px; }
+    .muted { color: var(--muted); }
+    .warn { color: var(--clay); font-weight: 800; }
+    .ok { color: var(--sage); font-weight: 800; }
+    .source-list { display: grid; gap: 10px; }
+    .source {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+    a { color: var(--blue); text-decoration: none; font-weight: 700; }
+    a:hover { text-decoration: underline; }
+    .wide { grid-column: 1 / -1; }
+    .pill { display: inline-block; margin: 3px 5px 3px 0; padding: 5px 8px; border-radius: 999px; background: #eef4ef; color: #41544a; font-size: 12px; }
+    @media (max-width: 860px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .metric { grid-template-columns: 1fr; }
+      .meta { grid-template-columns: 1fr; }
+      .shell { padding: 24px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="badge">Skill 试跑结果 · post-loan-analysis-report</div>
+        <h1>诸暨市建设集团有限公司</h1>
+        <p class="sub">按强化后的 skill 流程检索了年度报告、半年度报告、审计报告、募集说明书、评级报告、主体评级、债券年报、被执行、失信、诉讼、处罚、商票逾期等关键词。未检索到目标企业完整公开年报或半年报，当前结果采用公开募集说明书、上交所挂牌公告、评级报告及上市公司公告中的可核验披露数据。</p>
+      </div>
+      <aside class="status">
+        <span class="badge">data_level: partial_financial</span>
+        <div class="summary">未检索到目标企业完整年报或半年报；公开披露显示其2023年资产负债率67.40%，营业收入同比下降6.30%。2024年公告显示其为6亿元委托贷款提供连带责任保证，存在或有负债暴露。</div>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>数据可得性</h2>
+        <div class="meta">
+          <b>has_financial_report</b><span>false</span>
+          <b>has_prospectus</b><span>true，公开募集说明书中披露目标企业财务数据</span>
+          <b>has_rating_report</b><span>true，但评级报告主体为诸暨市城乡投资集团有限公司，目标企业作为建设集团/控股股东及同业主体出现</span>
+          <b>has_financial_data</b><span>true，部分财务数据</span>
+          <b>has_public_opinion</b><span>true，存在公开公告中的担保事项线索</span>
+          <b>限制说明</b><span>未找到目标企业完整三年一期财务报表；2024年1-9月数据未经审计，仅补充展示，不用于核心负面判断。</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>主体校验</h2>
+        <div class="meta">
+          <b>输入主体</b><span>诸暨市建设集团有限公司</span>
+          <b>匹配名称</b><span>诸暨市建设集团有限公司 / 诸暨建设集团</span>
+          <b>匹配角色</b><span>发行人、保证人、子公司、控股股东</span>
+          <b>是否同主体</b><span>true，财务数据项均直接指向目标企业；评级报告中需区分目标企业与其子公司诸暨市城乡投资集团有限公司。</span>
+          <b>置信度</b><span>high for 上交所挂牌公告、上市公司公告、募集说明书；medium for 非目标主体评级报告中的同业表格。</span>
+        </div>
+      </div>
+
+      <div class="card wide">
+        <h2>可获取财务数据</h2>
+        <p class="muted">金额单位统一为亿元。2022年数据来自诸暨市国有资产经营有限公司募集说明书中对目标企业的披露；2023年数据来自上市公司公告并由评级报告同业表交叉验证；2024年1-9月为未经审计补充数据。</p>
+        <table>
+          <thead>
+            <tr>
+              <th>项目</th>
+              <th>2022年末/2022年度</th>
+              <th>2023年末/2023年度</th>
+              <th>2024年9月末/1-9月</th>
+              <th>来源</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>资产总计</td><td>1,387.03</td><td>1,680.44</td><td>1,737.80</td><td>募集说明书、上市公司公告、评级报告</td></tr>
+            <tr><td>负债合计</td><td>942.38</td><td>1,132.54</td><td>1,185.83</td><td>募集说明书、上市公司公告</td></tr>
+            <tr><td>所有者权益/净资产</td><td>444.65</td><td>547.90</td><td>551.97</td><td>募集说明书、上市公司公告、评级报告</td></tr>
+            <tr><td>营业收入</td><td>39.35</td><td>36.87</td><td>13.35</td><td>募集说明书、上市公司公告、评级报告</td></tr>
+            <tr><td>净利润</td><td>6.18</td><td>6.15</td><td>0.74</td><td>募集说明书、上市公司公告</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card wide">
+        <h2>核心指标</h2>
+        <div class="metric">
+          <div>
+            <strong>67.40%</strong>
+            <span>2023年资产负债率，低于默认负面阈值70%，但杠杆水平接近阈值。</span>
+          </div>
+          <div>
+            <strong>-6.30%</strong>
+            <span>2023年营业收入同比下降，未触发-10%的默认负面阈值。</span>
+          </div>
+          <div>
+            <strong>-0.43%</strong>
+            <span>2023年净利润同比小幅下降，未触发-30%的默认负面阈值。</span>
+          </div>
+        </div>
+        <h3>口径限制</h3>
+        <p class="muted">2024年1-9月收入和净利润不能直接与2023全年口径同比，因此未作为核心负面判断依据。</p>
+      </div>
+
+      <div class="card">
+        <h2>负面事项揭示</h2>
+        <table>
+          <thead><tr><th>类型</th><th>事项</th><th>证据</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>财务指标</td>
+              <td>2023年营业收入同比下降</td>
+              <td>2022年收入39.35亿元，2023年收入36.87亿元，降幅约6.30%，未达默认负面阈值，仅作趋势提示。</td>
+            </tr>
+            <tr>
+              <td>其他公告</td>
+              <td>对外担保/或有负债暴露</td>
+              <td>2024年公告披露，委托贷款金额不超过6亿元，由诸暨市建设集团有限公司承担连带责任保证。</td>
+            </tr>
+            <tr>
+              <td>舆情核验</td>
+              <td>未检索到可直接用于判断的失信/被执行/商票逾期原文</td>
+              <td>公开公告中披露“经查询，不属于失信被执行人”；本项不作为正面评价，仅说明未发现可核验直接负面。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>检索关键词记录</h2>
+        <span class="pill">年度报告</span>
+        <span class="pill">半年度报告</span>
+        <span class="pill">审计报告</span>
+        <span class="pill">募集说明书</span>
+        <span class="pill">债券 募集说明书</span>
+        <span class="pill">评级报告</span>
+        <span class="pill">跟踪评级报告</span>
+        <span class="pill">主体评级</span>
+        <span class="pill">债券 年报</span>
+        <span class="pill">公开舆情</span>
+        <span class="pill">被执行</span>
+        <span class="pill">失信</span>
+        <span class="pill">诉讼</span>
+        <span class="pill">处罚</span>
+        <span class="pill">商票逾期</span>
+      </div>
+
+      <div class="card wide">
+        <h2>来源与主体校验</h2>
+        <div class="source-list">
+          <div class="source">
+            <b>上交所挂牌公告：24诸建02</b><br />
+            <span class="muted">匹配角色：发行人；证券简称“24 诸建02”，证券代码“256971”。</span><br />
+            <a href="https://www.sse.com.cn/disclosure/announcement/listing/bond/c/10767280/files/ca1a19fd1dad4543942ba594319df677.pdf">打开来源</a>
+          </div>
+          <div class="source">
+            <b>上交所挂牌公告：24诸建D1</b><br />
+            <span class="muted">匹配角色：发行人；证券简称“24 诸建D1”，证券代码“253545”。</span><br />
+            <a href="https://file.finance.sina.com.cn/211.154.219.97%3A9494/MRGG/BOND/2024/2024-1/2024-01-16/19770818.PDF">打开来源</a>
+          </div>
+          <div class="source">
+            <b>诸暨市国有资产经营有限公司募集说明书</b><br />
+            <span class="muted">匹配角色：子公司/目标企业自身财务数据；披露目标企业2022年末及2023年半年度财务数据。</span><br />
+            <a href="https://static.sse.com.cn/bond/bridge2/disclosure/announcement/c/202311/035452_20231116_S6H2.pdf">打开来源</a>
+          </div>
+          <div class="source">
+            <b>东方金诚评级报告</b><br />
+            <span class="muted">匹配角色：控股股东/诸暨建设集团；评级主体不是目标企业，但报告同业表披露目标企业2023年资产、净资产、资产负债率、营业收入。</span><br />
+            <a href="https://www.dfratings.com/uploads/files/2024/1231/dGfAoZlPVia9KpkE8hOfdk1nPzsrrhD8DFqqoWqK.pdf">打开来源</a>
+          </div>
+          <div class="source">
+            <b>上市公司公告：上峰水泥委托贷款事项</b><br />
+            <span class="muted">匹配角色：保证人/目标企业自身；披露目标企业2023年及2024年9月财务数据，并说明6亿元委托贷款由目标企业承担连带责任保证。</span><br />
+            <a href="https://epaper.stcn.com/pic/202412/03/2004e96665434875dd6bf16f08502235.pdf?u_asig=3b551&u_atoken=875f17a0271cafb56b68d2ec51d1fbd1">打开来源</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

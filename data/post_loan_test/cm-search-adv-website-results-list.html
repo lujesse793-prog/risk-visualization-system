@@ -1,0 +1,735 @@
+<div class="section-pg" > 
+	<ul class="san-list-a san-list-symbol-dot" id="page-search-bondOrEnty-results">
+		 
+	</ul>
+    <ul class="san-list-a alternating-invert san-list-symbol-dot" id="page-search-results">
+     
+    </ul>
+	
+    <!--san-list-a end-->
+	<div class="section-fo section-fo-m" id="page-paging" style="display: none;">
+            <div class="section-fo AR AC-s AC-xs">
+                <ul class="san-pagination">
+                    <li class="records-size"><span id="result-count">共 0 记录</span></li>
+                    <li class="page-size" id="pageNumberBr"><span id="current-pageNumber">1/1 页</span></li>
+					<br>
+                    <li class="page-btn page-first disabled" id="first-page"><a class="page-icon" href="javascript:void(0);" onclick="pageChange('first');" title="第一页">第一页</a></li>
+                    <li class="page-btn page-prev disabled" id="previous-page"><a class="page-icon" href="javascript:void(0);" onclick="pageChange('previous');" title="上一页">上一页</a></li>
+                    <li class="page-btn page-next disabled" id="next-page"><a class="page-icon" href="javascript:void(0);" onclick="pageChange('next');" title="下一页">下一页</a></li>
+                    <!-- <li class="page-btn page-last disabled" id="last-page"><a class="page-icon" href="javascript:void(0);" onclick="pageChange('last');" title="最后页">最后页</a></li>
+                    <li class="page-input"><span>跳到第 <input type="text" value="" id="text-change-page" onkeypress="if(event.keyCode==13)pageChange($('#text-change-page').val());" /> 页</span></li> -->
+                </ul>
+            </div>
+    </div>
+<input type="hidden" value="" id="sTextStore" />
+<input type="hidden" value="" id="cIdStrStore" />
+<input type="hidden" value="" id="methodStore" />
+<input type="hidden" value="" id="nLevelStore" />
+</div>
+<script type="text/javascript">
+var pageIndex=1;
+var pageSize=15;
+var pageCount;
+var dataCount;
+var bkColor=false;
+
+var sortPrevStore;
+var sortNextStore;
+$(function(){
+	var searchText = "{{searchText}}";
+ 	var channelIdStr = "{{channelIdStr}}";
+ 	var method = "{{method}}";
+ 	var nodeLevel = "{{nodeLevel}}";
+	if($.trim(searchText)!=''){
+		doQueryBondOrEnty(searchText);
+	    doSearch(searchText,channelIdStr,method,nodeLevel);
+	}	
+		searchPageInit();
+		var waitingTimer;		
+		$('#page-paging').on(MEDIA_LISTENER + '.sanPagination', function(e) {
+			clearInterval(waitingTimer);
+			waitingTimer = setInterval(function(){
+				if (GLOBE_INIT) {
+					var $br = $('#page-paging').find('br');
+					var $br2 = $('#page-paging2').find('br');
+					if ($br.length) {
+						$br.remove();
+					}
+					if ($br2.length) {
+						$br2.remove();
+					}
+					if (V_VW <= MEDIA_RULE.S){	
+					$('#first-page').before('<br>');
+					$('#first-page2').before('<br>');
+					}
+				}
+			}, 10);
+		}).trigger(MEDIA_LISTENER + '.sanPagination');
+		
+});
+	
+function doQueryBondOrEnty(param){
+	var searchValue = param;
+	if(searchValue.length==0){
+		return false;
+	}
+	$('#page-search-bondOrEnty-results').empty();
+		$.ajax({
+			type: "POST",
+			url: SES_URL+'/cm-u-notice-ses-cn/queryBondOrEnty?searchValue='+encodeURIComponent(searchValue)+'&verify='+verify,
+			//url: '192.168.91.102:18080/htmlDEMO/data/search-query.json',
+			cache: false,
+			dataType: 'json',
+			success: function(data) {					
+					var contents = data.data.bondOrEntyResult;
+					var entyRole =contents.entyRole;
+					var proName = contents.proName;
+					var pn="";
+					if(proName!=null&&proName.length!=0){
+						pn="(原:"+proName+")";
+					}
+					if(contents.name !='' || contents.code !=''){
+						 if(contents.rstFlag == 'BOND_INFO'){
+								var dataStr='';
+								dataStr += '<li class="li-item"> <div class="san-grid li-inner">';
+								if(contents.bondType == '100060' || contents.bondType == '100081'){
+									dataStr += '<div class="san-grid-m"><a class="text-info" href="/chinese/hspzyljpj/?bondDefinedCode='+contents.definedCode+'" target="_blank" title="'+contents.name+' ( '+contents.code+' ) 债券信息查询">'+contents.name+" ( "+contents.code+" ) 债券信息查询"+'</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>';
+								}else{
+									dataStr += '<div class="san-grid-m"><a class="text-info" href="/chinese/zqjc/?bondDefinedCode='+contents.definedCode+'" target="_blank" title="'+contents.name+' ( '+contents.code+' ) 债券信息查询">'+contents.name+" ( "+contents.code+" ) 债券信息查询"+'</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>';
+								}
+								dataStr +='</div></li>';
+								$("#page-search-bondOrEnty-results").html(dataStr);
+								bkColor	=true;
+								$('#page-search-results').removeClass('san-list-a san-list-symbol-dot');
+								$('#page-search-results').addClass('san-list-a alternating-invert san-list-symbol-dot');			
+							}else if(contents.rstFlag == 'BOND_INFO_1'){
+								var dataStr='';
+								dataStr += '<li> <div class="san-grid li-inner">';
+								dataStr += '<div class="san-grid-m"><a class="text-info" href="/chinese/decdn/?bondDefinedCode='+contents.definedCode+'" target="_blank" title="'+contents.name+' ( '+contents.code+' ) 债券信息查询">'+contents.name+" ( "+contents.code+" ) 债券信息查询"+'</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>';
+								dataStr +='</div></li>';
+								$("#page-search-bondOrEnty-results").html(dataStr);
+								bkColor	=true;
+								$('#page-search-results').removeClass('san-list-a san-list-symbol-dot');
+								$('#page-search-results').addClass('san-list-a alternating-invert san-list-symbol-dot');											
+							}else if(contents.rstFlag == 'ENTY_INFO'){
+								var dataStr='';
+								dataStr += '<li> <div class="san-grid li-inner">';
+								//机构混合身份
+								if(entyRole ==''){
+									/* dataStr += '<div class="san-grid-f-m"><a class="text-info" href="/chinese/jgxxpl/?entyDefinedCode='+contents.definedCode+'&entyFullName='+encodeURIComponent(escape(contents.name+pn))+'" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>'; */
+									dataStr += '<div class="san-grid-m"><a class="text-info" href="/chinese/jgxxpl/?entyDefinedCode='+contents.definedCode+'" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>';
+								}
+								//只有拆借身份
+								else if(entyRole=='0'&&verify==true){
+									/* dataStr += '<div class="san-grid-f-m"><a class="text-info" href="/chinese/jgxxpl/?entyDefinedCode='+contents.definedCode+'&entyFullName='+encodeURIComponent(escape(contents.name+pn))+'&isIssue=0" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>'; */
+									dataStr += '<div class="san-grid-m"><a class="text-info" href="/chinese/jgxxpl/?entyDefinedCode='+contents.definedCode+'&isIssue=0" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>';
+								}
+								//只有评级公司身份
+								else if(entyRole=='1'){
+									/* dataStr += '<div class="san-grid-f-m"><a class="text-info" href="/chinese/xxplcxpjgs/?entyDefinedCode='+contents.definedCode+'&entyFullName='+encodeURIComponent(escape(contents.name+pn))+'" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>'; */
+									dataStr += '<div class="san-grid-m"><a class="text-info" href="/chinese/xxplcxpjgs/?entyDefinedCode='+contents.definedCode+'" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>';
+								}else{
+									/* dataStr += '<div class="san-grid-f-m"><a class="text-info" href="/chinese/jgxxpl/?entyDefinedCode='+contents.definedCode+'&entyFullName='+encodeURIComponent(escape(contents.name+pn))+'" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>'; */
+									dataStr += '<div class="san-grid-m"><a class="text-info" href="/chinese/jgxxpl/?entyDefinedCode='+contents.definedCode+'" target="_blank" title="'+contents.name+' 机构信息查询">'+contents.name+' 机构信息查询</a><span class="link-img"><img src="/r/cms/chinese/chinamoney/assets/images/icon_search_1.gif" /></span></div>';
+								}
+								dataStr +='</div></li>';
+								$("#page-search-bondOrEnty-results").html(dataStr);
+								bkColor	=true;
+								$('#page-search-results').removeClass('san-list-a san-list-symbol-dot');
+								$('#page-search-results').addClass('san-list-a alternating-invert san-list-symbol-dot');											
+							}else{
+								bkColor	=false;
+								$('#page-search-results').removeClass('san-list-a alternating-invert san-list-symbol-dot');	
+								$('#page-search-results').addClass('san-list-a san-list-symbol-dot');
+																
+							}
+							
+					}
+				}
+		});
+		
+}
+
+function doSearch(param,param1,param2,param3){
+	dataCount=0;
+	//pageIndex=1;
+	pageSize=15;
+	//TODO:处理当输入值为空进行搜索时
+	doSearchPage(param,param1,param2,param3,'top',[]);
+
+}
+
+//分页跳转
+function pageChange(data){
+	var op = 'top';
+	var searchAfter;
+	if(data == 'first'){
+		pageIndex = 1;
+		op = 'top';
+		searchAfter = [];
+	}
+	else if(data == 'previous'){
+		pageIndex = pageIndex-1;
+		op = 'prev';
+		searchAfter = sortPrevStore;
+	}
+	else if(data == 'next'){
+		pageIndex = pageIndex+1;
+		op = 'next';
+		searchAfter = sortNextStore;
+	}
+	else if(data == 'last'){
+		pageIndex = pageCount;
+		searchAfter = [];
+	}
+	else{
+		pageIndex = data;
+		searchAfter = [];
+	}
+	if(data>pageCount){
+		pageIndex = pageCount;
+	}
+	if(data<=0){
+		pageIndex = 1;
+		return false;
+	}
+	param = $("#sTextStore").val();
+	param1 = $("#cIdStrStore").val();
+	param2 = $("#methodStore").val();
+	param3 = $("#nLevelStore").val();
+	doSearchPage(param,param1,param2,param3,op,searchAfter);
+	//回到顶部
+	$("html,body").animate({scrollTop: 0}, 100);
+}
+
+function doSearchPage(param,param1,param2,param3,op,searchAfter){
+	$(function(){
+		var	searchText = param;
+		var channelIdStr = param1; 
+		var method = param2;
+		var nodeLevel = param3;
+		args = $('#page-search-adv-website-results-tabs').find('li.current').attr('data-args');
+		sort = args;
+		$('#page-search-results').find('li').remove();
+		$('#page-paging').attr('style','display:none;');
+		//是否公开判断扩散至货币经纪公司信息披露权限
+		var isInfoPublishLendTmp = isInfoPublishLend;
+		if(infoLevel.indexOf('8')>-1&&isInfoPublishLendTmp=='false'){
+			isInfoPublishLendTmp='true';
+		}
+		$.ajax({
+			 type: "POST",
+				
+				url:SES_URL+'/cm-u-notice-ses-cn/query?sort='+sort+'&text='+encodeURIComponent(searchText)+'&date='+date+'&field='+field+'&start='+startDate+'&end='+endDate+
+					'&pageIndex='+pageIndex+'&pageSize='+pageSize+'&public='+isInfoPublishLendTmp+'&infoLevel='+arrObj[0]+'&sign='+arrObj[1]+'&channelIdStr='+channelIdStr+'&nodeLevel='+nodeLevel+
+					'&op='+op+'&searchAfter='+searchAfter,
+				
+		    	//url:'http://200.31.225.161:8090/fts/rest/cm-u-notice-ses-cn/query?sort='+sort+'&text='+encodeURIComponent(searchText)+'&date='+date+'&field='+field+'&start='+startDate+'&end='+endDate+
+					//'&pageIndex='+pageIndex+'&pageSize='+pageSize+'&public='+isInfoPublishLendTmp+'&infoLevel='+infoLevel+'&channelIdStr='+channelIdStr+'&nodeLevel='+nodeLevel
+				
+				//url: SES_URL+'/cm-u-notice-ses-cn/query?sort='+sort+'&date='+date+'&text='+encodeURIComponent(searchText)+'&channelIdStr='+channelIdStr+'&method='+method+'&infoLevel='
+		    	//+infoLevel+'&field='+field+'&start='+startDate+'&end='+endDate+'&siteId='+siteId+'&pageIndex='+pageIndex+'&pageSize='+pageSize+'&isFuzzy=true'+'&nodeLevel='+nodeLevel+'&isInfoPublishLend='+isInfoPublishLendTmp,
+				
+		}).done(function(data){
+			var dataStr='';
+			var total = 0;
+			if(data.data.result.pageItems.length>0){
+				var json = setContentTxtInfo(data.data.result.pageItems);
+				var jsonLen = json.length;
+
+	    		for(var i=0;i<data.data.result.pageItems.length;i++){
+		    		var entry = data.data.result.pageItems[i];
+					if(bkColor==false){
+					if(i%2==0){
+		    			dataStr += '<li class="li-item even"> <div class="san-grid li-inner">';	
+		    		}else{
+	    				dataStr += '<li class="li-item odd"> <div class="san-grid li-inner">';
+		    		}
+					}else{
+						if(i%2==0){
+							dataStr += '<li class="li-item odd"> <div class="san-grid li-inner">';
+						}else{							
+							dataStr += '<li class="li-item even"> <div class="san-grid li-inner">';	
+						}
+					
+					}
+			    		
+	    			var paths = entry['paths'];
+	    			//var txtExist = entry['txtExist'];
+	    			var title = "";
+	    			if(entry['title']!=null){
+	    				title = sanCharEntity(entry['title']);
+	    			}
+	    			var level = entry['level'];
+	    			var scid = entry['secondChannelId'];
+	    			var contentId = entry['id'];
+	    			var ctime = getUTC({date : parseInt(entry['releaseDate']),format : 'YYYY-MM-DD hh:mm'});
+	    			var channel = entry['channel'];
+	    			if(entry['link']!=null && entry['link']!=''){
+	    				url = entry['link'];
+	    			}else{
+                         url = getUrl2(entry['dealPath']);
+	    			}
+	    			
+	    			//正文是否存在
+	    			//var txtExist = getTxtExist(contentId);
+	    			var txtExist = getContentTxtInfoById(json,contentId,jsonLen);
+	    			if(paths.length==1&&txtExist==0){
+	    				var path = paths[0];
+	    				if(path.toLowerCase().indexOf('.doc')>0 || path.toLowerCase().indexOf('.docx')>0){
+	    					dataStr += '<div class="san-grid-r text-date"><span>';
+	    	    			dataStr += getUTC({date : parseInt(entry['releaseDate']),format : 'YYYY-MM-DD'})+'</span></div>';
+	    					//dataStr += '<div class="san-grid-f-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',false,null);">';
+	    					dataStr += '<div class="san-grid-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,false,\''+url+'\');">';
+	    	    			dataStr += replaceWords(entry['title']);
+	    	    			dataStr +='</a>';
+	    	    			//dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-word-170515.png" /></a></div>';
+	    	    			dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-word-170515.png" /></a></div>';
+	        			}
+	    				else if(path.toLowerCase().indexOf('.xls')>0 || path.toLowerCase().indexOf('.xlsx')>0){
+	    					dataStr += '<div class="san-grid-r text-date"><span>';
+	    	    			dataStr += getUTC({date : parseInt(entry['releaseDate']),format : 'YYYY-MM-DD'})+'</span></div>';
+	    					//dataStr += '<div class="san-grid-f-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',false,null);">';
+	    					dataStr += '<div class="san-grid-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,false,\''+url+'\');">';
+	    	    			dataStr += replaceWords(entry['title']);
+	    	    			dataStr +='</a>';
+	    	    			//dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-excel-170515.png" /></a></div>';
+	    	    			dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-excel-170515.png" /></a></div>';
+	        			}
+	    				else if(path.toLowerCase().indexOf('.pdf')>0){
+	    					dataStr += '<div class="san-grid-r text-date"><span>';
+	    	    			dataStr += getUTC({date : parseInt(entry['releaseDate']),format : 'YYYY-MM-DD'})+'</span></div>';
+	    					//dataStr += '<div class="san-grid-f-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',true,null);">';
+	    					dataStr += '<div class="san-grid-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,true,\''+url+'\');">';
+	    	    			dataStr += replaceWords(entry['title']);
+	    	    			dataStr +='</a>';
+	    	    			//dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-pdf-170515.png" /></a></div>';
+	    	    			dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-pdf-170515.png" /></a></div>';
+	    				}
+	    				else{
+	    					dataStr += '<div class="san-grid-r text-date"><span>';
+	    	    			dataStr += getUTC({date : parseInt(entry['releaseDate']),format : 'YYYY-MM-DD'})+'</span></div>';
+	    					//dataStr += '<div class="san-grid-f-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',false,null);">';
+	    	    			dataStr += '<div class="san-grid-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,false,\''+url+'\');">';
+			    			dataStr += replaceWords(entry['title']);
+			    			dataStr +='</a>';
+			    			//dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-other-170515.png" /></a></div>';
+			    			dataStr +='<a class="link-img" href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',null,null,null,false,null);" title="点击下载"><img src="/r/cms/chinese/chinamoney/assets/images/icon-other-170515.png" /></a></div>';
+	    				}
+	    			}else{
+                      	var titleStr = '';
+				        if(entry['title']!=null){
+				      	if(!RegExp.prototype.isPrototypeOf("<font color='red'>")) {
+							titleStr = entry['title'].replace(new RegExp("<font color='red'>", "g"), "").replace(new RegExp("</font>", "g"), "");
+				     	 } else {
+							titleStr = entry['title'].replace("<font color='red'>", "").replace("</font>","");
+				     	 }
+				       }
+	    			if(entry['link']!=null && entry['link']!=''){
+		    				dataStr += '<div class="san-grid-r text-date"><span>';
+	    	    			         dataStr += getUTC({date : parseInt(entry['releaseDate']),format : 'YYYY-MM-DD'})+'</span></div>';
+		    				//dataStr += '<div class="san-grid-f-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',null,null,\''+url+'\');" title="'+title+'">';
+		    				dataStr += '<div class="san-grid-m"><a href="javascript:void(0);" onclick="window.open(encodeURI(\''+url+'\'));" title="'+title+'">';
+			    			dataStr += replaceWords(entry['title']);
+			    			dataStr +='</a>';
+		    	    			dataStr +='<a class="link-img" href="javascript:void(0);"></a></div>';
+			    			}else{
+			    				dataStr += '<div class="san-grid-r text-date"><span>';
+		    	    			dataStr += getUTC({date : parseInt(entry['releaseDate']),format : 'YYYY-MM-DD'})+'</span></div>';
+			    				//dataStr += '<div class="san-grid-f-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',null,null,\''+url+'\');" title="'+title+'">';
+			    				dataStr += '<div class="san-grid-m"><a href="javascript:void(0);" onclick="filterLevel(\''+level+'\',\''+contentId+'\',\''+channel+'\',\''+scid+'\',\''+titleStr+'\',\''+ctime+'\',null,\''+url+'\');" title="'+titleStr+'">';
+				    			dataStr += replaceWords(entry['title']);
+				    			dataStr +='</a>';
+		    	    			dataStr +='<a class="link-img" href="javascript:void(0);"></a></div>';
+			    			}
+	    			}
+	    			dataStr += '</div></li>';
+	    			//作条件存储
+	    			$("#sTextStore").val(param);
+	    			$("#cIdStrStore").val(param1);
+	    			$("#methodStore").val(param2);
+	    			$("#nLevelStore").val(param3);
+		    	}
+				$('#page-search-results').html(dataStr);
+		    	pageIndex = data.data.result.pageIndex;
+		    	pageSize = data.data.result.pageSize;
+		    	total = data.data.result.total;
+				//存储总数据
+				dataCount=total;
+		    	pageCount = Math.ceil(total/pageSize);
+		    	$('#current-pageNumber').text(pageIndex+'/'+pageCount+'页');
+	    	}else{
+	    		$('#current-pageNumber').text(1+'/'+1+'页');
+	    	}
+		    var	searchTitle = replaceWords(searchText);
+		    $('#page-paging').removeAttr('style');
+	    	$('#result-count').text('共'+total+'记录');
+
+	    	$("#searchResult").html('<span>搜索"'+searchTitle+'"获得<span id="search-adv-website-results-count">'+total+'</span>条查询结果</span>');
+
+			// 存储翻页值
+			sortPrevStore = data.data.result.sortPrev;
+			sortNextStore = data.data.result.sortNext;
+	    	doPageDisabled();
+			
+	    	//parent.dyniframesize('seniorSearchiframe');		
+			// 页码输入域监听
+			// $('#text-change-page').off('keyup');
+			// $('#text-change-page').on('keyup',function(e){ 		
+			// 	var $input = $(this),
+			// 		v = parseInt($input.val(), 10),
+			// 		t = /^[1-9][0-9]*$/,
+			// 		f = t.test(v);
+
+			// 	var min = 1,
+			// 		max = parseInt(pageCount, 10),
+			// 		c = parseInt(pageIndex, 10);
+			// 	if (!f || v > max || dataCount==0) {v = '';}
+			// 	$input.val(v);
+			// });		
+		});
+	});
+}
+
+// 替换查询字符串样式 
+function replaceWords(str){
+	if(str==null){
+		var searchText = $("#searchText").val();
+		return "<font color='red'>"+searchText+"</font>";
+	}
+	var str_new=str;
+	var str_cut = str;
+	if($.trim($('#searchText').val())!=''){
+		var searchText = $.trim($('#searchText').val()).split(' ');
+		if(searchText.length>0){
+			for(var i=0;i<searchText.length;i++){
+				var str1_new='';
+				var str1 = str_new;
+				var word_lower = searchText[i].toLowerCase();
+				var str_lower = str1.toLowerCase();
+				if(str_lower.indexOf(word_lower)<0){
+					str1_new = str_new;
+				}else{
+					while(str_lower.indexOf(word_lower)>=0){
+						var index = str_lower.indexOf(word_lower);
+						var old_title = str1.substring(index,index+word_lower.length);
+						str1_new += str1.substring(0,index+word_lower.length).replace(old_title,'<font color="red">'+old_title+'</font>');
+						str_lower = str_lower.substring(index+word_lower.length);
+						str1 = str1.substring(index+word_lower.length);
+					}
+					if(str_lower.lastIndexOf(word_lower)+word_lower.length<str_cut.length){
+						str1_new += str_cut.substring(str_cut.toLowerCase().lastIndexOf(word_lower)+word_lower.length);
+					}
+				}
+				str_cut = str1_new;
+				str_new = str1_new;
+			}
+		}
+	}
+	return str_new;
+} 
+
+/* 设置分页跳转链接是否可用 */
+function doPageDisabled(){
+	if(pageCount<=1){
+		$('#first-page').attr('class','page-btn page-first disabled');
+		$('#previous-page').attr('class','page-btn page-prev disabled');
+		$('#next-page').attr('class','page-btn page-next disabled');
+		$('#last-page').attr('class','page-btn page-last disabled');
+		$('#first-page').find('a').removeAttr('onclick');
+		$('#previous-page').find('a').removeAttr('onclick');
+		$('#next-page').find('a').removeAttr('onclick');
+		// $('#last-page').find('a').removeAttr('onclick');
+		
+				
+	}else{
+		if(pageIndex<pageCount){
+			if(pageIndex==1){
+    			$('#first-page').attr('class','page-btn page-first disabled');
+	    		$('#previous-page').attr('class','page-btn page-prev disabled');
+	    		$('#next-page').attr('class','page-btn page-next');
+	    		$('#last-page').attr('class','page-btn page-last');
+	    		$('#first-page').find('a').removeAttr('onclick');
+	    		$('#previous-page').find('a').removeAttr('onclick');
+	    		$('#next-page').find('a').attr('onclick','pageChange("next");');
+	    		// $('#last-page').find('a').attr('onclick','pageChange("last");');
+    		}else{
+    			$('#first-page').attr('class','page-btn page-first');
+	    		$('#previous-page').attr('class','page-btn page-prev');
+	    		$('#next-page').attr('class','page-btn page-next');
+	    		$('#last-page').attr('class','page-btn page-last');
+	    		$('#first-page').find('a').attr('onclick','pageChange("first");');
+	    		$('#previous-page').find('a').attr('onclick','pageChange("previous");');
+	    		$('#next-page').find('a').attr('onclick','pageChange("next");');
+	    		// $('#last-page').find('a').attr('onclick','pageChange("last");');
+    		}
+		}else{
+			$('#first-page').attr('class','page-btn page-first');
+    		$('#previous-page').attr('class','page-btn page-prev');
+    		$('#next-page').attr('class','page-btn page-next disabled');
+    		$('#last-page').attr('class','page-btn page-last disabled');
+    		$('#first-page').find('a').attr('onclick','pageChange("first");');
+    		$('#previous-page').find('a').attr('onclick','pageChange("previous");');
+    		$('#next-page').find('a').removeAttr('onclick');
+    		// $('#last-page').find('a').removeAttr('onclick');
+		}
+	}
+	
+	if(dataCount==0){
+			$('#first-page').attr('class','page-btn page-first disabled');
+	    	$('#previous-page').attr('class','page-btn page-prev disabled');
+    		$('#next-page').attr('class','page-btn page-next disabled');
+    		$('#last-page').attr('class','page-btn page-last disabled');
+    		$('#first-page').find('a').removeAttr('onclick');
+	    	$('#previous-page').find('a').removeAttr('onclick');
+    		$('#next-page').find('a').removeAttr('onclick');
+    		// $('#last-page').find('a').removeAttr('onclick');
+	}
+	// $('#text-change-page').val('');
+}
+
+/* 获取主机地址，并生成文章地址 */
+function getUrl(channelPath,articleId,date){
+	var curWwwPath = window.document.location.href;
+	var pathName = window.document.location.pathname;
+	var pos = curWwwPath.indexOf(pathName);
+	var localHostPath = curWwwPath.substring(0,pos);
+	return localHostPath+'/chinese/'+channelPath+'/'+date+'/'+articleId+'.html?cp='+channelPath;
+}
+function getUrl2(link){
+	var curWwwPath = window.document.location.href;
+	var pathName = window.document.location.pathname;
+	var pos = curWwwPath.indexOf(pathName);
+	var localHostPath = curWwwPath.substring(0,pos);
+	return localHostPath+link;
+}
+
+//查看稿件正文是否存在
+function getTxtExist(contentId){
+	var isExist;
+	$.ajax({
+		url:NT_URL+"/cm-s-notice-query/txtAttachmentInfo",
+        data:{"contentId":contentId},
+		type:"POST",
+		dataType : 'json',
+		cache : false,
+		async:false,
+		success:function(data){
+			//是否存在正文 0-不存在 1-存在
+			var isTxt = data.data.isTxt;
+			if(isTxt.length!=0){
+				if(isTxt=="0"){
+					isExist = false;
+				}else{
+					isExist = true;
+				}
+			}
+		}
+	});
+	
+	return isExist;
+	
+}
+
+
+//查看或下载密集为2的稿件,需要用户登录
+function filterLevel(level,contentId,channel,scid,title,ctime,isOpen,url){
+	if(level==2&&verify==false){
+		if(confirm("您没有权限浏览该网站")){
+			window.open("/r/cms/chinese/chinamoney/html/frontpage/login.html");
+		}
+	}else if(url==''||url==null||url=='null'){
+		//只有PDF需要open
+		if(isOpen){
+			
+				 $.ajax({
+						url:LSS_URL+'cm-s-security/checkMessage',
+						type: "post",
+						data:{"ctnId":contentId},
+						crossDomain:true,
+						dataType: 'json',
+						cache: false,
+						async:false,
+						success: function(data) {
+							if(data.head.rep_code == "500"){
+								alert("服务器异常，请联系网站管理员！");
+								return;
+							}
+							if(data.data.result == "send"){
+								document.getElementById("msg").style.display ="block";
+		                        document.getElementById("bgMSG").style.display ="block";
+			 					$('#msg').sanJumpto({url:'/r/cms/chinese/chinamoney/html/msg.html'});
+								 $('#path').val(fileDownUrl+'fileDownLoad.do?mode=open&contentId='+contentId+'&priority=0'+'&ut='+arrObj[0]+'&sign='+arrObj[1]);
+
+							}else{
+								//alert(data.data.result+"");
+								//window.location.href=fileDownUrl+'fileDownLoad.do?mode=open&contentId='+contentId+'&priority=0';
+								window.open(fileDownUrl+'fileDownLoad.do?mode=open&contentId='+contentId+'&priority=0'+'&ut='+arrObj[0]+'&sign='+arrObj[1]);
+							}
+						}
+				  });
+				
+				
+			
+			//window.open(fileDownUrl+'fileDownLoad.do?mode=open&contentId='+contentId+'&priority=0');
+		}else{
+			$.ajax({
+				url:LSS_URL+'/cm-s-security/checkMessage',
+				type: "post",
+				data:{"ctnId":contentId},
+				crossDomain:true,
+				dataType: 'json',
+				cache: false,
+				async:false,
+				success: function(data) {
+					if(data.head.rep_code == "500"){
+						alert("服务器异常，请联系网站管理员！");
+						return;
+					}
+					if(data.data.result == "send"){
+						document.getElementById("msg").style.display ="block";
+                        document.getElementById("bgMSG").style.display ="block";
+	 					$('#msg').sanJumpto({url:'/r/cms/chinese/chinamoney/html/msg.html'});
+						 $('#path').val(fileDownUrl+'fileDownLoad.do?mode=save&contentId='+contentId+'&priority=0'+'&ut='+arrObj[0]+'&sign='+arrObj[1]);
+						 
+
+					}else{
+						//alert(data.data.result+"");
+						//window.location.href=fileDownUrl+'fileDownLoad.do?mode=save&contentId='+contentId+'&priority=0';
+						window.open(fileDownUrl+'fileDownLoad.do?mode=save&contentId='+contentId+'&priority=0'+'&ut='+arrObj[0]+'&sign='+arrObj[1]);
+					}
+				}
+		    });
+			//window.open(fileDownUrl+'fileDownLoad.do?mode=save&contentId='+contentId+'&priority=0');
+		}
+	}else{
+		url = url + '&cp=' + channel;
+		//培训与服务支持常见问题栏目路径
+		var channelPath = 'cjwt';
+		//大额存单常见问题栏目路径
+		var bcpath = 'cjwt2';
+		//同业存单常见问题栏目路径
+		var tcpath = 'cjwt3';
+		var cid = getChannelId(channelPath);
+		//常见问题栏目稿件特殊处理
+		if(scid ==cid||channel==bcpath||channel==tcpath){
+			var curWwwPath = window.document.location.href;
+			var pathName = window.document.location.pathname;
+			var pos = curWwwPath.indexOf(pathName);
+			var localHostPath = curWwwPath.substring(0,pos);
+			window.open(localHostPath+'/r/cms/chinese/chinamoney/html/notice/ts/new_question.html?url='+encodeURI(url)+'&time='+ctime+'&title='+title);
+		}else{
+			
+				 $.ajax({
+						url:LSS_URL+'cm-s-security/checkMessage',
+						type: "post",
+						data:{"ctnId":contentId},
+						crossDomain:true,
+						dataType: 'json',
+						cache: false,
+						async:false,
+						success: function(data) {
+							if(data.head.rep_code == "500"){
+								alert("服务器异常，请联系网站管理员！");
+								return;
+							}
+							if(data.data.result == "send"){
+								document.getElementById("msg").style.display ="block";
+		                        document.getElementById("bgMSG").style.display ="block";
+			 					$('#msg').sanJumpto({url:'/r/cms/chinese/chinamoney/html/msg.html'});
+								 $('#path').val(encodeURI(url)+'&ut='+arrObj[0]+'&sign='+arrObj[1]);
+								
+
+							}else{
+								//alert(data.data.result+"");
+								//window.location.href=encodeURI(url);
+								window.open(encodeURI(url)+'&ut='+arrObj[0]+'&sign='+arrObj[1]);
+							}
+						}
+				  });
+				
+				
+			
+			//window.open(encodeURI(url));
+		}
+	}
+}
+
+//获取多条稿件的正文相关信息
+function setContentTxtInfo(d){
+	var contentIds="";
+	var size = d.length;
+	$.each(d,function(i,n){
+		var contentId = n["id"];
+		if(i != (size-1)){
+			contentIds += contentId+",";
+		}else{
+			contentIds += contentId;
+		}
+	});	
+	var jsonStr="";
+	$.ajax({
+		url:NT_URL+"/cm-s-notice-query/draftInfo",
+        data:{"contentIds":contentIds},
+		type:"POST",
+		dataType : 'json',
+		cache : false,
+		async:false,
+		success:function(data){
+			var size = 0;
+			if(data.data!=null){
+				size = data.data.size;
+			}			
+			var suffix = "";
+			var downloadHref = "";
+			var href = "";
+			
+			$.each(data.records,function(i,n){
+				
+				var contentId = n.contentId;
+				//是否存在正文
+				var txt = n.txt;
+				
+				if(i != (size-1)){
+					jsonStr += '{"contentId":"'+contentId+'","txt":"'+txt+'"},';
+				}else{
+					jsonStr += '{"contentId":"'+contentId+'","txt":"'+txt+'"}';
+				}
+				
+			});
+		}
+	});
+	var jsonStr = '['+jsonStr+']';
+	var json = JSON.parse(jsonStr);
+	return json;
+}
+function getContentTxtInfoById(json,id,size){	
+	var arr;	
+	for(var i=0;i<size;i++){
+		arr = json[i];
+		var contentId = arr.contentId;
+		if(contentId==id){
+			break; 
+		}
+	}
+	
+	return arr.txt;
+}
+
+function searchPageInit(){
+		var $br = $('#page-paging').find('br');
+		var $br2 = $('#page-paging2').find('br');
+		if ($br.length) {
+			$br.remove();
+		}
+		if ($br2.length) {
+			$br2.remove();
+		}
+		console.log(V_VW);
+		if (V_VW <= MEDIA_RULE.S){
+		$('#first-page').before('<br>');
+		$('#first-page2').before('<br>');
+		}
+}
+
+</script>

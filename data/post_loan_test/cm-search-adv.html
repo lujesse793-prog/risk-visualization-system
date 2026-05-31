@@ -1,0 +1,56 @@
+<div class="main-page-body-inner">
+    <div class="main-body">
+
+        <div class="subpage" id="page-search">
+
+            <div class="section-a section-a-default">
+                <div class="section-a-head AC">
+                    <div class="section-a-title">高级查询</div>
+                </div>
+                <div class="section-a-body">
+
+                    <ul class="san-tabs-a" id="page-search-adv-tabs">
+                        <li><a href="javascript:void(0);" data-url="/r/cms/chinese/chinamoney/html/ses/search-adv-website.html"><span>网站内容</span></a></li>
+                        <li><a href="javascript:void(0);" data-url="/r/cms/chinese/chinamoney/html/bond/md/search-adv-bond.html"><span>债券行情/信息</span></a></li>
+                        <li><a href="javascript:void(0);" data-url="/r/cms/chinese/chinamoney/html/bond/md/search-adv-disclosure.html"><span>机构信息</span></a></li>
+                    </ul>
+                
+                    <div class="san-tabs-content OV">
+                        <div class="san-tabs-panel"></div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="section-block" id="search-results-content"></div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    // 仅用于htmlDEMO
+   // $('#main-menu').sanMainMenu('setCurrent', false).sanMainMenu('setBackground', null, '{{MURL}}images/banner/banner-01.png');
+
+    $('#page-search-adv-tabs').sanTabs({
+        injectedVar: injectedObj,
+        onEvent: function(){
+            $('#search-results-content').empty();
+        }
+    });
+	
+});
+function getFrameSrc(name) {
+	var url = location.href;
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+	var channel = window.location.search.substr(1).match(reg);
+	if(channel != null) {
+		return decodeURIComponent(channel[2]);
+		} else {
+		return null;
+	}
+}
+
+
+</script>

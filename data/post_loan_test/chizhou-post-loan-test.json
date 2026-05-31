@@ -1,0 +1,272 @@
+{
+  "enterprise_name": "池州市投资控股集团有限公司",
+  "report_date": "2026-05-31",
+  "data_updated_at": "2026-05-31 00:00:00",
+  "data_period_type": "可获取数据不足",
+  "analysis_basis": "公开舆情",
+  "quarterly_report_used_for_analysis": false,
+  "source_policy": {
+    "allowed_announcement_sources_only": true,
+    "allowed_sources": [
+      "上海证券交易所债券信息网 / 上交所公司债券项目信息平台",
+      "深圳证券交易所固定收益信息平台 / 深交所债券公告",
+      "中国货币网",
+      "银行间市场清算所 / 债券信息披露平台",
+      "北京金融资产交易所",
+      "巨潮资讯",
+      "中国债券信息网"
+    ],
+    "external_financial_sources_used": false
+  },
+  "freshness_gate": {
+    "enabled": true,
+    "cutoff_publish_date": "2025-01-01",
+    "minimum_report_period": "2024年度",
+    "latest_document_publish_date": "",
+    "latest_report_period": "",
+    "is_fresh_enough_for_analysis": false,
+    "stop_reason": "未检索到该企业 2025 年以来的最新公开财务数据披露，当前公开资料较旧，不适合作为最新贷后分析依据。"
+  },
+  "data_availability": {
+    "has_financial_report": false,
+    "has_prospectus": false,
+    "has_rating_report": false,
+    "has_financial_data": false,
+    "has_public_opinion": true,
+    "data_level": "opinion_only",
+    "data_limitation_note": "7类允许公告平台未检索到可用于财务分析的最新年报、半年报、募集说明书或评级报告；仅展示公开监管信息。"
+  },
+  "sources": {
+    "financial_report": [],
+    "prospectus": [],
+    "rating_report": [],
+    "public_opinion": [
+      {
+        "title": "关于对池州市投资控股集团有限公司予以书面警示的决定",
+        "publish_date": "2025-02-20",
+        "source": "上海证券交易所债券信息网 / 上交所公司债券项目信息平台",
+        "url": "https://www.sse.com.cn/disclosure/credibility/bonds/regulatory/alert/auto/c/10771412/files/79d6307e19e94f0498939571edf39aa3.pdf",
+        "summary": "上交所对池州市投资控股集团有限公司予以书面警示，事项涉及23池州01募集资金使用合规问题。",
+        "is_negative": true,
+        "entity_verification": {
+          "input_name": "池州市投资控股集团有限公司",
+          "matched_name_in_document": "池州市投资控股集团有限公司",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "目标企业自身",
+          "verification_evidence": "文件标题及正文均指向池州市投资控股集团有限公司。",
+          "confidence": "high"
+        }
+      }
+    ]
+  },
+  "search_log": [
+    {
+      "source_name": "上海证券交易所债券信息网 / 上交所公司债券项目信息平台",
+      "searched": true,
+      "keywords_used": [
+        "池州市投资控股集团有限公司 年度报告",
+        "池州市投资控股集团有限公司 半年度报告",
+        "池州市投资控股集团有限公司 审计报告",
+        "池州市投资控股集团有限公司 募集说明书",
+        "池州市投资控股集团有限公司 债券 募集说明书",
+        "池州市投资控股集团有限公司 评级报告",
+        "池州市投资控股集团有限公司 跟踪评级报告",
+        "池州市投资控股集团有限公司 主体评级",
+        "池州市投资控股集团有限公司 债券 年报",
+        "池州市投资控股集团有限公司 公开舆情",
+        "池州市投资控股集团有限公司 被执行",
+        "池州市投资控股集团有限公司 失信",
+        "池州市投资控股集团有限公司 诉讼",
+        "池州市投资控股集团有限公司 处罚",
+        "池州市投资控股集团有限公司 商票逾期"
+      ],
+      "matched_documents": 0,
+      "selected_documents": 0,
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未命中可用财务披露；另命中2025-02-20上交所书面警示，该文件仅作为公开负面信息，不作为财务数据来源。"
+    },
+    {
+      "source_name": "深圳证券交易所固定收益信息平台 / 深交所债券公告",
+      "searched": true,
+      "keywords_used": [
+        "池州市投资控股集团有限公司 年度报告",
+        "池州市投资控股集团有限公司 半年度报告",
+        "池州市投资控股集团有限公司 审计报告",
+        "池州市投资控股集团有限公司 募集说明书",
+        "池州市投资控股集团有限公司 债券 募集说明书",
+        "池州市投资控股集团有限公司 评级报告",
+        "池州市投资控股集团有限公司 跟踪评级报告",
+        "池州市投资控股集团有限公司 主体评级",
+        "池州市投资控股集团有限公司 债券 年报",
+        "池州市投资控股集团有限公司 公开舆情",
+        "池州市投资控股集团有限公司 被执行",
+        "池州市投资控股集团有限公司 失信",
+        "池州市投资控股集团有限公司 诉讼",
+        "池州市投资控股集团有限公司 处罚",
+        "池州市投资控股集团有限公司 商票逾期"
+      ],
+      "matched_documents": 0,
+      "selected_documents": 0,
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未检索到主体匹配且可用于财务分析的年报、半年报、募集说明书、评级报告或债券公告。"
+    },
+    {
+      "source_name": "中国货币网",
+      "searched": true,
+      "keywords_used": [
+        "池州市投资控股集团有限公司 年度报告",
+        "池州市投资控股集团有限公司 半年度报告",
+        "池州市投资控股集团有限公司 审计报告",
+        "池州市投资控股集团有限公司 募集说明书",
+        "池州市投资控股集团有限公司 债券 募集说明书",
+        "池州市投资控股集团有限公司 评级报告",
+        "池州市投资控股集团有限公司 跟踪评级报告",
+        "池州市投资控股集团有限公司 主体评级",
+        "池州市投资控股集团有限公司 债券 年报",
+        "池州市投资控股集团有限公司 公开舆情",
+        "池州市投资控股集团有限公司 被执行",
+        "池州市投资控股集团有限公司 失信",
+        "池州市投资控股集团有限公司 诉讼",
+        "池州市投资控股集团有限公司 处罚",
+        "池州市投资控股集团有限公司 商票逾期"
+      ],
+      "matched_documents": 0,
+      "selected_documents": 0,
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未检索到主体匹配且可用于财务分析的年报、半年报、募集说明书、评级报告或债券公告。"
+    },
+    {
+      "source_name": "银行间市场清算所 / 债券信息披露平台",
+      "searched": true,
+      "keywords_used": [
+        "池州市投资控股集团有限公司 年度报告",
+        "池州市投资控股集团有限公司 半年度报告",
+        "池州市投资控股集团有限公司 审计报告",
+        "池州市投资控股集团有限公司 募集说明书",
+        "池州市投资控股集团有限公司 债券 募集说明书",
+        "池州市投资控股集团有限公司 评级报告",
+        "池州市投资控股集团有限公司 跟踪评级报告",
+        "池州市投资控股集团有限公司 主体评级",
+        "池州市投资控股集团有限公司 债券 年报",
+        "池州市投资控股集团有限公司 公开舆情",
+        "池州市投资控股集团有限公司 被执行",
+        "池州市投资控股集团有限公司 失信",
+        "池州市投资控股集团有限公司 诉讼",
+        "池州市投资控股集团有限公司 处罚",
+        "池州市投资控股集团有限公司 商票逾期"
+      ],
+      "matched_documents": 0,
+      "selected_documents": 0,
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未检索到主体匹配且可用于财务分析的年报、半年报、募集说明书、评级报告或债券公告。"
+    },
+    {
+      "source_name": "北京金融资产交易所",
+      "searched": true,
+      "keywords_used": [
+        "池州市投资控股集团有限公司 年度报告",
+        "池州市投资控股集团有限公司 半年度报告",
+        "池州市投资控股集团有限公司 审计报告",
+        "池州市投资控股集团有限公司 募集说明书",
+        "池州市投资控股集团有限公司 债券 募集说明书",
+        "池州市投资控股集团有限公司 评级报告",
+        "池州市投资控股集团有限公司 跟踪评级报告",
+        "池州市投资控股集团有限公司 主体评级",
+        "池州市投资控股集团有限公司 债券 年报",
+        "池州市投资控股集团有限公司 公开舆情",
+        "池州市投资控股集团有限公司 被执行",
+        "池州市投资控股集团有限公司 失信",
+        "池州市投资控股集团有限公司 诉讼",
+        "池州市投资控股集团有限公司 处罚",
+        "池州市投资控股集团有限公司 商票逾期"
+      ],
+      "matched_documents": 0,
+      "selected_documents": 0,
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未检索到主体匹配且可用于财务分析的年报、半年报、募集说明书、评级报告或债券公告。"
+    },
+    {
+      "source_name": "巨潮资讯",
+      "searched": true,
+      "keywords_used": [
+        "池州市投资控股集团有限公司 年度报告",
+        "池州市投资控股集团有限公司 半年度报告",
+        "池州市投资控股集团有限公司 审计报告",
+        "池州市投资控股集团有限公司 募集说明书",
+        "池州市投资控股集团有限公司 债券 募集说明书",
+        "池州市投资控股集团有限公司 评级报告",
+        "池州市投资控股集团有限公司 跟踪评级报告",
+        "池州市投资控股集团有限公司 主体评级",
+        "池州市投资控股集团有限公司 债券 年报",
+        "池州市投资控股集团有限公司 公开舆情",
+        "池州市投资控股集团有限公司 被执行",
+        "池州市投资控股集团有限公司 失信",
+        "池州市投资控股集团有限公司 诉讼",
+        "池州市投资控股集团有限公司 处罚",
+        "池州市投资控股集团有限公司 商票逾期"
+      ],
+      "matched_documents": 0,
+      "selected_documents": 0,
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未检索到主体匹配且可用于财务分析的年报、半年报、募集说明书、评级报告或债券公告。"
+    },
+    {
+      "source_name": "中国债券信息网",
+      "searched": true,
+      "keywords_used": [
+        "池州市投资控股集团有限公司 年度报告",
+        "池州市投资控股集团有限公司 半年度报告",
+        "池州市投资控股集团有限公司 审计报告",
+        "池州市投资控股集团有限公司 募集说明书",
+        "池州市投资控股集团有限公司 债券 募集说明书",
+        "池州市投资控股集团有限公司 评级报告",
+        "池州市投资控股集团有限公司 跟踪评级报告",
+        "池州市投资控股集团有限公司 主体评级",
+        "池州市投资控股集团有限公司 债券 年报",
+        "池州市投资控股集团有限公司 公开舆情",
+        "池州市投资控股集团有限公司 被执行",
+        "池州市投资控股集团有限公司 失信",
+        "池州市投资控股集团有限公司 诉讼",
+        "池州市投资控股集团有限公司 处罚",
+        "池州市投资控股集团有限公司 商票逾期"
+      ],
+      "matched_documents": 0,
+      "selected_documents": 0,
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未检索到主体匹配且可用于财务分析的年报、半年报、募集说明书、评级报告或债券公告。"
+    }
+  ],
+  "financial_tables": {
+    "periods": [],
+    "balance_sheet": [],
+    "income_statement": [],
+    "cash_flow_statement": [],
+    "business_segments": []
+  },
+  "financial_indicators": [],
+  "negative_findings": [
+    {
+      "type": "舆情",
+      "finding": "上交所对池州市投资控股集团有限公司予以书面警示。",
+      "evidence": "23池州01募集资金在2023年11月转至合并范围内子公司使用，涉及0.9亿元，占发行规模6%，2024年3月归还。",
+      "source_url": "https://www.sse.com.cn/disclosure/credibility/bonds/regulatory/alert/auto/c/10771412/files/79d6307e19e94f0498939571edf39aa3.pdf"
+    }
+  ],
+  "negative_summary_under_200_chars": "未检索到该企业 2025 年以来的最新公开财务数据披露，当前不生成财务分析。公开信息显示，上交所于2025-02-20对其作出书面警示。",
+  "missing_data_note": "未检索到该企业2025年以来可用于正式财务分析的年报、半年报、募集说明书或评级报告；不展示财务表格与指标。"
+}

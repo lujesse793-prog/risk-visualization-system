@@ -1,0 +1,1342 @@
+{
+  "enterprise_name": "{\\",
+  "report_date": "2026-05-31",
+  "data_updated_at": "2026-05-31T19:23:20.577855",
+  "data_period_type": "三年一期",
+  "analysis_basis": "年度报告",
+  "quarterly_report_used_for_analysis": false,
+  "source_policy": {
+    "allowed_announcement_sources_only": true,
+    "allowed_sources": [
+      "中国货币网",
+      "上海证券交易所",
+      "深圳证券交易所"
+    ],
+    "external_financial_sources_used": false
+  },
+  "freshness_gate": {
+    "enabled": true,
+    "cutoff_publish_date": "2025-01-01",
+    "minimum_report_period": "2025年及之后公开披露",
+    "latest_document_publish_date": "2026-05-30",
+    "latest_report_period": "2025",
+    "is_fresh_enough_for_analysis": true,
+    "stop_reason": ""
+  },
+  "data_availability": {
+    "has_financial_report": true,
+    "has_prospectus": true,
+    "has_rating_report": false,
+    "has_financial_data": true,
+    "has_public_opinion": false,
+    "data_level": "full",
+    "data_limitation_note": ""
+  },
+  "sources": {
+    "financial_report": [
+      {
+        "title": "241541:常熟市城市经营投资集团有限公司公司债券2025年年度报告",
+        "attachment_title": "",
+        "file_type": "annual_report",
+        "report_period": "2025",
+        "publish_date": "2026-04-30",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "上海证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": true,
+        "used_as_supplement": false,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "241541:常熟市城市经营投资集团有限公司公司债券2025年年度报告",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "240628:上海市浦东新区房地产(集团)有限公司公司债券年度报告(2025年)",
+        "attachment_title": "",
+        "file_type": "annual_report",
+        "report_period": "2025",
+        "publish_date": "2026-04-29",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "上海证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": true,
+        "used_as_supplement": false,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "240628:上海市浦东新区房地产(集团)有限公司公司债券年度报告(2025年)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "*ST阳光:关于对深圳证券交易所2025年年报问询函回复的公告",
+        "attachment_title": "",
+        "file_type": "annual_report",
+        "report_period": "2025",
+        "publish_date": "2026-05-20",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": true,
+        "used_as_supplement": false,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "*ST阳光:关于对深圳证券交易所2025年年报问询函回复的公告",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+        "attachment_title": "",
+        "file_type": "annual_report",
+        "report_period": "",
+        "publish_date": "2026-04-30",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": true,
+        "used_as_supplement": false,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+        "attachment_title": "",
+        "file_type": "annual_report",
+        "report_period": "",
+        "publish_date": "2026-04-30",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": true,
+        "used_as_supplement": false,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      }
+    ],
+    "prospectus": [
+      {
+        "title": "244755:北京金隅集团股份有限公司2026年面向专业投资者公开发行科技创新可续期公司债券(第三期)募集说明书",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2026",
+        "publish_date": "2026-03-05",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "上海证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "244755:北京金隅集团股份有限公司2026年面向专业投资者公开发行科技创新可续期公司债券(第三期)募集说明书",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "1-1募集说明书(申报稿)(江西百通能源股份有限公司)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "",
+        "publish_date": "2026-05-28",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "1-1募集说明书(申报稿)(江西百通能源股份有限公司)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "1-1募集说明书(申报稿)(北京辰安科技股份有限公司)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "",
+        "publish_date": "2026-05-08",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "1-1募集说明书(申报稿)(北京辰安科技股份有限公司)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "国盛证券股份有限公司2026年面向专业投资者公开发行次级债券募集说明书(申报稿)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2026",
+        "publish_date": "2026-05-28",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "国盛证券股份有限公司2026年面向专业投资者公开发行次级债券募集说明书(申报稿)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "招商蛇口：招商局蛇口工业区控股股份有限公司向特定对象发行优先股募集说明书(注册修订稿)（2026年度财务数据更新版）02318_法律_意见书_相关",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2026",
+        "publish_date": "2026-05-30",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "招商蛇口：招商局蛇口工业区控股股份有限公司向特定对象发行优先股募集说明书(注册修订稿)（2026年度财务数据更新版）02318_法律_意见书_相关",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "1-1募集说明书(申报稿)(深城交科技集团股份有限公司)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "",
+        "publish_date": "2026-05-27",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "1-1募集说明书(申报稿)(深城交科技集团股份有限公司)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "湖州莫干山国有资本控股集团有限公司2026年度第三期中期票据募集说明书",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2026",
+        "publish_date": "2026-05-21",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "湖州莫干山国有资本控股集团有限公司2026年度第三期中期票据募集说明书",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "云南华电金沙江中游水电开发有限公司2026年面向专业投资者公开发行碳中和绿色乡村振兴公司债券(支持西部大开发)募集说明书(申报稿)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2026",
+        "publish_date": "2026-05-26",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "云南华电金沙江中游水电开发有限公司2026年面向专业投资者公开发行碳中和绿色乡村振兴公司债券(支持西部大开发)募集说明书(申报稿)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "东莞市水务环境投资控股集团有限公司2025年面向专业投资者公开发行可续期公司债券募集说明书(注册稿)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2025",
+        "publish_date": "2026-04-14",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "东莞市水务环境投资控股集团有限公司2025年面向专业投资者公开发行可续期公司债券募集说明书(注册稿)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "1-1募集说明书(申报稿)(宁波卡倍亿电气技术股份有限公司)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "",
+        "publish_date": "2026-05-18",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "1-1募集说明书(申报稿)(宁波卡倍亿电气技术股份有限公司)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "深圳市星源材质科技股份有限公司2026年度第一期科技创新债券募集说明书(终稿)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2026",
+        "publish_date": "2026-05-28",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "深圳市星源材质科技股份有限公司2026年度第一期科技创新债券募集说明书(终稿)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "25拱城控02:杭州市拱墅区城市建设发展控股集团有限公司2025年面向专业投资者公开发行公司债券(第二期)募集说明书",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2025",
+        "publish_date": "2025-12-12",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "25拱城控02:杭州市拱墅区城市建设发展控股集团有限公司2025年面向专业投资者公开发行公司债券(第二期)募集说明书",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "",
+        "publish_date": "2026-05-28",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "华润融资租赁有限公司2026年面向专业投资者公开发行公司债券募集说明书(申报稿)",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "2026",
+        "publish_date": "2026-05-28",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "华润融资租赁有限公司2026年面向专业投资者公开发行公司债券募集说明书(申报稿)",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      },
+      {
+        "title": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书摘要",
+        "attachment_title": "",
+        "file_type": "prospectus",
+        "report_period": "",
+        "publish_date": "2026-05-28",
+        "url": "",
+        "source_url": "",
+        "pdf_url": "",
+        "source_platform": "深圳证券交易所",
+        "entity_match_result": "matched",
+        "used_for_main_analysis": false,
+        "used_as_supplement": true,
+        "document_status": "latest_financial_data",
+        "entity_verification": {
+          "input_name": "{\\",
+          "matched_name_in_document": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书摘要",
+          "matched_role": "发行人",
+          "is_same_subject": true,
+          "relationship_to_target": "",
+          "verification_evidence": "",
+          "confidence": "medium"
+        }
+      }
+    ],
+    "rating_report": [],
+    "public_opinion": []
+  },
+  "search_log": [
+    {
+      "source_name": "中国货币网",
+      "searched": true,
+      "search_modes": [
+        "按标题"
+      ],
+      "keywords_used": [
+        "{\\"
+      ],
+      "total_results": 0,
+      "scanned_result_count": 0,
+      "matched_documents": 0,
+      "selected_documents": [],
+      "skipped_documents": [],
+      "skipped_reason": [],
+      "download_status": "not_applicable",
+      "parse_status": "not_applicable",
+      "parse_failed_reason": "",
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "empty",
+      "note": "",
+      "query_runs": [
+        {
+          "keyword": "{\\ 中国货币网",
+          "search_scope": "全部",
+          "search_column": "按标题",
+          "total_results": 0,
+          "scanned_result_count": 0,
+          "matched_documents": 0,
+          "annual_report_found": false,
+          "matched_titles": [],
+          "selected_titles": [],
+          "skipped_titles": [],
+          "matched_items": 0,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "source_name": "上海证券交易所",
+      "searched": true,
+      "search_modes": [
+        "按标题"
+      ],
+      "keywords_used": [
+        "{\\"
+      ],
+      "total_results": 19,
+      "scanned_result_count": 19,
+      "matched_documents": 3,
+      "selected_documents": [
+        {
+          "title": "241541:常熟市城市经营投资集团有限公司公司债券2025年年度报告",
+          "attachment_title": "",
+          "file_type": "annual_report",
+          "report_period": "2025",
+          "publish_date": "2026-04-30",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "上海证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": true,
+          "used_as_supplement": false,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "241541:常熟市城市经营投资集团有限公司公司债券2025年年度报告",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "244755:北京金隅集团股份有限公司2026年面向专业投资者公开发行科技创新可续期公司债券(第三期)募集说明书",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2026",
+          "publish_date": "2026-03-05",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "上海证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "244755:北京金隅集团股份有限公司2026年面向专业投资者公开发行科技创新可续期公司债券(第三期)募集说明书",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "240628:上海市浦东新区房地产(集团)有限公司公司债券年度报告(2025年)",
+          "attachment_title": "",
+          "file_type": "annual_report",
+          "report_period": "2025",
+          "publish_date": "2026-04-29",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "上海证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": true,
+          "used_as_supplement": false,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "240628:上海市浦东新区房地产(集团)有限公司公司债券年度报告(2025年)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        }
+      ],
+      "skipped_documents": [
+        {
+          "title": "安徽省信用融资担保集团有限公司2026年面向专业投资者公开发行可续期公司债券主承销商核查意见(申报稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "中国诚通控股集团有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "特变电工股份有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "武汉地铁集团有限公司2026年面向专业投资者公开发行可续期公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "中国证券报-",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "特变电工股份有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "南昌市政公用集团有限公司2025年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "浙江省经济建设投资有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "江苏资产管理有限公司2025年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "（上接554版）|上海证券报",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "（上接209版）|上海证券报",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "(上接413版)_中国证券网·上海证券报主办",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "上海浦东发展(集团)有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(申报稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "（上接554版）|上海证券报",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "华远国际陆港集团有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(反馈回复稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "(上接358版)|上海证券报",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        }
+      ],
+      "skipped_reason": [],
+      "download_status": "not_applicable",
+      "parse_status": "not_applicable",
+      "parse_failed_reason": "",
+      "latest_document_publish_date": "2026-04-30",
+      "latest_report_period": "2025",
+      "status": "ok",
+      "note": "",
+      "query_runs": [
+        {
+          "keyword": "{\\ 上海证券交易所",
+          "search_scope": "全部",
+          "search_column": "按标题",
+          "total_results": 19,
+          "scanned_result_count": 19,
+          "matched_documents": 3,
+          "annual_report_found": true,
+          "matched_titles": [
+            "241541:常熟市城市经营投资集团有限公司公司债券2025年年度报告",
+            "244755:北京金隅集团股份有限公司2026年面向专业投资者公开发行科技创新可续期公司债券(第三期)募集说明书",
+            "240628:上海市浦东新区房地产(集团)有限公司公司债券年度报告(2025年)"
+          ],
+          "selected_titles": [
+            "241541:常熟市城市经营投资集团有限公司公司债券2025年年度报告",
+            "244755:北京金隅集团股份有限公司2026年面向专业投资者公开发行科技创新可续期公司债券(第三期)募集说明书",
+            "240628:上海市浦东新区房地产(集团)有限公司公司债券年度报告(2025年)"
+          ],
+          "skipped_titles": [
+            "安徽省信用融资担保集团有限公司2026年面向专业投资者公开发行可续期公司债券主承销商核查意见(申报稿)",
+            "中国诚通控股集团有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+            "特变电工股份有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+            "武汉地铁集团有限公司2026年面向专业投资者公开发行可续期公司债券主承销商核查意见(注册稿)",
+            "中国证券报-",
+            "特变电工股份有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+            "南昌市政公用集团有限公司2025年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+            "浙江省经济建设投资有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+            "江苏资产管理有限公司2025年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+            "（上接554版）|上海证券报",
+            "（上接209版）|上海证券报",
+            "(上接413版)_中国证券网·上海证券报主办",
+            "上海浦东发展(集团)有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(申报稿)",
+            "（上接554版）|上海证券报",
+            "华远国际陆港集团有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(反馈回复稿)",
+            "(上接358版)|上海证券报"
+          ],
+          "matched_items": 3,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "source_name": "深圳证券交易所",
+      "searched": true,
+      "search_modes": [
+        "按标题"
+      ],
+      "keywords_used": [
+        "{\\"
+      ],
+      "total_results": 20,
+      "scanned_result_count": 20,
+      "matched_documents": 17,
+      "selected_documents": [
+        {
+          "title": "*ST阳光:关于对深圳证券交易所2025年年报问询函回复的公告",
+          "attachment_title": "",
+          "file_type": "annual_report",
+          "report_period": "2025",
+          "publish_date": "2026-05-20",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": true,
+          "used_as_supplement": false,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "*ST阳光:关于对深圳证券交易所2025年年报问询函回复的公告",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "1-1募集说明书(申报稿)(江西百通能源股份有限公司)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "",
+          "publish_date": "2026-05-28",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "1-1募集说明书(申报稿)(江西百通能源股份有限公司)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "1-1募集说明书(申报稿)(北京辰安科技股份有限公司)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "",
+          "publish_date": "2026-05-08",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "1-1募集说明书(申报稿)(北京辰安科技股份有限公司)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "国盛证券股份有限公司2026年面向专业投资者公开发行次级债券募集说明书(申报稿)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2026",
+          "publish_date": "2026-05-28",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "国盛证券股份有限公司2026年面向专业投资者公开发行次级债券募集说明书(申报稿)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "招商蛇口：招商局蛇口工业区控股股份有限公司向特定对象发行优先股募集说明书(注册修订稿)（2026年度财务数据更新版）02318_法律_意见书_相关",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2026",
+          "publish_date": "2026-05-30",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "招商蛇口：招商局蛇口工业区控股股份有限公司向特定对象发行优先股募集说明书(注册修订稿)（2026年度财务数据更新版）02318_法律_意见书_相关",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "1-1募集说明书(申报稿)(深城交科技集团股份有限公司)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "",
+          "publish_date": "2026-05-27",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "1-1募集说明书(申报稿)(深城交科技集团股份有限公司)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "湖州莫干山国有资本控股集团有限公司2026年度第三期中期票据募集说明书",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2026",
+          "publish_date": "2026-05-21",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "湖州莫干山国有资本控股集团有限公司2026年度第三期中期票据募集说明书",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "云南华电金沙江中游水电开发有限公司2026年面向专业投资者公开发行碳中和绿色乡村振兴公司债券(支持西部大开发)募集说明书(申报稿)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2026",
+          "publish_date": "2026-05-26",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "云南华电金沙江中游水电开发有限公司2026年面向专业投资者公开发行碳中和绿色乡村振兴公司债券(支持西部大开发)募集说明书(申报稿)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "东莞市水务环境投资控股集团有限公司2025年面向专业投资者公开发行可续期公司债券募集说明书(注册稿)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2025",
+          "publish_date": "2026-04-14",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "东莞市水务环境投资控股集团有限公司2025年面向专业投资者公开发行可续期公司债券募集说明书(注册稿)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "1-1募集说明书(申报稿)(宁波卡倍亿电气技术股份有限公司)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "",
+          "publish_date": "2026-05-18",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "1-1募集说明书(申报稿)(宁波卡倍亿电气技术股份有限公司)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+          "attachment_title": "",
+          "file_type": "annual_report",
+          "report_period": "",
+          "publish_date": "2026-04-30",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": true,
+          "used_as_supplement": false,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "深圳市星源材质科技股份有限公司2026年度第一期科技创新债券募集说明书(终稿)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2026",
+          "publish_date": "2026-05-28",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "深圳市星源材质科技股份有限公司2026年度第一期科技创新债券募集说明书(终稿)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "25拱城控02:杭州市拱墅区城市建设发展控股集团有限公司2025年面向专业投资者公开发行公司债券(第二期)募集说明书",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2025",
+          "publish_date": "2025-12-12",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "25拱城控02:杭州市拱墅区城市建设发展控股集团有限公司2025年面向专业投资者公开发行公司债券(第二期)募集说明书",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "",
+          "publish_date": "2026-05-28",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "华润融资租赁有限公司2026年面向专业投资者公开发行公司债券募集说明书(申报稿)",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "2026",
+          "publish_date": "2026-05-28",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "华润融资租赁有限公司2026年面向专业投资者公开发行公司债券募集说明书(申报稿)",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书摘要",
+          "attachment_title": "",
+          "file_type": "prospectus",
+          "report_period": "",
+          "publish_date": "2026-05-28",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": false,
+          "used_as_supplement": true,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书摘要",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        },
+        {
+          "title": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+          "attachment_title": "",
+          "file_type": "annual_report",
+          "report_period": "",
+          "publish_date": "2026-04-30",
+          "url": "",
+          "source_url": "",
+          "pdf_url": "",
+          "source_platform": "深圳证券交易所",
+          "entity_match_result": "matched",
+          "used_for_main_analysis": true,
+          "used_as_supplement": false,
+          "document_status": "latest_financial_data",
+          "entity_verification": {
+            "input_name": "{\\",
+            "matched_name_in_document": "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+            "matched_role": "发行人",
+            "is_same_subject": true,
+            "relationship_to_target": "",
+            "verification_evidence": "",
+            "confidence": "medium"
+          }
+        }
+      ],
+      "skipped_documents": [
+        {
+          "title": "4-1法律意见书(申报稿)(江苏久吾高科技股份有限公司)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "粤开证券股份有限公司2025年面向专业投资者公开发行次级债券主承销商核查意见(申报稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        },
+        {
+          "title": "长沙市轨道交通集团有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)",
+          "file_type": "unsupported",
+          "source_url": "",
+          "pdf_url": "",
+          "skipped_reason": "unsupported_file_type"
+        }
+      ],
+      "skipped_reason": [],
+      "download_status": "not_applicable",
+      "parse_status": "not_applicable",
+      "parse_failed_reason": "",
+      "latest_document_publish_date": "2026-05-20",
+      "latest_report_period": "2025",
+      "status": "ok",
+      "note": "",
+      "query_runs": [
+        {
+          "keyword": "{\\ 深圳证券交易所",
+          "search_scope": "全部",
+          "search_column": "按标题",
+          "total_results": 20,
+          "scanned_result_count": 20,
+          "matched_documents": 17,
+          "annual_report_found": true,
+          "matched_titles": [
+            "*ST阳光:关于对深圳证券交易所2025年年报问询函回复的公告",
+            "1-1募集说明书(申报稿)(江西百通能源股份有限公司)",
+            "1-1募集说明书(申报稿)(北京辰安科技股份有限公司)",
+            "国盛证券股份有限公司2026年面向专业投资者公开发行次级债券募集说明书(申报稿)",
+            "招商蛇口：招商局蛇口工业区控股股份有限公司向特定对象发行优先股募集说明书(注册修订稿)（2026年度财务数据更新版）02318_法律_意见书_相关",
+            "1-1募集说明书(申报稿)(深城交科技集团股份有限公司)",
+            "湖州莫干山国有资本控股集团有限公司2026年度第三期中期票据募集说明书",
+            "云南华电金沙江中游水电开发有限公司2026年面向专业投资者公开发行碳中和绿色乡村振兴公司债券(支持西部大开发)募集说明书(申报稿)",
+            "东莞市水务环境投资控股集团有限公司2025年面向专业投资者公开发行可续期公司债券募集说明书(注册稿)",
+            "1-1募集说明书(申报稿)(宁波卡倍亿电气技术股份有限公司)",
+            "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+            "深圳市星源材质科技股份有限公司2026年度第一期科技创新债券募集说明书(终稿)",
+            "25拱城控02:杭州市拱墅区城市建设发展控股集团有限公司2025年面向专业投资者公开发行公司债券(第二期)募集说明书",
+            "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书",
+            "华润融资租赁有限公司2026年面向专业投资者公开发行公司债券募集说明书(申报稿)",
+            "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书摘要",
+            "ST银江:关于对深圳证券交易所年报问询函的回复公告"
+          ],
+          "selected_titles": [
+            "*ST阳光:关于对深圳证券交易所2025年年报问询函回复的公告",
+            "1-1募集说明书(申报稿)(江西百通能源股份有限公司)",
+            "1-1募集说明书(申报稿)(北京辰安科技股份有限公司)",
+            "国盛证券股份有限公司2026年面向专业投资者公开发行次级债券募集说明书(申报稿)",
+            "招商蛇口：招商局蛇口工业区控股股份有限公司向特定对象发行优先股募集说明书(注册修订稿)（2026年度财务数据更新版）02318_法律_意见书_相关",
+            "1-1募集说明书(申报稿)(深城交科技集团股份有限公司)",
+            "湖州莫干山国有资本控股集团有限公司2026年度第三期中期票据募集说明书",
+            "云南华电金沙江中游水电开发有限公司2026年面向专业投资者公开发行碳中和绿色乡村振兴公司债券(支持西部大开发)募集说明书(申报稿)",
+            "东莞市水务环境投资控股集团有限公司2025年面向专业投资者公开发行可续期公司债券募集说明书(注册稿)",
+            "1-1募集说明书(申报稿)(宁波卡倍亿电气技术股份有限公司)",
+            "ST银江:关于对深圳证券交易所年报问询函的回复公告",
+            "深圳市星源材质科技股份有限公司2026年度第一期科技创新债券募集说明书(终稿)",
+            "25拱城控02:杭州市拱墅区城市建设发展控股集团有限公司2025年面向专业投资者公开发行公司债券(第二期)募集说明书",
+            "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书",
+            "华润融资租赁有限公司2026年面向专业投资者公开发行公司债券募集说明书(申报稿)",
+            "盛德鑫泰:盛德鑫泰新材料股份有限公司关于向不特定对象发行可转换公司债券的募集说明书摘要",
+            "ST银江:关于对深圳证券交易所年报问询函的回复公告"
+          ],
+          "skipped_titles": [
+            "4-1法律意见书(申报稿)(江苏久吾高科技股份有限公司)",
+            "粤开证券股份有限公司2025年面向专业投资者公开发行次级债券主承销商核查意见(申报稿)",
+            "长沙市轨道交通集团有限公司2026年面向专业投资者公开发行公司债券主承销商核查意见(注册稿)"
+          ],
+          "matched_items": 17,
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "financial_tables": {
+    "periods": [],
+    "balance_sheet": [],
+    "income_statement": [],
+    "cash_flow_statement": [],
+    "business_segments": []
+  },
+  "supplemental_financial_tables": {
+    "periods": [],
+    "balance_sheet": [],
+    "income_statement": [],
+    "cash_flow_statement": [],
+    "business_segments": []
+  },
+  "financial_indicators": [],
+  "negative_findings": [],
+  "negative_summary_under_200_chars": "本次检索已完成三渠道公开披露扫描，当前未识别到可由公开披露文件直接支持的重大负面事项。",
+  "missing_data_note": ""
+}

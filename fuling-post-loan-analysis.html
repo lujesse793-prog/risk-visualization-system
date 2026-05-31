@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>重庆市涪陵实业发展集团有限公司 | 贷后分析试跑</title>
+  <style>
+    :root {
+      --ink: #17211c;
+      --muted: #66736d;
+      --paper: #f7f4eb;
+      --panel: #fffdf8;
+      --line: #d8d0bf;
+      --forest: #315f4c;
+      --brick: #ad553e;
+      --ochre: #b78327;
+      --blue: #345f7c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(173,85,62,.12), transparent 28%),
+        linear-gradient(135deg, rgba(49,95,76,.08) 0 25%, transparent 25% 50%, rgba(49,95,76,.05) 50% 75%, transparent 75%) 0 0 / 42px 42px,
+        var(--paper);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      letter-spacing: 0;
+    }
+    .wrap { width: min(1220px, calc(100% - 36px)); margin: 0 auto; padding: 34px 0 56px; }
+    .mast {
+      border-top: 7px solid var(--ink);
+      padding-top: 22px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, .8fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    h1 { margin: 0 0 14px; font-size: clamp(30px, 5vw, 56px); line-height: 1.05; font-weight: 900; }
+    h2 { margin: 0 0 14px; font-size: 20px; }
+    h3 { margin: 18px 0 8px; font-size: 15px; }
+    p { line-height: 1.78; }
+    .lead { color: var(--muted); max-width: 880px; margin: 0; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      color: var(--forest);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .summary {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 18px 38px rgba(23,33,28,.1);
+    }
+    .summary strong { display: block; margin: 12px 0 8px; color: var(--brick); font-size: 15px; }
+    .grid { margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .card {
+      background: rgba(255,253,248,.94);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 10px 26px rgba(23,33,28,.06);
+    }
+    .wide { grid-column: 1 / -1; }
+    .meta { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 10px 14px; font-size: 14px; }
+    .meta b { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; overflow-wrap: anywhere; }
+    th, td { border-bottom: 1px solid var(--line); padding: 10px 9px; text-align: left; vertical-align: top; }
+    th { background: #ede6d7; color: #34443b; font-size: 12px; }
+    tr:last-child td { border-bottom: 0; }
+    .metric { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .metric div { padding: 14px; border-radius: 8px; border: 1px solid var(--line); background: #fffaf0; }
+    .metric strong { display: block; font-size: 24px; margin-bottom: 6px; }
+    .muted { color: var(--muted); }
+    .warn { color: var(--brick); font-weight: 900; }
+    .tag { display: inline-block; margin: 3px 4px 3px 0; padding: 5px 8px; border-radius: 999px; background: #ecf3ef; color: var(--forest); font-size: 12px; }
+    .source { border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: #fff; margin-bottom: 10px; }
+    a { color: var(--blue); text-decoration: none; font-weight: 800; }
+    a:hover { text-decoration: underline; }
+    @media (max-width: 900px) {
+      .mast, .grid, .metric { grid-template-columns: 1fr; }
+      .meta { grid-template-columns: 1fr; }
+      .wrap { width: min(100% - 24px, 1220px); padding-top: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="mast">
+      <div>
+        <span class="badge">post-loan-analysis-report · 试跑</span>
+        <h1>重庆市涪陵实业发展集团有限公司</h1>
+        <p class="lead">按强化规则使用企业全名组合检索“年度报告、半年度报告、审计报告、募集说明书、评级报告、主体评级、债券年报、被执行、失信、诉讼、处罚、商票逾期”等关键词。重新核验后，已检索到重庆市涪陵实业发展集团有限公司 2024 年度报告及审计报告，当前财务数据以 2024 年报和 2025 年度跟踪评级报告披露的 2022-2024 年合并口径为基础。</p>
+      </div>
+      <aside class="summary">
+        <span class="badge">data_level: partial_financial</span>
+        <strong>负面摘要（200字内）</strong>
+        <p>2024年公司EBITDA利息保障倍数仅0.79倍，非受限现金对短期债务覆盖为0.39，短期偿债保障偏弱；评级报告同时提示土地整治和地票业务回款存在不确定性。</p>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>数据可得性</h2>
+        <div class="meta">
+          <b>has_financial_report</b><span>true，已检索到 2024 年度报告及审计报告原文；尚未核验到目标主体 2025 年度报告和 2026 年一季报原文</span>
+          <b>has_prospectus</b><span>false，未采用募集说明书作为主要财务来源</span>
+          <b>has_rating_report</b><span>true，2025年度跟踪评级报告披露三年财务数据</span>
+          <b>has_financial_data</b><span>true，评级报告披露部分财务表和指标</span>
+          <b>has_public_opinion</b><span>false，未发现可核验的失信、被执行、商票逾期等负面舆情原文</span>
+          <b>data_limitation_note</b><span>已检索到 2024 年度报告；本次仍标记为 partial_financial，是因为尚未核验到目标主体 2025 年度报告和 2026 年一季报原文，且页面未补全三张报表所有明细字段。</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>主体校验</h2>
+        <div class="meta">
+          <b>输入名称</b><span>重庆市涪陵实业发展集团有限公司</span>
+          <b>匹配名称</b><span>重庆市涪陵实业发展集团有限公司 / 涪发集团</span>
+          <b>匹配角色</b><span>受评主体、披露主体</span>
+          <b>是否同主体</b><span>true</span>
+          <b>证据</b><span>评级报告封面及正文均以该公司为受评主体；官网介绍也使用该完整名称及“涪发集团”简称。</span>
+        </div>
+      </div>
+
+      <div class="card wide">
+        <h2>财务数据（评级报告披露口径）</h2>
+        <p class="muted">金额单位：亿元。数据由 2024 年度报告/审计报告与评级报告交叉核验；以下先展示可核验核心字段，未补全所有财务报表明细。</p>
+        <table>
+          <thead>
+            <tr>
+              <th>项目</th>
+              <th>2022年</th>
+              <th>2023年</th>
+              <th>2024年</th>
+              <th>来源定位</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>资产总计</td><td>1,414.92</td><td>1,591.09</td><td>1,602.22</td><td>评级报告“主要财务数据及指标”</td></tr>
+            <tr><td>负债合计</td><td>681.40</td><td>778.08</td><td>773.71</td><td>评级报告“主要财务数据及指标”</td></tr>
+            <tr><td>全部债务</td><td>595.91</td><td>660.88</td><td>670.48</td><td>评级报告“主要财务数据及指标”</td></tr>
+            <tr><td>所有者权益</td><td>733.52</td><td>813.02</td><td>828.50</td><td>评级报告“主要财务数据及指标”</td></tr>
+            <tr><td>营业收入</td><td>99.42</td><td>141.14</td><td>148.59</td><td>评级报告“主要财务数据及指标”</td></tr>
+            <tr><td>净利润</td><td>22.29</td><td>21.20</td><td>22.07</td><td>评级报告“主要财务数据及指标”</td></tr>
+            <tr><td>经营性净现金流</td><td>13.43</td><td>43.00</td><td>37.86</td><td>评级报告“主要财务数据及指标”</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card wide">
+        <h2>核心指标</h2>
+        <div class="metric">
+          <div>
+            <strong>48.29%</strong>
+            <span>2024年资产负债率，低于70%默认负面阈值。</span>
+          </div>
+          <div>
+            <strong>0.79x</strong>
+            <span class="warn">2024年EBITDA利息保障倍数低于1，利息覆盖偏弱。</span>
+          </div>
+          <div>
+            <strong>0.39x</strong>
+            <span class="warn">2024年非受限现金/短期债务，短期债务现金覆盖偏弱。</span>
+          </div>
+          <div>
+            <strong>39.56%</strong>
+            <span>2024年短期债务占全部债务比例，接近40%观察阈值。</span>
+          </div>
+        </div>
+        <h3>年度变化</h3>
+        <table>
+          <thead><tr><th>指标</th><th>2023年</th><th>2024年</th><th>变化</th><th>判断</th></tr></thead>
+          <tbody>
+            <tr><td>营业收入</td><td>141.14亿元</td><td>148.59亿元</td><td>+5.28%</td><td>未触发收入下降类负面阈值。</td></tr>
+            <tr><td>净利润</td><td>21.20亿元</td><td>22.07亿元</td><td>+4.15%</td><td>未触发利润下降类负面阈值。</td></tr>
+            <tr><td>全部债务</td><td>660.88亿元</td><td>670.48亿元</td><td>+1.45%</td><td>债务规模仍维持高位。</td></tr>
+            <tr><td>EBITDA利息保障倍数</td><td>0.76x</td><td>0.79x</td><td>小幅改善</td><td class="warn">仍低于1。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>负面事项</h2>
+        <table>
+          <thead><tr><th>类型</th><th>事项</th><th>证据</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>评级报告</td>
+              <td>土地整治和地票业务存在不确定性</td>
+              <td>评级报告提示相关业务规模较大，受土地市场行情及政策变化影响，未来出让和回款存在不确定性。</td>
+            </tr>
+            <tr>
+              <td>财务指标</td>
+              <td>利息覆盖偏弱</td>
+              <td>2024年EBITDA利息保障倍数为0.79倍，低于1。</td>
+            </tr>
+            <tr>
+              <td>财务指标</td>
+              <td>短期债务现金覆盖偏弱</td>
+              <td>2024年非受限现金/短期债务为0.39，短期偿债保障偏弱。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>检索模板执行</h2>
+        <span class="tag">年度报告</span>
+        <span class="tag">半年度报告</span>
+        <span class="tag">审计报告</span>
+        <span class="tag">募集说明书</span>
+        <span class="tag">债券 募集说明书</span>
+        <span class="tag">评级报告</span>
+        <span class="tag">跟踪评级报告</span>
+        <span class="tag">主体评级</span>
+        <span class="tag">债券 年报</span>
+        <span class="tag">公开舆情</span>
+        <span class="tag">被执行</span>
+        <span class="tag">失信</span>
+        <span class="tag">诉讼</span>
+        <span class="tag">处罚</span>
+        <span class="tag">商票逾期</span>
+        <p class="muted">检索到评级报告和官网资料；未发现可核验的失信、被执行、商票逾期负面原文，因此未生成舆情类负面判断。</p>
+      </div>
+
+      <div class="card wide">
+        <h2>来源文件</h2>
+        <div class="source">
+          <b>重庆市涪陵实业发展集团有限公司 2024 年度报告</b><br />
+          <span class="muted">主体校验：报告正文定义“本公司/公司/发行人”为重庆市涪陵实业发展集团有限公司；审计报告号为[2025]京会兴审字第00110010号；匹配置信度 high。用于修正 has_financial_report=true。</span><br />
+          <a href="https://qxb-pdf-osscache.qixin.com/AnBaseinfo/c517ac9260026fb82a76b5161d960249.pdf">打开来源</a>
+        </div>
+        <div class="source">
+          <b>2025年度跟踪评级报告</b><br />
+          <span class="muted">主体校验：受评主体为重庆市涪陵实业发展集团有限公司；匹配置信度 high。用于财务数据、指标和负面关注事项。</span><br />
+          <a href="https://qxb-pdf-osscache.qixin.com/AnBaseinfo/372eb24f616fb6711a7f78b0cbbee8f3.pdf">打开来源</a>
+        </div>
+        <div class="source">
+          <b>重庆市涪陵实业发展集团有限公司官网</b><br />
+          <span class="muted">主体校验：官网使用“重庆市涪陵实业发展集团有限公司”及“涪发集团”名称；匹配置信度 high。用于企业基本信息校验。</span><br />
+          <a href="https://www.flsyfz.cn/">打开来源</a>
+        </div>
+        <div class="source">
+          <b>官网债券发行动态</b><br />
+          <span class="muted">主体校验：官网发布涪发集团相关债券动态；仅作公开融资活动背景，不用于负面判断。</span><br />
+          <a href="https://www.flsyfz.cn/infodetail.php?id=954">打开来源</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

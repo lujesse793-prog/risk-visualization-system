@@ -1,0 +1,202 @@
+<div class="section-pg" id="page-search-disclosure-form">
+
+    <div class="section-fm" id="form-search-disclosure">
+                
+        <div class="san-form-row">
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-6">信息披露类型</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <select class="san-select" id="psa-disclosure-enty-subtype"><option value="">请选择</option></select>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-6">机构名称</label>
+                </div>
+                <div class="san-input-pair-m">
+                <input id="enty-full-name" type="text" class="san-input-text">
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12 m-t-10 AC">
+                <a class="san-btn san-btn-primary" href="javascript:void(0);" onclick="searchDc();">查询</a>
+                <a class="san-btn san-btn-primary" href="javascript:void(0);" onclick="resetAll();">重置</a>
+            </div>
+        </div>
+    
+    </div>
+
+</div>
+<script type="text/javascript">
+$(function(){
+	// 隐藏信息披露查询结果Div
+	$("#search-adv-disclosure-results").hide();
+	var entyTypeCode = "{{entyTypeCode}}";
+	var entyFullName = "{{entyFullName}}";
+	var entyTypeName = "";
+	if("1"==entyTypeCode) {
+		entyTypeName += "<option value='1' selected>债券发行人信息披露</option>";
+	} else {
+		entyTypeName += "<option value='1'>债券发行人信息披露</option>";
+	}
+	if("2"==entyTypeCode) {
+		entyTypeName += "<option value='2' selected>受托机构信息披露</option>";
+	} else {
+		entyTypeName += "<option value='2'>受托机构信息披露</option>";
+	}
+	if("3"==entyTypeCode) {
+		entyTypeName += "<option value='3' selected>债券承继人信息披露</option>";
+	} else {
+		entyTypeName += "<option value='3'>债券承继人信息披露</option>";
+	}
+	if("4"==entyTypeCode) {
+		entyTypeName += "<option value='4' selected>债券担保人信息披露</option>";
+	} else {
+		entyTypeName += "<option value='4'>债券担保人信息披露</option>";
+	}
+	if("5"==entyTypeCode) {
+		entyTypeName += "<option value='5' selected>Shibor报价行信息披露</option>";
+	} else {
+		entyTypeName += "<option value='5'>Shibor报价行信息披露</option>";
+	}
+	/*
+	if("6"==entyTypeCode) {
+		entyTypeName += "<option value='6' selected>LPR报价行信息披露</option>";
+	} else {
+		entyTypeName += "<option value='6'>LPR报价行信息披露</option>";
+	}
+	*/
+	if("7"==entyTypeCode) {
+		entyTypeName += "<option value='7' selected>评级公司信息披露</option>";
+	} else {
+		entyTypeName += "<option value='7'>评级公司信息披露</option>";
+	}
+	
+	//$("#enty-full-name").val(entyFullName);
+	//parent.dyniframesize("seniorSearchiframe");
+	
+	//整合成员信息披露
+	$.ajax({
+		url:NT_URL+"/cm-u-member-an/InfoNoticeMarketMemQuery",
+		type: "post",
+		dataType: 'json',
+		cache: false,
+		success: function(data) {
+			//$("#psa-disclosure-enty-subtype").find("option").remove();
+			createOption(data,entyTypeName);
+		}
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	$("#psa-disclosure-enty-subtype").append(entyTypeName);
+	var searchText=decodeURI(decodeURI(getFrameSrc("searchValue")==null?'':getFramesSrc("searchValue")));
+		if($.trim(searchText)!=''){
+			$('#enty-full-name').val(searchText);
+			searchDc();
+		}	
+});
+	
+function searchDc() {
+	$('#search-results-content').sanJumpto({
+	url:"/r/cms/chinese/chinamoney/html/bond/md/search-adv-disclosure-results.html",
+	onDone: function(){
+		renderData("1");
+	}
+	});
+	
+}
+
+//重置
+function resetAll(){
+	$("input").val("");
+	$("select").val("");
+	
+	$("#btn1").val("查询");
+	$("#btn2").val("重置");
+}
+
+//整合拆借和货币成员
+function createOption(data){
+	//渲染tab数据		
+	var enty = decodeURI(getFramesSrc("enty"));
+	var entySubType = getFramesSrc("entySubType");
+	var flagcj ="false";
+	var flaghb ="false";
+	var option;	
+	$.ajax({
+		url:LSS_URL+"/cm-s-account/getSessionUser",
+		type:"POST",
+		dataType : 'json',
+		cache : false,
+		async:false,
+		success:function(dataHbFlag){
+		if(dataHbFlag.data.user != null){
+		    var arr = dataHbFlag.data.user.listUserGroup;
+		    for( var i=0 ; i< arr.length ; i++ ){
+			　　 for( var attr in arr[i] ) {
+					if(arr[i][attr] instanceof Array){//判断是不是数组
+						var att = arr[i][attr]
+					    for( var j=0 ; j< att.length ; j++ ){
+							for( var tttt in att[j] )
+								if (tttt =="funcKey" ){
+									if(att[j]["funcKey"]=="CM_001"){
+										flagcj ="true"
+									}
+									if(att[j]["funcKey"]=="CM_004"){
+										flaghb ="true"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+	 
+	 if (flagcj == "true"){
+		//$("#psa-disclosure-enty-subtype").find("option").remove();
+		 if (data.records != null&&data.records.length>0) {
+			$.each(data.records,function(i,n){
+				var entyName = n.entyName;
+				var entyTypeOfWebsite= n.entyType;
+				option += "<option value='"+entyTypeOfWebsite+"'";
+				if (entySubType == entyTypeOfWebsite){
+					option += " selected"
+				}
+				option += ">"+entyName+"信息披露</option>";
+			});
+		 }
+	 }
+	 if (flaghb == "true"){
+		option += "<option value='13'";
+		if ("13"==entySubType) {
+			option += " selected"
+		}
+		option += ">货币经纪公司信息披露</option>";
+	 }
+	$("#psa-disclosure-enty-subtype").append(option);	
+	//$("#enty-full-name").val(enty);
+	
+	var entyName = $("#enty-full-name").val();
+	var entyTypeOfWebsite = $("#psa-disclosure-enty-subtype").val();
+	//console.log("下拉框取值:"+entyName+",entyTypeOfWebsite:"+entyTypeOfWebsite);
+	//tab渲染    	
+	//var dc = $("#pdbe-tab-1-blk").find("li").eq(0).attr("data-et-tp");
+	
+
+}
+</script>

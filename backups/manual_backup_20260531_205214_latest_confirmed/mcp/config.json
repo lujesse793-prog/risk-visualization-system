@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "hexin-ifind-ds-stock-mcp": {
+      "type": "streamablehttp",
+      "url": "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-stock-mcp",
+      "description": "A股股票数据查询"
+    },
+    "hexin-ifind-ds-fund-mcp": {
+      "type": "streamablehttp",
+      "url": "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-fund-mcp",
+      "description": "公募基金数据查询"
+    },
+    "hexin-ifind-ds-edb-mcp": {
+      "type": "streamablehttp",
+      "url": "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-edb-mcp",
+      "description": "经济数据库查询"
+    },
+    "hexin-ifind-ds-news-mcp": {
+      "type": "streamablehttp",
+      "url": "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-news-mcp",
+      "description": "财经资讯/公告搜索"
+    },
+    "hexin-ifind-ds-bond-mcp": {
+      "type": "streamablehttp",
+      "url": "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-bond-mcp",
+      "description": "债券数据查询"
+    },
+    "hexin-ifind-ds-global-stock-mcp": {
+      "type": "streamablehttp",
+      "url": "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-global-stock-mcp",
+      "description": "港股/美股数据查询"
+    },
+    "hexin-ifind-ds-index-mcp": {
+      "type": "streamablehttp",
+      "url": "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-index-mcp",
+      "description": "指数数据查询"
+    }
+  }
+}

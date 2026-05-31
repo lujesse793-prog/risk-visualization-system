@@ -1,0 +1,56 @@
+            {searchDetail && (
+              <div className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/35 px-4 py-12 backdrop-blur-sm overflow-y-auto" onClick={() => setSearchDetail(null)}>
+                <div className="w-full max-w-2xl rounded-xl border border-border bg-card shadow-cabin" onClick={(event) => event.stopPropagation()}>
+                  <div className="flex items-start justify-between gap-4 border-b border-border/60 p-5">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Badge tone={searchDetail.level === "严重" ? "severe" : searchDetail.level === "较重" ? "high" : "watch"}>{searchDetail.level}</Badge>
+                        <span className="text-xs text-muted-foreground">{searchDetail.time}</span>
+                      </div>
+                      <h2 className="mt-2 text-lg font-semibold leading-snug">{searchDetail.title}</h2>
+                      <p className="mt-1 text-sm text-muted-foreground">{searchDetail.entity} · {searchDetail.role}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{searchDetail.project}</p>
+                    </div>
+                    <button type="button" onClick={() => setSearchDetail(null)} className="shrink-0 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-muted-foreground transition hover:text-foreground">关闭</button>
+                  </div>
+                  <div className="p-5">
+                    <p className="text-sm font-medium">事件摘要</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{searchDetail.summary}</p>
+                    <p className="mt-3 text-sm font-medium">影响评估</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{searchDetail.impact}</p>
+                  </div>
+                  <div className="border-t border-border/60 p-5">
+                    <p className="text-sm font-medium">证据链</p>
+                    <div className="mt-4 relative space-y-4 pl-5 max-h-[400px] overflow-y-auto">
+                      <div className="absolute bottom-4 left-[7px] top-2 w-px bg-border" />
+                      {searchDetail.evidence.map((item, index) => {
+                        const phase = index === 0 ? "原始事件发现" : index === 1 ? "数据交叉验证" : "补充佐证";
+                        return (
+                          <div key={item.name} className="relative rounded-xl border border-border/70 bg-white/62 p-4 shadow-soft">
+                            <span className={cn("absolute -left-[21px] top-5 h-3.5 w-3.5 rounded-full border-2 border-card", searchDetail.level === "严重" ? "bg-red-600" : searchDetail.level === "较重" ? "bg-orange-500" : "bg-emerald-600")} />
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">{phase}</span>
+                              <span className="text-xs text-muted-foreground">{item.time}</span>
+                            </div>
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                              <p className="font-medium">{item.name}</p>
+                              <Badge>{item.source}</Badge>
+                              <button type="button" onClick={() => setSourceModal(item)} className="inline-flex items-center gap-1 rounded-full border border-border bg-card/90 px-2.5 py-1 text-xs text-muted-foreground transition hover:text-foreground">
+                                打开来源 <Icon name="ExternalLink" className="h-3 w-3" />
+                              </button>
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.detail}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="border-t border-border/60 p-5">
+                    <p className="text-sm font-medium">消息来源</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {searchDetail.sources.map((source) => <Badge key={source}>{source}</Badge>)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}

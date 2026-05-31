@@ -1,0 +1,177 @@
+{
+  "enterprise_name": "泰州医药城控股集团有限公司",
+  "report_date": "2026-05-31",
+  "data_updated_at": "2026-05-31",
+  "data_period_type": "可获取数据不足",
+  "analysis_basis": "年度报告",
+  "quarterly_report_used_for_analysis": false,
+  "source_policy": {
+    "allowed_announcement_sources_only": true,
+    "allowed_sources": [
+      "中国货币网",
+      "上海证券交易所",
+      "深圳证券交易所"
+    ],
+    "external_financial_sources_used": false
+  },
+  "sources": {
+    "financial_report": [
+      {
+        "title": "泰州医药城控股集团有限公司2025年年度报告",
+        "file_type": "annual_report",
+        "report_period": "2025年",
+        "period": "2025年",
+        "report_type": "annual",
+        "publish_date": "2026-04-30",
+        "url": "https://www.chinamoney.com.cn/example",
+        "source_url": "https://www.chinamoney.com.cn/example",
+        "pdf_url": "https://www.chinamoney.com.cn/example.pdf",
+        "source_platform": "中国货币网",
+        "entity_match_result": "标题与披露主体一致",
+        "used_for_main_analysis": true,
+        "used_as_supplement": false,
+        "entity_verification": {
+          "input_name": "泰州医药城控股集团有限公司",
+          "matched_name_in_document": "泰州医药城控股集团有限公司",
+          "matched_role": "披露主体",
+          "is_same_subject": true,
+          "relationship_to_target": "目标企业自身",
+          "verification_evidence": "PDF首页披露主体与输入企业一致。",
+          "confidence": "high"
+        }
+      }
+    ],
+    "prospectus": [],
+    "rating_report": [],
+    "public_opinion": []
+  },
+  "financial_tables": {
+    "periods": [],
+    "balance_sheet": [],
+    "income_statement": [],
+    "cash_flow_statement": [],
+    "business_segments": []
+  },
+  "supplemental_financial_tables": {
+    "periods": [],
+    "balance_sheet": [],
+    "income_statement": [],
+    "cash_flow_statement": [],
+    "business_segments": []
+  },
+  "financial_indicators": [
+    {
+      "indicator_name": "资产负债率",
+      "current_value": "65.00%",
+      "previous_value": "60.00%",
+      "change_direction": "上升",
+      "judgement": "资产负债率上升",
+      "source": "泰州医药城控股集团有限公司2025年年度报告"
+    }
+  ],
+  "negative_findings": [
+    {
+      "type": "财务指标",
+      "finding": "资产负债率上升。",
+      "evidence": "2025年资产负债率65.00%，上年为60.00%。",
+      "source_url": "https://www.chinamoney.com.cn/example.pdf"
+    }
+  ],
+  "missing_data_note": "仅用于校验脚本的最小样例。",
+  "freshness_gate": {
+    "enabled": true,
+    "cutoff_publish_date": "2025-01-01",
+    "minimum_report_period": "2025年及之后公开披露",
+    "latest_document_publish_date": "2026-04-30",
+    "latest_report_period": "2025年",
+    "is_fresh_enough_for_analysis": true,
+    "stop_reason": ""
+  },
+  "data_availability": {
+    "has_financial_report": true,
+    "has_prospectus": false,
+    "has_rating_report": false,
+    "has_financial_data": true,
+    "has_public_opinion": false,
+    "data_level": "partial_financial",
+    "data_limitation_note": "命中2025年年度报告。"
+  },
+  "search_log": [
+    {
+      "source_name": "中国货币网",
+      "searched": true,
+      "search_mode": "内部检索",
+      "keywords_used": [
+        "泰州医药城控股集团有限公司"
+      ],
+      "total_results": 35,
+      "scanned_result_count": 30,
+      "matched_documents": 1,
+      "selected_documents": [
+        {
+          "title": "泰州医药城控股集团有限公司2025年年度报告",
+          "file_type": "annual_report",
+          "report_period": "2025年",
+          "publish_date": "2026-04-30",
+          "source_url": "https://www.chinamoney.com.cn/example",
+          "pdf_url": "https://www.chinamoney.com.cn/example.pdf",
+          "entity_match_result": "标题与披露主体一致",
+          "used_for_main_analysis": true,
+          "used_as_supplement": false
+        }
+      ],
+      "skipped_documents": [],
+      "skipped_reason": [],
+      "download_status": "success",
+      "parse_status": "success",
+      "parse_failed_reason": "",
+      "latest_document_publish_date": "2026-04-30",
+      "latest_report_period": "2025年",
+      "status": "matched",
+      "note": "命中年报并用于主分析。"
+    },
+    {
+      "source_name": "上海证券交易所",
+      "searched": true,
+      "search_mode": "页面检索",
+      "keywords_used": [
+        "泰州医药城控股集团有限公司"
+      ],
+      "total_results": 0,
+      "scanned_result_count": 0,
+      "matched_documents": 0,
+      "selected_documents": [],
+      "skipped_documents": [],
+      "skipped_reason": [],
+      "download_status": "not_applicable",
+      "parse_status": "not_applicable",
+      "parse_failed_reason": "",
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未命中。"
+    },
+    {
+      "source_name": "深圳证券交易所",
+      "searched": true,
+      "search_mode": "页面检索",
+      "keywords_used": [
+        "泰州医药城控股集团有限公司"
+      ],
+      "total_results": 0,
+      "scanned_result_count": 0,
+      "matched_documents": 0,
+      "selected_documents": [],
+      "skipped_documents": [],
+      "skipped_reason": [],
+      "download_status": "not_applicable",
+      "parse_status": "not_applicable",
+      "parse_failed_reason": "",
+      "latest_document_publish_date": "",
+      "latest_report_period": "",
+      "status": "not_found",
+      "note": "未命中。"
+    }
+  ],
+  "negative_summary_under_200_chars": "根据2025年年度报告，公司资产负债率较上年上升。"
+}

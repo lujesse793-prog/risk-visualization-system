@@ -1,0 +1,13 @@
+﻿*** Begin Patch
+*** Update File: index.html
+@@ function displaySourceName(source) {
+-        if (source === "iFinD MCP") return "同花顺iFinD";
+-        if (source === "mx-skill") return "东方财富Choice";
+-        return source;
++        if (!source) return "未知来源";
++        const s = String(source);
++        if (s === "iFinD" || s === "iFinD MCP" || s.includes("iFind")) return "iFinD";
++        if (s === "mx-skill" || s.includes("Choice") || s.includes("mx")) return "Choice";
++        if (s === "public" || s === "公开信息") return "公开信息";
++        return s;
+*** End Patch

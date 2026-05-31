@@ -1,0 +1,204 @@
+<div class="section-pg" id="page-search-site-form">
+
+    <div class="section-fm" id="form-search-site">
+                
+        <div class="san-form-row">
+            <div class="san-input-pair san-col-6 san-col-l-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-3 label-ch-l-4">关键字</label>
+                </div>
+                <div class="san-input-pair-m" id="form-search-site-keyword" >
+                    <input type="text" class="san-input-text san-input-text-inline" id="searchText"  value="">
+                    <div class="san-input-static text-help">关键词之间用空格分隔，完全匹配搜索</div>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-3 san-col-l-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-4">搜索范围</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <div class="san-check">
+                        <input class="san-check-box" type="checkbox" id="containTitle" name="containTitle" value="title" checked="true">
+                        <label class="san-check-label" for="pssf-ch-1-1">按标题</label>
+                    </div>
+                    <div class="san-check">
+                        <input class="san-check-box" type="checkbox" id="containTitle1" name="containTitle1" value="txt">
+                        <label class="san-check-label" for="pssf-ch-1-2">按正文</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-3 san-col-l-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-4">选择栏目</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <div class="san-droplist-group">
+                        <input type="text" class="san-input-text san-input-droplist-handle" id="selectChannels" name="" value="" readonly>
+                        <div class="san-dropdown san-dropdown-right san-input-droplist"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12">
+                <div class="san-input-pair-l">
+                    <label class="san-input-label label-ch-3 label-ch-l-4">时间</label>
+                </div>
+                <div class="san-input-pair-m">
+                    <div class="san-check">
+                        <input class="san-check-box" type="radio" id="pssf-ch-2-1" name="dates" value="all" checked>
+                        <label class="san-check-label" for="pssf-ch-2-1">全部时间</label>
+                    </div>
+                    <div class="san-check">
+                        <input class="san-check-box" type="radio" id="pssf-ch-2-2" name="dates" value="1D">
+                        <label class="san-check-label" for="pssf-ch-2-2">今日发布</label>
+                    </div>
+                    <div class="san-check">
+                        <input class="san-check-box" type="radio" id="pssf-ch-2-3" name="dates" value="1W">
+                        <label class="san-check-label" for="pssf-ch-2-3">最近一周</label>
+                    </div>
+                    <div class="san-check">
+                        <input class="san-check-box" type="radio" id="pssf-ch-2-4" name="dates" value="1M">
+                        <label class="san-check-label" for="pssf-ch-2-4">最近一月</label>
+                    </div>
+                    <div class="san-check">
+                        <input class="san-check-box" type="radio" id="pssf-ch-2-5" name="dates" value="1Y">
+                        <label class="san-check-label" for="pssf-ch-2-5">最近一年</label>
+                    </div>
+                    <div class="san-check" id="form-search-site-date-range">
+                        <input class="san-check-box m-r-5" type="radio" id="pssf-ch-2-6" name="dates" value="-1">
+                        <label class="san-input-label">从</label>
+                        <input type="text" class="san-input-text san-input-text-inline san-input-text-date" id="psawf-start-date" name="sDate" value="" readonly>
+                        <label class="san-input-label">至</label>
+                        <input type="text" class="san-input-text san-input-text-inline san-input-text-date" id="psawf-end-date" name="eDate" value="" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="san-input-pair san-col-12 m-t-10 AC">
+				  <a class="san-btn san-btn-primary" href="javascript:void(0);" onclick="doQuery();">查询</a>
+				  <a class="san-btn san-btn-primary" href="javascript:void(0);" onclick="clearAll();">重置</a>
+				  <input type="hidden" id="select-map" value="">
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+var sort='date';
+var siteId='15';
+var field='title';
+var date='all';
+var startDate='';
+var endDate='';
+var infoLevel='';
+var verify='';
+var isInfoPublishLend=''; 
+var channelInfoStore = '';
+var subHerf = '';
+$(function(){
+
+	var searchText=decodeURI(decodeURI(getFrameSrc("searchValue")==null?'':getFramesSrc("searchValue")));
+	
+    var $startDate = $('#psawf-start-date'),
+        $endDate = $('#psawf-end-date'),
+        $selChannel = $('#selectChannels');
+
+    $startDate.datepicker({
+        beforeShow : function(input, inst) {
+            CURRENTINPUT = input;
+            $startDate.datepicker('option', 'maxDate', $endDate.val() || null);
+        }
+    });
+
+    $endDate.datepicker({
+        beforeShow : function(input, inst) {
+            CURRENTINPUT = input;
+            $endDate.datepicker('option', 'minDate', $startDate.val() || null);
+        }
+    });
+	
+	 san.tools.getJsonData({
+        url:SES_URL+'/cm-u-notice-ses-cn/channels',
+        onDone: function(data){
+            var _data = data.data,
+                records = _data.channels;
+			var map = {};
+            var strChannel = '<div class="san-check"><input class="san-check-box" type="checkbox" id="ch-list1-0" name="ch-list" data-rel="checkall" value="全部"><label class="san-check-label" for="ch-list-0">全部</label></div>';
+            $.each(records, function(n, v){
+				map[v.name] = v.id;
+                var i = n + 1;
+                strChannel += '<div class="san-check"><input class="san-check-box" type="hidden" id="ch-value-' + i + '" name="ch-value" value="' + v.id + '"><input class="san-check-box" type="checkbox" id="ch-list-' + i + '" name="ch-list" value="' + v.name + '"><label class="san-check-label" for="ch-list-' + i + '">' + v.name + '</label></div>';
+            });	
+			$("#select-map").data("result",map);
+			
+			//var map2=$("#select-map").data("result");
+			//console.log(map2);
+            $selChannel.next().html(strChannel);	
+            $selChannel.sanDroplist({
+                handle: 'san-input-droplist-handle',
+                droplist: 'san-input-droplist',
+                width: 'auto',
+                onInit: function(){
+                    var $this = $(this);
+                    droplistMultiSelect($this, '[name="ch-list"]');
+                }
+            });
+			if($.trim(searchText)!=''){
+				$('#searchText').val(searchText);
+				 doQuery();
+			}
+        }
+    });
+	
+	//添加触发
+	$("#psawf-start-date").click(function(){
+		$('#pssf-ch-2-6').trigger(DEFAULT_EVENT);
+	});
+	
+	$("#psawf-end-date").click(function(){
+		$('#pssf-ch-2-6').trigger(DEFAULT_EVENT);
+	})
+	  
+//$('#selectChannels').dropdownchecklist({ width: 120, maxDropHeight : 120,firstItemChecksAll: true });
+});
+
+//重置条件
+function clearAll(){
+	
+	$("#searchText").val('');
+	$('#containTitle1').removeAttr('checked');	
+	$('#containTitle').prop('checked',true);
+	$('input[name="dates"]').removeAttr('checked');
+	$('input[name="dates"]:eq(0)').prop('checked',true);
+	$('#psawf-start-date').val('');
+	$('#psawf-end-date').val('');
+	
+	//$('[for="ch-list-0"]').trigger(DEFAULT_EVENT);
+	droplistMultiSelect($('#selectChannels'), '[name="ch-list"]');
+	
+	//$('#selectChannels').html(channelInfoStore);
+	//$('#selectChannels').next('.ui-dropdownchecklist-wrapper').remove();
+	//$(document).find('.ui-dropdownchecklist-dropcontainer-wrapper').remove();
+	//$('#select-Channel').dropdownchecklist({ width: 120, maxDropHeight : 120, firstItemChecksAll: true });	
+}
+
+
+//查询操作
+function doQuery(){
+	$('#search-results-content').sanJumpto({
+	url:"/r/cms/chinese/chinamoney/html/ses/search-adv-website-results.html",
+	onDone: function(){
+	doQueryAll();
+	}
+	});
+	
+}
+
+
+
+ 
+</script>

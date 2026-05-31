@@ -1,0 +1,84 @@
+﻿*** Begin Patch
+*** Update File: index.html
+@@ function displaySourceName(source) {
+-        if (source === "iFinD MCP") return "同花顺iFinD";
+-        if (source === "mx-skill") return "东方财富Choice";
+-        return source;
++        if (!source) return "未知来源";
++        if (source === "iFinD" || source === "iFinD MCP") return "iFinD";
++        if (source === "mx-skill" || source.includes("Choice") || source.includes("mx")) return "Choice";
++        if (source === "public" || source === "公开信息") return "公开信息";
++        return source;
++      }
++
++      function normalizeEvidenceItem(rawItem) {
++        const EMPTY = { title: "未解析来源内容", summary: "", date: "", source: "未知", url: "", channel: "未知", riskKeywords: [], rawText: "" };
++        if (!rawItem) return EMPTY;
++
++        let obj = rawItem;
++        if (typeof rawItem === "string") {
++          const trimmed = rawItem.trim();
++          if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
++            try { obj = JSON.parse(trimmed); } catch (_) { /* fall through */ }
++          }
++        }
++        if (typeof obj !== "object" || obj === null) {
++          return { ...EMPTY, title: "未解析来源内容", summary: String(rawItem).slice(0, 100), rawText: String(rawItem) };
++        }
++
++        const field = (candidates) => {
++          for (const key of candidates) {
++            const val = obj[key];
++            if (val !== undefined && val !== null && String(val).trim()) return String(val).trim();
++          }
++          return "";
++        };
++
++        const title = field(["资讯标题", "title", "标题", "name"]);
++        const content = field(["资讯内容", "content", "正文", "summary", "内容"]);
++        const date = field(["日期", "date", "publishDate", "time", "发布时间"]);
++        const source = field(["数据来源", "source", "来源", "insName"]);
++        const url = field(["URL", "url", "link", "jumpUrl"]);
++        const channel = field(["informationType", "channel", "渠道"]);
++
++        const riskKeywords = [];
++        const RISK_TERMS = ["失信", "被执行", "违约", "逾期", "破产", "清算", "诉讼", "处罚", "冻结", "查封", "限制高消费", "评级下调"];
++        const haystack = (title + " " + content).toLowerCase();
++        for (const term of RISK_TERMS) {
++          if (haystack.includes(term.toLowerCase())) riskKeywords.push(term);
++        }
++
++        let summary = "";
++        if (content && content.length > 20) {
++          summary = content
++            .replace(/^[{\[]+|[}\]]+$/g, "")
++            .replace(/"[^"]+":\s*"[^"]*"/g, "")
++            .replace(/以上内容为.*?(不构成投资建议|不作投资参考)[^。]*[。]?/g, "")
++            .replace(/\s+/g, " ")
++            .trim();
++          if (summary.length > 150) summary = summary.slice(0, 147) + "...";
++        }
++        if (!summary && content) summary = content.slice(0, 150);
++
++        let channelLabel = channel;
++        if (!channelLabel) {
++          if (url && url.includes("51ifind")) channelLabel = "iFinD";
++          else if (url && url.includes("eastmoney")) channelLabel = "Choice";
++          else if (source.includes("Choice") || source.includes("mx")) channelLabel = "Choice";
++          else channelLabel = "iFinD";
++        }
++
++        const rawText = typeof rawItem === "string" ? rawItem : JSON.stringify(rawItem, null, 2);
++
++        return {
++          title: title || (obj.name && !obj.name.startsWith("iFind segment") ? obj.name : "iFinD 资讯片段"),
++          summary: summary || content.slice(0, 100) || "暂无摘要",
++          date: date || obj.time || "",
++          source: source || obj.source || "未知",
++          url: url || obj.url || "",
++          channel: channelLabel,
++          riskKeywords,
++          rawText,
++        };
+@@
+*** End Patch

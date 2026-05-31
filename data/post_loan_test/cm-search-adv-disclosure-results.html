@@ -1,0 +1,508 @@
+<div class="section-pg" id="page-search-market-results">
+    
+    <div class="section-a section-a-default">
+        <div class="section-a-head AC">
+            <div class="section-a-title">查询结果</div>
+        </div>
+        <div class="section-a-body">
+
+            <div class="section-a">
+                <div class="section-a-head AR">
+                    <div class="section-a-txt">搜索 "<span id="disclosure-search-codition" class="text-em"></span>" 获得 <span id="disclosure-result-count">0</span> 条查询结果</div>
+                </div>
+                <div class="section-a-body">
+
+                    <div class="san-datasheet" id="search-info-publish-result2">
+                        <div class="san-sheet">
+                            <table class="san-sheet-alternating">
+                                <colgroup>
+								    <col width="15%">
+                                    <col width="55%">
+                                    <col width="*">
+                                </colgroup>
+                                <thead id="search-info-publish-thead">
+								</thead>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="section-a-foot">
+                    <div class="san-row">
+                       
+                        <div class="san-col-12 AR AC-s AC-xs">
+                            <ul class="san-pagination" id="psadr-pagination"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+
+$(function(){
+	$("#adv-disclosure-results").hide();
+	//if("2"==$("#page-init-search-flag").val()) {
+	//	renderData("1");
+	//}
+	
+});
+
+/* 高级查询-信息披露结果 */
+function renderData(pageNo) {
+	//创建基本类型数组
+	var mycars=new Array();
+	var rdTotalAll=0;
+	var selectFlag='0';
+	var ats = "债券发行人信息披露,受托机构信息披露,债券承继人信息披露,债券担保人信息披露,Shibor报价行信息披露,评级公司信息披露".split(",");
+
+	for (var i = 0; i < ats.length; i++) {
+		if (ats[i] == $("#psa-disclosure-enty-subtype").find("option:selected").text()) {
+		selectFlag='1';
+		break;
+		}else{
+		selectFlag='2';
+		}
+	}	
+	$("#disclosure-result-count").html();
+	$("#disclosure-search-codition").html();
+	$("#search-info-publish-thead").empty();
+	if(""==$("#psa-disclosure-enty-subtype").val()) {
+		// 判断是否为查询“全部”，如果是，正常展示信息披露类型
+		selectFlag='0';
+		$("#search-info-publish-thead").append('<tr><td class="cell cell-first" data-name="entyDefinedCode">序号</td><td class="cell" data-name="entyFullName">机构名称</td><td class="cell cell-last" data-name="infoPublishType">信息披露类型</td></tr>');
+	} else {
+		// 否则，不展示信息披露类型
+		$("#search-info-publish-thead").append('<tr><td class="cell cell-first" data-name="entyDefinedCode">序号</td><td class="cell" data-name="entyFullName">机构名称</td><td class="cell cell-last"></td></tr>');
+	}
+	var entyFullName = document.getElementById("enty-full-name").value;
+	var patrn=/[\"\'<>``!@#$%^&*+-\/\/\/\\//?,.]/;
+	if(patrn.exec(entyFullName)){
+		alert("查询信息不能包含特殊字符!!");
+		document.getElementById("enty-full-name").focus();
+		return false;			
+	}
+	//
+	var $sheet = $('#search-info-publish-result2'),
+	//sheet-search-market-results,sheet-bond-market
+        $pagi = $('#psadr-pagination');	
+	
+	// 判断用户是否登录，且有拆借市场成员权限
+		//alert(selectFlag);
+	   if(selectFlag=='1'){
+		 $.ajax({
+			url:LSS_URL+"cm-s-account/getSessionUser",
+			type:"POST",
+			dataType : "json",
+			cache : false,
+			success:function(data) {
+				 // 判断用户是否为登录，并取得登录用户名 
+				 var isLogin="0";
+				 if(data.data.user!=null){
+					if(data.data.isLogin!=null){
+						 isLogin="1";
+					   }
+				 }
+				// 清空展示结果中的内容
+				//$("#search-info-publish-result2").empty();
+				var publishCode = $("#psa-disclosure-enty-subtype").val();
+				var entyFullName = $("#enty-full-name").val();
+				$.ajax({
+					url:NT_URL + "/cm-u-bond-md/BondInfoPublish2",
+					type:"POST",
+					data:{
+						"pageNo":pageNo,
+						"pageSize":"15",
+						"publishCode":publishCode,
+						"entyFullName":entyFullName,
+						"isLogin": isLogin
+					},
+					dataType:'json',
+					cache:false,
+					async:false,
+					success:function(data) {
+						$("#adv-disclosure-results").show();
+						var pgTotal = data.data.pageTotal;
+						var rdTotal = data.data.total;
+						$("#disclosure-search-codition").html($("#enty-full-name").val());
+						$("#disclosure-result-count").html(rdTotal);
+						// 显示信息披露查询结果Div
+						$("#search-adv-disclosure-results").show();
+						
+						//
+	
+						//
+						$sheet.sanDatasheet({
+							dataSource: 'local',
+							url:data.data.resultList,
+							dataHandler: function(data){
+								var $sheet = this;
+								$.each(data, function(n, v){							
+									// 发行人
+									if("1"==data[n].isrFlag) { 
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									}
+									// 受托机构
+									else if("1"==data[n].cstdnIndctrFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// Shibor
+									else if("10"==data[n].shiborLprFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// LPR
+									else if("02"==data[n].shiborLprFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// Shibor/LPR
+									else if("12"==data[n].shiborLprFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// 评级公司
+									else if("1"==data[n].ratingFirmFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/xxplcxpjgs/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									} else {
+										
+										v.entyFullName = '{{html}}<a javascript:void(0);' + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									}							
+									 v.entyDefinedCode = '{{html}}'+((pageNo-1)*15+n+1);
+									
+								});
+								
+								//$("#bond-result-count").html(rdTotal);
+								//$pagi.sanPagination();
+								pagination("psadr-pagination",pgTotal,rdTotal,pageNo);
+								//$('#bond-search-result1').show();					
+								return _example_dataFormatter($sheet, '', data);
+							}
+						});
+						
+						
+						
+						// 渲染页面
+						//creatHtml(data.data.resultList,15,pageNo);
+						//pagination("psadr-pagination",pgTotal,rdTotal,pageNo);
+						//parent.dyniframesize("seniorSearchiframe");
+					}
+				}); 
+			}
+		});
+	  }else if(selectFlag=='2'){
+	  var entyTypeOfWebsite = $("#psa-disclosure-enty-subtype").val();
+	  var entyName = $("#enty-full-name").val();
+	  var arrObj = getLT();
+	 
+				$.ajax({
+					//url:"/dqs/rest/cm-u-member-an/InfoNoticeSeniorSearchMarkMember",
+					url:DQSURL +"/cm-u-member-an/InfoNoticeSeniorSearchMarkMember",
+					type:"POST",
+					data:{
+						"pageNo":pageNo,
+						"pageSize":"15",
+						"entyTypeOfWebsite":entyTypeOfWebsite,
+						"entyName":entyName,
+						"ut": arrObj[0],"sign": arrObj[1]
+					},
+					dataType:'json',
+					cache:false,
+					async:false,
+					success:function(data) {
+					console.log(data);
+						if(data.head.rep_message == "noAuth"){
+							alert("该栏目需要登录或您尚无权限查看");
+							window.location.href="/r/cms/chinese/chinamoney/html/frontpage/login.html";
+							}
+						$("#adv-disclosure-results").show();
+						var pgTotal = data.data.pageTotalSize;
+						var rdTotal = data.data.total;
+						$("#disclosure-search-codition").html($("#enty-full-name").val());
+						$("#disclosure-result-count").html(rdTotal);
+						// 显示信息披露查询结果Div
+						$("#search-adv-disclosure-results").show();
+						//
+						$sheet.sanDatasheet({
+							dataSource: 'local',
+							url:data.records,
+							dataHandler: function(data){
+								var $sheet = this;						
+								$.each(data, function(n, v){			
+									 v.entyDefinedCode = '{{html}}'+((pageNo-1)*15+n+1);
+									 v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyCode +'&isIssue='+v.isIssue+ '" target="_blank" title="' + v.entyName + '">' + v.entyName + '</a>';
+									
+								});
+								//$("#bond-result-count").html(rdTotal);
+								//$pagi.sanPagination();
+								pagination("psadr-pagination",pgTotal,rdTotal,pageNo);
+								//$('#bond-search-result1').show();					
+								return _example_dataFormatter($sheet, '', data);
+							}
+						});
+					}
+				}); 
+	  }else {
+	  //查询全部
+		  var arrObj = getLT();
+		  var entyTypeOfWebsite = $("#psa-disclosure-enty-subtype").val();
+		  //组装selectId
+		  if($("#psa-disclosure-enty-subtype").val()==''){
+			//console.log('查询全部');
+			$("#psa-disclosure-enty-subtype").find("option").each(function(n,v){
+						var sl=$(this).text();		
+						  if(ats.indexOf(sl)=='-1'&& sl!='请选择'){
+						  entyTypeOfWebsite+=$(this).val()+',';
+						  }
+						});
+		  }		 
+		  entyTypeOfWebsite=(entyTypeOfWebsite.slice(entyTypeOfWebsite.length-1)==',')?entyTypeOfWebsite.slice(0,-1):entyTypeOfWebsite;
+		  if(entyTypeOfWebsite==''){
+			entyTypeOfWebsite="-1";
+		  }
+		  //entyTypeOfWebsite='999999';
+		  var eweb=entyTypeOfWebsite.split(",");
+			if(eweb.length>1&&eweb.indexOf('13')=='-1'){
+				entyTypeOfWebsite='999';	
+			}else if(eweb.length>1&&eweb.indexOf('13')!='-1'){
+				entyTypeOfWebsite='';
+			}		
+	  //console.log('全部');
+	  		 $.ajax({
+			url:LSS_URL+"cm-s-account/getSessionUser",
+			type:"POST",
+			dataType : "json",
+			cache : false,
+			success:function(data) {
+				 // 判断用户是否为登录，并取得登录用户名 
+				 var isLogin="0";
+				 if(data.data.user!=null){
+					if(data.data.isLogin!=null){
+						 isLogin="1";
+					   }
+				 }
+				// 清空展示结果中的内容
+				//$("#search-info-publish-result2").empty();
+				var publishCode = $("#psa-disclosure-enty-subtype").val();
+				var entyFullName = $("#enty-full-name").val();
+				$.ajax({
+					url:NT_URL + "/cm-u-bond-md/BondInfoPublish4",
+					type:"POST",
+					data:{
+						"pageNo":pageNo,
+						"pageSize":"15",
+						"publishCode":entyTypeOfWebsite,
+						"entyFullName":entyFullName,
+						"isLogin": isLogin,
+						"ut": arrObj[0],"sign": arrObj[1]
+					},
+					dataType:'json',
+					cache:false,
+					async:false,
+					success:function(data) {
+						$("#adv-disclosure-results").show();
+						var pgTotal = data.data.pageTotal;
+						var rdTotal = data.data.total;
+						$("#disclosure-search-codition").html($("#enty-full-name").val());
+						$("#disclosure-result-count").html(rdTotal);
+						// 显示信息披露查询结果Div
+						$("#search-adv-disclosure-results").show();					
+						//
+						//
+						$sheet.sanDatasheet({
+							dataSource: 'local',
+							url:data.data.resultList,
+							dataHandler: function(data){
+								var $sheet = this;
+								$.each(data, function(n, v){
+									var infoPublishType=v.infoPublishType;
+									//console.log(infoPublishType);
+									if(infoPublishType.indexOf('LPR报价行')>-1){
+									//console.log(1);
+										v.infoPublishType = v.infoPublishType.replace('、LPR报价行','');
+										v.infoPublishType = v.infoPublishType.replace('LPR报价行','');
+										v.infoPublishType = v.infoPublishType.replace('LPR报价行、','');
+									}
+									// 发行人
+									if("1"==data[n].isrFlag) { 
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									}
+									// 受托机构
+									else if("1"==data[n].cstdnIndctrFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// Shibor
+									else if("10"==data[n].shiborLprFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// LPR
+									else if("02"==data[n].shiborLprFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// Shibor/LPR
+									else if("12"==data[n].shiborLprFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+
+									}
+									// 评级公司
+									else if("1"==data[n].ratingFirmFlag) {
+										v.entyFullName = '{{html}}<a href="/chinese/xxplcxpjgs/?entyDefinedCode=' + v.entyDefinedCode + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									}else if("1"==data[n].lendingMarketFlag){
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode +'&isIssue='+v.isIssue+ '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									}else if("1"==data[n].currencyBrokersFlag){
+										v.entyFullName = '{{html}}<a href="/chinese/jgxxpl/?entyDefinedCode=' + v.entyDefinedCode +'&isIssue='+v.isIssue+ '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									}	
+									else {
+										v.entyFullName = '{{html}}<a javascript:void(0);' + '" target="_blank" title="' + v.entyFullName + '">' + v.entyFullName + '</a>';
+									}							
+									 v.entyDefinedCode = '{{html}}'+((pageNo-1)*15+n+1);
+									
+								});
+								
+								//$("#bond-result-count").html(rdTotal);
+								//$pagi.sanPagination();
+								pagination("psadr-pagination",pgTotal,rdTotal,pageNo);
+								//$('#bond-search-result1').show();					
+								return _example_dataFormatter($sheet, '', data);
+							}
+						});
+				  
+					}
+				}); 
+			}
+		});
+	  
+
+	  }
+}
+
+function setSheetWidth($sheet) {
+        var $tr = $sheet.find('thead:eq(0)>tr').children(),
+            // 各列宽度
+            w = [], _w;
+        $tr.each(function(i){
+            switch (i) {
+                case 0:
+                    _w = 180;
+                    if (MEDIA_CASE == 'XS') {
+                        _w = 150;
+                    }
+                    break;
+                case 2:
+                    _w = 220;
+                    break;
+                default:
+                    _w = 110;
+                    break;
+            }
+            w.push(_w);
+        });
+        return w;
+    }
+
+function creatData(t1,t2,t3,t4,t5) {
+	var o =new Object();
+		o.entyDefinedCode=t1;//序号用
+		o.entyFullName=t2;//机构名称
+		o.infoPublishType=t3;//信息披露类型
+		o.entyDefinedCodeStr=t4;//id跳转用
+		o.selectType=t5;//select类型
+		return o;
+}
+	
+	
+	
+function creatHtml(data,size,pageNo) {
+	var infoPublishLen = data.length;
+	var infoPublish = "";
+	// 不补空行，只有一条记录，仍展示分页控件
+	for(var i=0; i<infoPublishLen; i++) {
+		// 点击“机构名称”连接判断
+		var infoPublishType = data[i].infoPublishType;
+		if(infoPublishType.indexOf('LPR报价行')>-1){
+			infoPublishType = infoPublishType.replace('、LPR报价行','');
+			infoPublishType = infoPublishType.replace('LPR报价行','');
+		}
+		var entyDefinedCode = data[i].entyDefinedCode;
+		var entyFullName = data[i].entyFullName;
+		var hrefStr = "";
+		// 发行人
+		if("1"==data[i].isrFlag) { 
+			/* hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode + "&entyFullName=" + encodeURIComponent(escape(entyFullName)); */
+			hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode;
+		}
+		// 受托机构
+		else if("1"==data[i].cstdnIndctrFlag) {
+			/* hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode + "&entyFullName=" + encodeURIComponent(escape(entyFullName)); */
+			hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode;
+		}
+		// Shibor
+		else if("10"==data[i].shiborLprFlag) {
+			/* hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode + "&entyFullName=" + encodeURIComponent(escape(entyFullName)); */
+			hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode;
+		}
+		// LPR
+		else if("02"==data[i].shiborLprFlag) {
+			/* hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode + "&entyFullName=" + encodeURIComponent(escape(entyFullName)); */
+			hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode;
+		}
+		// Shibor/LPR
+		else if("12"==data[i].shiborLprFlag) {
+			/* hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode + "&entyFullName=" + encodeURIComponent(escape(entyFullName)); */
+			hrefStr = "/chinese/jgxxpl/?entyDefinedCode=" + entyDefinedCode;
+		}
+		// 评级公司
+		else if("1"==data[i].ratingFirmFlag) {
+			/* hrefStr = "/chinese/xxplcxpjgs/" + "?entyDefinedCode=" + entyDefinedCode + "&entyFullName=" + encodeURIComponent(escape(entyFullName)); */
+			hrefStr = "/chinese/xxplcxpjgs/" + "?entyDefinedCode=" + entyDefinedCode;
+		} else {
+			hrefStr = "javascript:void(0);";
+		}
+		if(""==$("#psa-disclosure-enty-subtype").val()) {
+			// 判断是否为查询“全部”，如果是，正常展示信息披露类型
+			if(i%2==0) {
+				infoPublish +='<tr class="odd">' + 
+	                '<td class="cell p-l-20"><span class="cell-value">' + ((pageNo-1)*15+i+1) + '</span></td>' + 
+	                '<td class="cell" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span class="cell-value">' + 
+	                	'<a href="' + hrefStr + '" target="_blank" title="' + sanCharEntity(entyFullName) + '">' + sanCharEntity(entyFullName) + '</a>' + 
+	                '</span></td>' + 
+	                '<td class="cell p-r-20"><span class="cell-value">' + infoPublishType + '</span></td>' + 
+	        		'</tr>';
+			} else {
+				infoPublish +='<tr class="even">' + 
+	                '<td class="cell p-l-20"><span class="cell-value">' + ((pageNo-1)*15+i+1) + '</span></td>' + 
+	                '<td class="cell" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span class="cell-value">' + 
+	                	'<a href="' + hrefStr + '" target="_blank" title="' + sanCharEntity(entyFullName) + '">' + sanCharEntity(entyFullName) + '</a>' + 
+	                '</span></td>' + 
+	                '<td class="cell p-r-20"><span class="cell-value">' + infoPublishType + '</span></td>' + 
+	        		'</tr>';
+			}
+		} else {
+			// 否则，不展示信息披露类型
+			if(i%2==0) {
+				infoPublish +='<tr class="odd">' + 
+	                '<td class="cell p-l-20"><span class="cell-value">' + ((pageNo-1)*15+i+1) + '</span></td>' + 
+	                '<td class="cell" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span class="cell-value">' + 
+	                	'<a href="' + hrefStr + '" target="_blank" title="' + sanCharEntity(entyFullName) + '">' + sanCharEntity(entyFullName) + '</a>' + 
+	                '</span></td><td class="cell p-r-20"></td></tr>';
+			} else {
+				infoPublish +='<tr class="even">' + 
+	                '<td class="cell p-l-20"><span class="cell-value">' + ((pageNo-1)*15+i+1) + '</span></td>' + 
+	                '<td class="cell" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span class="cell-value">' + 
+	                	'<a href="' + hrefStr + '" target="_blank" title="' + sanCharEntity(entyFullName) + '">' + sanCharEntity(entyFullName) + '</a>' + 
+	                '</span></td><td class="cell p-r-20"></td></tr>';
+			}
+		}
+	}
+	$("#search-info-publish-result").append(infoPublish);
+}
+</script>

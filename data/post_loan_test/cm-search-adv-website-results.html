@@ -1,0 +1,526 @@
+<!-- san-row end -->
+<div class="section-pg" id="page-search-site-results">
+    
+    <div class="section-a section-a-default">
+        <div class="section-a-head AC" id="resultTitle">
+            <div class="section-a-title">查询结果</div>
+        </div>
+        <div class="section-a-body p-t-10" id="resultPage">
+
+            <div class="san-row">
+                <div class="san-col-3 san-col-s-12 hidden-s hidden-xs">
+
+                    <div class="section-a section-a-border">
+                        <div class="section-a-head" id ="search-result-head">
+                            <div class="section-a-title">搜索结果栏目分类</div>
+                        </div>
+                        <div class="section-a-body">
+                            
+                            <ul class="san-tree" id="psawr-tree"></ul>
+                            
+                        </div>
+                    </div>
+
+                </div>
+                <div class="san-col-9 san-col-s-12">
+
+                    <div class="section-a">
+                        <div class="section-a-body">
+                            
+                            <div class="san-tabs-wrapper san-tabs-ta-wrapper" id="tabs-group-search-site-results">
+                                <ul class="san-tabs-ta" id="page-search-adv-website-results-tabs">
+                                   <li class="current" data-args="date"><a href="javascript:void(0);"  data-url="/r/cms/chinese/chinamoney/html/ses/search-adv-website-results-list.html"><span>按发布时间排序</span></a></li>
+                                   <li data-args="relevance"><a href="javascript:void(0);" data-url="/r/cms/chinese/chinamoney/html/ses/search-adv-website-results-list2.html"><span>按相关性排序</span></a></li>
+                                </ul>
+                                <div class="AR"  id="searchResult">
+                                    <span>搜索“<span class="text-em"></span>” 获得 <span id="search-adv-website-results-count">0</span> 条查询结果</span>
+                                </div>
+                            </div>
+                        
+                            <div class="san-tabs-content">
+                                <div class="san-tabs-panel"></div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+</div>
+<script>
+var arrObj = null;
+var dense = "1,3,4,5";
+$(function(){
+	verify="false";
+	//arrObj = getLT();
+	var infoLevel = dense;
+	//var searchText="{{searchValue}}";
+	var searchText=$.trim($('#searchText').val());
+	//isInfoPublishLend = "{{isInfoPublishLend}}";
+	isInfoPublishLend = "false";
+	subHerf = "{{oc1}}";
+	if($.trim(searchText)!=''){
+		$('#noticeSearch').html('');
+		$('#searchText').val(searchText);
+	}
+	if($.trim(searchText)==''){
+	
+	$('#page-search-site-results').hide();
+		$('#resultTitle').hide();
+		$('#resultPage').hide();
+	}else{
+		//var validate = doValidate(searchText);
+		//if(validate==-1){
+		//	return false;
+		//}
+		$('#page-search-site-results').show();
+		$('#resultTitle').show();
+		$('#resultPage').show();
+	} 
+	//TODO:处理channel,获取全部的一级栏目id
+	//var rootChannelIds=$("#selectChannels").val();
+	//var method='queryByChannels';
+	//if(searchText.length!=0&&$.trim(searchText)!=''){
+	//	doQueryList(searchText,rootChannelIds,method,'');
+	//	doQueryTree(searchText,rootChannelIds);
+	//}
+	
+	// 当MEDIA_CASE=M时，ipad竖版。调整标题样式
+	if(MEDIA_CASE=='M'){
+	$("#search-result-head").css("padding","0px");
+	}
+	
+    $.ajax({
+            url: LSS_URL+'cm-s-account/getSessionUser',
+            type: "post",
+            dataType: 'json',
+            cache: false,
+            //async:false,
+            success: function(data) {
+            	var il = data.data.isLogin;
+            	if(il=='0'){
+            		verify='true';
+            	}
+            }
+    });
+});
+ 
+ 
+function doQueryAll(){
+	var searchText = $.trim($('#searchText').val());
+	//alert(searchText);
+	if(searchText.length == 0){
+		alert("关键字不能为空");
+		return false;
+	}else{
+		var validate = doValidate(searchText);
+		if(validate==-1){
+			return false;
+		}
+	}
+	var choiceDate = $('input[name="dates"]:checked').val();
+	//alert(choiceDate);
+	if(choiceDate=='-1'){
+		 startDate = $('#psawf-start-date').val();
+		 endDate = $('#psawf-end-date').val(); 
+		 if(startDate==''&&endDate==''){
+	    		alert("请填写时间范围");
+	    		return false;
+	    	} 
+	    	if(startDate==''){
+	    		alert("搜索开始时间不能为空");
+	    		return false;
+	    	}  	
+	    	if(endDate==''){
+	    		alert("搜索结束时间不能为空");
+	    		return false;
+	    	}
+	    	var start =new Date(startDate.replace(/-/g,"/"));
+	    	var end = new Date(endDate.replace(/-/g,"/"));
+	    	times = end.getTime()-start.getTime();
+	    	if(times/(1000*60*60*24)>(366*3)){
+		   		alert("搜索时间间隔不能超过3年");
+		   		return false;
+		   	}
+	}else{
+		date = choiceDate;
+		startDate='';
+		endDate='';
+		}
+	var args;
+	//TODO:处理下拉框，获取所选的栏目id
+		var map2=$("#select-map").data("result");
+		//console.log(map2);
+	var rootChannelId =$("#selectChannels").val();
+	strs=rootChannelId.split(","); //字符分割
+	var selectIds='';
+	if(rootChannelId==null){
+		alert("请选择栏目范围");
+		return false;
+	}else if(rootChannelId=='全部'){
+		for (var key in map2) {  
+			selectIds+=map2[key]+",";
+			}
+	}else{
+		for (i=0;i<strs.length ;i++ ){
+			selectIds+=map2[strs[i]]+",";		
+			}
+	
+		}
+	
+	var isTitle= document.getElementById("containTitle").checked;
+	var isTxt = document.getElementById("containTitle1").checked;
+	if(isTitle&&isTxt){
+	 	field="all";
+	}else if(!isTitle&&!isTxt){
+		alert("搜索范围至少勾选一项");
+		return false;
+	}else{
+		if(isTitle){
+			field = $('#containTitle').val();
+		}else{
+			field = $('#containTitle1').val();
+		}
+	}
+	$('#resultTitle').show();
+	$('#resultPage').show();
+	var method='queryByChannels';
+	arrObj = getLT();
+	doQueryList(searchText,selectIds,method,'');
+	doQueryTree(searchText,selectIds);
+	
+ }	 
+ 
+function doQueryList(param,param1,param2,param3){
+	var searchText = param;
+	var channelIdStr  = param1;
+	var method = param2;
+	var nodeLevel = param3;
+	if(param3==0){
+		nodeLevel=1;
+	}
+	    $('#page-search-adv-website-results-tabs').sanTabs({
+	        tabs: 'san-tabs-c',
+	        inject: true,
+	        injectedVar: {
+	           'date' 		  : date,
+	           'sort' 	      : sort,
+	           'method'       : method,
+	           'infoLevel'    : infoLevel,
+	           'nodeLevel'    : nodeLevel,
+	           'searchText'   : searchText,
+	           'channelIdStr' : channelIdStr
+					
+	        },
+	        onEvent: function($li){
+	        		var injectedVar = {
+	       				 'date' 		  : date,
+	       		           'sort' 	      : sort,
+	       		           'method'       : method,
+	       		           'infoLevel'    : infoLevel,
+	       		           'nodeLevel'    : nodeLevel,
+	       		           'searchText'   : searchText,
+	       		           'channelIdStr' : channelIdStr
+	        		};
+				return injectedVar;
+	        },
+	        onDone: function(){
+	           //$('#search-adv-website-results-count').text($(total);
+	           
+	        },
+	        onFail: function(){
+	            $('#search-adv-website-results-count').text('0');
+	        }
+	    }); 
+	}
+	           
+function doQueryTree(param,param1){
+	var pageIndex = -1;
+	var pageSize = 15;
+	var searchText=param;
+	var rootChannelIds = param1;
+	//是否公开判断扩散至货币经纪公司信息披露权限
+	var isInfoPublishLendTmp = isInfoPublishLend;
+	if(infoLevel.indexOf('8')>-1&&isInfoPublishLendTmp=='false'){
+		isInfoPublishLendTmp='true';
+	}
+	$('#psawr-tree').find('li').remove();
+		 $('#psawr-tree').sanTree({
+		    	dataSource: 'remote',
+			      url:SES_URL+'/cm-u-notice-ses-cn/query?text='+encodeURIComponent(searchText)+'&date='+date+'&field='+field+'&start='+startDate+'&end='+endDate+
+					'&pageIndex='+pageIndex+'&pageSize='+pageSize+'&public='+isInfoPublishLendTmp+'&infoLevel='+arrObj[0]+'&sign='+arrObj[1]+'&channelIdStr='+rootChannelIds,
+				//风格优化test
+				//url:SES_URL+'/cm-u-notice-ses-cn/query?text='+encodeURIComponent(searchText)+'&date='+date+'&field='+field+'&start='+startDate+'&end='+endDate+
+				//	'&pageIndex='+pageIndex+'&pageSize='+pageSize+'&public='+isInfoPublishLendTmp+'&infoLevel='+arrObj[0]+'&sign='+arrObj[1]+'&channelIdStr='+'2496,2833,2632,2589,2663,2556,2850,2884,2900,3300,2496,2833,2632,2589,2663,2556,2850,2884,2900,3300',
+	
+		        badge: true,
+		        cache: false,
+		        onDone: function(){
+				    var $obj = $('#psawr-tree'),
+						$li = null;
+					    $li2 = null;
+					//风格优化 一级栏目处理
+					$obj.find('[data-level="1"]').find('.node-text').each(function(){
+						//if ($(this).text() == '首页'){
+						//$li = $(this).closest('li');				
+						//$li.find('[data-level="2"]').each(function(){
+						//	$obj.sanTree('nodesDelete', $(this).closest('li'));
+						//	});
+						//}
+						//$li = $(this).closest('li');
+						//$li.find('[data-level="2"]').each(function(){
+						//	$obj.sanTree('nodesDelete', $(this).closest('li'));
+						//	});
+						
+						if ($(this).text() == '市场自律'){
+							$(this).text('自律');
+						}
+						if ($(this).text() == '基准指标'){
+							$(this).text('基准');
+							$li = $(this).closest('li');
+							$li.find('[data-level="2"]').find('.node-text').each(function(){
+								if($(this).text()=='分析报告'){
+									$li = $(this).closest('li');
+									$li.find('[data-level="3"]').each(function(){
+									$obj.sanTree('nodesDelete', $(this).closest('li'));
+									});
+								}					
+							});
+						}
+						if ($(this).text() == '市场指南'||$(this).text() == '服务'){
+							$(this).text('服务');
+							$li = $(this).closest('li');
+							$li.find('[data-level="2"]').find('.node-text').each(function(){
+								if($(this).text()=='政策法规'||$(this).text()=='系统接入开发机构'){
+									$li = $(this).closest('li');
+									$li.find('[data-level="3"]').each(function(){
+									$obj.sanTree('nodesDelete', $(this).closest('li'));
+									});
+								}					
+							});
+						}
+						if ($(this).text() == '市场数据'||$(this).text() == '数据'){
+							$(this).text('数据');
+//							$li = $(this).closest('li');
+//							$li.find('[data-level="2"]').find('.node-text').each(function(){
+//								if($(this).text()=='信息产品'||$(this).text()=='债券信息'){
+//									$li = $(this).closest('li');
+//									$li.find('[data-level="3"]').each(function(){
+//									$obj.sanTree('nodesDelete', $(this).closest('li'));
+//									});
+//								}					
+//							});
+							
+						}
+						if ($(this).text() == '信息披露'||$(this).text() == '披露'){
+							$(this).text('披露');
+							$li = $(this).closest('li');
+							
+						//流通上市相关参数
+							var	ltssId;
+							var ltssCount=0;
+							var $ltssLi=null;
+							var ltssFlag=false;
+							var ltsslmFlag=false;
+							
+						//债券财务报告相关参数
+							var	zqcwbgId;
+							var zqcwbgCount=0;
+							var $zqcwbgLi=null;
+							var zqcwbgFlag=false;
+							var zqcwbglmFlag=false;
+						//付息兑换相关参数
+							var	fxdhId;
+							var fxdhCount=0;
+							var $fxdhLi=null;
+							var fxdhFlag=false;
+							var fxdhlmFlag=false;
+							$li.find('[data-level="2"]').find('.node-text').each(function(){
+								//if($(this).text()!='债券信息披露'&&$(this).text()!='市场公告'){
+								//	$li = $(this).closest('li');
+								//	$li.find('[data-level="3"]').each(function(){
+								//	$obj.sanTree('nodesDelete', $(this).closest('li'));
+								//	});
+								//}								
+								if($(this).text()=='债券信息披露'){
+									$li = $(this).closest('li');
+									$li.find('[data-level="3"]').find('.node-text').each(function(){										
+										if($(this).text()=='流通上市'){
+											ltssFlag=true;
+											ltssId=$(this).closest('li').attr("data-nid");
+											ltssCount=$(this).closest('li').find('.node-badge').text()*1;
+											$ltssLi=$(this).closest('li');				
+										}
+
+										if ($(this).text() == '债券财务报告'){
+											$(this).text('财务报告');
+											zqcwbgFlag=true;
+											zqcwbgId=$(this).closest('li').attr("data-nid");
+											zqcwbgCount=$(this).closest('li').find('.node-badge').text()*1;
+											$zqcwbgLi=$(this).closest('li');				
+										}
+										
+										if($(this).text()=='付息兑付'){
+											fxdhFlag=true;
+											fxdhId=$(this).closest('li').attr("data-nid");
+											fxdhCount=$(this).closest('li').find('.node-badge').text()*1;
+											$fxdhLi=$(this).closest('li');				
+										}											
+									});
+									
+									$li.find('[data-level="3"]').find('.node-text').each(function(){										
+										if($(this).text()=='流通上市栏目'){
+											$(this).text('流通上市');
+											ltsslmFlag=true;
+											var ltsslmId=$(this).closest('li').attr("data-nid");
+											$(this).closest('li').attr("data-nid",ltsslmId+","+ltssId);
+											var ltsslmCount=$(this).closest('li').find('.node-badge').text();
+											$(this).closest('li').find('.node-badge').text(ltsslmCount*1+ltssCount);
+										}
+										
+										if($(this).text()=='债券财务报告栏目'){
+											$(this).text('财务报告');
+											zqcwbglmFlag=true;
+											var zqcwbglmId=$(this).closest('li').attr("data-nid");
+											$(this).closest('li').attr("data-nid",zqcwbglmId+","+zqcwbgId);
+											var zqcwbglmCount=$(this).closest('li').find('.node-badge').text();
+											$(this).closest('li').find('.node-badge').text(zqcwbglmCount*1+zqcwbgCount);
+										}
+										if($(this).text()=='付息兑付栏目'){
+											$(this).text('付息兑付');
+											fxdhlmFlag=true;
+											var fxdhlmId=$(this).closest('li').attr("data-nid");
+											$(this).closest('li').attr("data-nid",fxdhlmId+","+fxdhId);
+											var fxdhlmCount=$(this).closest('li').find('.node-badge').text();
+											$(this).closest('li').find('.node-badge').text(fxdhlmCount*1+fxdhCount);
+										}	
+									});
+										if(ltsslmFlag==true&&ltssFlag==true){
+										//删除流通上市分节点合并到主节点
+										$obj.sanTree('nodesDelete', $ltssLi);			
+										}	
+										if(zqcwbglmFlag==true&&zqcwbgFlag==true){
+										//删除财务报告分节点合并到主节点
+										$obj.sanTree('nodesDelete', $zqcwbgLi);			
+										}	
+										if(fxdhlmFlag==true&&fxdhFlag==true){
+										//删除付息兑换分节点合并到主节点
+										$obj.sanTree('nodesDelete', $fxdhLi);			
+										}
+								}				
+							});
+						}
+						if ($(this).text() == '关于中心'||$(this).text() == '关于'){
+							$(this).text('关于');
+							$li = $(this).closest('li');
+							$li.find('[data-level="2"]').find('.node-text').each(function(){
+									$li = $(this).closest('li');
+									$li.find('[data-level="3"]').each(function(){
+									$obj.sanTree('nodesDelete', $(this).closest('li'));
+									});								
+							});
+						}						
+						
+					});
+					//二级栏目处理	
+					$obj.find('[data-level="2"]').find('.node-text').each(function(){
+						if ($(this).text() == '拆借市场成员信息披露栏目'){
+							$(this).text('拆借市场成员信息披露');
+						}
+						if ($(this).text() == '货币经纪公司信息披露栏目'){
+							$(this).text('货币经纪公司信息披露');
+						}
+						
+						if ($(this).text() == '集中信息披露'||$(this).text() == '拆借市场成员信息披露'||$(this).text() == '货币经纪公司信息披露'){
+							//$li2 = $(this).closest('li');
+						}
+						if ($(this).text() == '首页热点关注'){
+							$(this).text('热点关注');
+						}
+						
+						if ($(this).text() == '信息披露指南'){
+							$li = $(this).closest('li');
+							$li.find('[data-level="3"]').each(function(){
+							$obj.sanTree('nodesDelete', $(this).closest('li'));
+							});
+							
+						}
+					});
+					
+					//$obj.find('[data-level="3"]').find('.node-text').each(function(){
+					//	if ($(this).text() == '债券财务报告'){
+					//		$(this).text('财务报告');
+					//	}
+					//});
+					
+					if($li2!=null){
+						$li2.find('[data-level="3"]').each(function(){
+                            $obj.sanTree('nodesDelete', $(this));
+                        });
+					}
+
+					
+					
+				},
+		        onClick: function($obj){
+		            var $this = this;
+		            if ($obj.hasClass('fold') && $obj.find('.san-tree-node').length){
+		                $this.sanTree('unfold', $obj);
+		            } 
+		            var channelId = $this.find('li.current').attr('data-nid');
+		            var nodeLevel = $this.find('li.current').attr('data-level');
+		            if(nodeLevel==0){
+		            	doQueryList(searchText,rootChannelIds,"queryByNode","1");
+		            }else{
+		          		doQueryList(searchText,channelId,"queryByNode",nodeLevel);
+		            }
+		        },
+		        onSwitch:function($obj){
+		        	var $this = this;
+		        	//parent.dyniframesize('seniorSearchiframe');
+		        }
+		 });
+}
+	
+//校验搜索值  
+function doValidate(param){
+	var patrn=/[\"\'*@+&$%|\\']/;
+	if(patrn.exec(param)){
+		alert("查询信息不能包含特殊字符");
+	    return -1;			
+	}   	
+	    	
+}
+
+function getLT(){
+        //其中添加获取用户信息lt by jzj 2018-10-25
+        var arrObj = new Array();
+        var ut;
+		var sign;
+     $.ajax({
+             url:LSS_URL+"cm-s-account/getLT",                
+                        type: "post",
+                        dataType: 'json',
+                        data:{'type':'0'},
+                        cache: false,
+                        async:false,
+                        success: function(data) {
+                            ut = encodeURI(data.data.UT).replace(/\+/g,'%2B');
+                            sign = encodeURI(data.data.sign).replace(/\+/g,'%2B');
+							
+						    user=data.data.user;
+						    if(user!=null && null!=user.dense){
+							   dense = user.dense;
+						    }
+							infoLevel=dense;
+            }
+     });        
+		 arrObj.push(ut);
+		 arrObj.push(sign);
+         return arrObj;
+}
+</script>
