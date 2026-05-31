@@ -66,6 +66,7 @@ Treat `enterprise_name` as required. Default `report_period_preference` to `late
    - If the first 30 generic full-name results contain no annual report, run directed annual-report searches for `{企业全名} 年度报告`, `{企业全名} 年报`, `{企业全名} 审计报告`, `{企业全名} 年度财务报表`, and `{企业全名} 合并及母公司财务报表`.
 
 4. Download and parse PDFs.
+   - When local execution is available, use `scripts/run_analysis.py` or import `run_analysis`; the executor downloads selected `pdf_url`/attachment PDFs, stores local copies under the output `pdfs/` directory, extracts text with `pypdf`/`pdfplumber`/`PyMuPDF` fallback, and records `pdf_parse` metadata on each selected document.
    - Open detail pages or PDF links for matched results.
    - If a page has attachment PDFs, download the relevant PDF; do not judge by HTML snippets only.
    - Read the first page to confirm subject name.

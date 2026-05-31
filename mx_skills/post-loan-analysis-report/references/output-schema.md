@@ -222,7 +222,23 @@ Each adopted file inside `selected_documents` should include:
   "used_for_main_analysis": true,
   "used_as_supplement": false,
   "document_status": "latest_financial_data / stale_or_prior_period_document / supplemental_document",
-  "disclosed_financial_data_cutoff": ""
+  "disclosed_financial_data_cutoff": "",
+  "pdf_parse": {
+    "download_status": "success / partial / failed / not_applicable",
+    "download_error": "",
+    "parse_status": "success / partial / failed / not_applicable",
+    "parse_failed_reason": "",
+    "parser": "pypdf / pdfplumber / pymupdf",
+    "page_count": 0,
+    "text_char_count": 0,
+    "cover_text": "",
+    "text_excerpt": "",
+    "report_period_from_pdf": "",
+    "disclosed_financial_data_cutoff": "",
+    "matched_name_in_pdf": "",
+    "subject_verified": false,
+    "download_path": ""
+  }
 }
 ```
 

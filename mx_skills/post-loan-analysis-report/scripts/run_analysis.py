@@ -1,4 +1,4 @@
-﻿"""
+"""
 Post-loan analysis report executor.
 
 Searches 中国货币网, 上海证券交易所, and 深圳证券交易所 for an enterprise's
@@ -9,12 +9,16 @@ structured JSON matching the output schema.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import re
-from datetime import datetime, date
+from datetime import date, datetime
+from io import BytesIO
 from pathlib import Path
-from typing import Any, Optional
-from urllib.parse import urlparse
+from typing import Any
+from urllib import error as urllib_error
+from urllib import request as urllib_request
+from urllib.parse import urljoin, urlparse
 
 
 # ── document classification ──────────────────────────────────────────────────
@@ -49,7 +53,7 @@ EXCLUDE_KEYWORDS = [
 ]
 
 ALLOWED_DOMAINS = {
-    "中国货币网": ["chinamoney.com.cn"],
+    "中国货币网": ["chinamoney.com.cn", "pdf.dfcfw.com"],
     "上海证券交易所": ["sse.com.cn", "bond.sse.com.cn"],
     "深圳证券交易所": ["szse.cn"],
 }
@@ -198,6 +202,309 @@ def _load_search_module():
     return module
 
 
+# ── PDF download & parse ─────────────────────────────────────────────────────
+
+PDF_MAX_BYTES = 50 * 1024 * 1024  # 50 MB
+PDF_MAX_PAGES = 600
+TEXT_EXCERPT_LIMIT = 2000
+FINANCIAL_REPORT_TYPES = {"annual_report", "semi_annual_report", "quarterly_report"}
+NO_DATA_SUMMARY = "本次检索已完成三渠道公开披露扫描，当前未识别到可由公开披露文件直接支持的重大负面事项。"
+NO_NEGATIVE_SUMMARY = "未识别到可由公开披露文件直接支持的重大负面事项。"
+
+
+def _normalize_ws(text: str) -> str:
+    """Collapse whitespace."""
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _safe_slug(name: str) -> str:
+    """Safe filename slug from enterprise name."""
+    return re.sub(r"[^\w\u4e00-\u9fff-]", "_", name).strip("_")[:60]
+
+
+def _year_from_text(text: str) -> int | None:
+    """Extract a 4-digit year from text, preferring years >= 2000."""
+    years = [int(m) for m in re.findall(r"\b(\d{4})\b", text) if 2000 <= int(m) <= 2099]
+    return years[0] if years else None
+
+
+def _is_2025_or_later(text: str) -> bool:
+    y = _year_from_text(text)
+    return y is not None and y >= 2025
+
+
+def _is_prior_to_2025(text: str) -> bool:
+    y = _year_from_text(text)
+    return y is not None and y < 2025
+
+
+def _period_sort_key(period: str) -> tuple:
+    """Sort key: (year_priority, period_priority). Annual=0, H1=1, Qx=2."""
+    m = re.match(r"(\d{4})(?:Q(\d)|H(\d))?", period)
+    if not m:
+        return (0, 0)
+    year = int(m.group(1))
+    if m.group(3):  # H1
+        return (year, 1)
+    if m.group(2):  # Qx
+        return (year, 2 + int(m.group(2)))
+    return (year, 0)
+
+
+def _download_pdf_bytes(url: str) -> tuple[bytes | None, str, str]:
+    """Download a PDF from url using urllib with curl fallback.
+    Returns (bytes|None, content_type, error).
+    """
+    if not url:
+        return (None, "", "empty_url")
+
+    # --- Attempt 1: urllib ---
+    try:
+        req = urllib_request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                          "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Referer": "https://pdf.dfcfw.com/",
+        })
+        with urllib_request.urlopen(req, timeout=30) as resp:
+            ct = resp.headers.get("Content-Type", "")
+            content_length = resp.headers.get("Content-Length")
+            if content_length and int(content_length) > PDF_MAX_BYTES:
+                return (None, ct, f"too_large: {content_length} bytes")
+            data = resp.read()
+            if len(data) > PDF_MAX_BYTES:
+                return (None, ct, f"too_large: {len(data)} bytes")
+            if not data:
+                return (None, ct, "empty_body")
+            # Validate PDF header
+            if data[:5] == b"%PDF-":
+                return (data, ct, "")
+            # If it's JavaScript/HTML (anti-bot page), fall through to curl
+            if b"<script" in data[:200] or b"<html" in data[:200]:
+                pass  # fall through
+            else:
+                return (None, ct, f"not_pdf: header={data[:20]!r}")
+    except (urllib_error.HTTPError, urllib_error.URLError, OSError) as e:
+        urllib_err = str(e)[:200]
+    else:
+        urllib_err = "returned_non_pdf"
+
+    # --- Attempt 2: curl.exe (HTTP/2 capable, often bypasses anti-bot) ---
+    import subprocess, tempfile
+    try:
+        fd, tmp = tempfile.mkstemp(suffix=".pdf")
+        import os
+        os.close(fd)
+        result = subprocess.run([
+            "curl.exe", "-sS", "-f", "-L",
+            "--max-filesize", str(PDF_MAX_BYTES),
+            "-H", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+            "-H", "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "-o", tmp,
+            url,
+        ], capture_output=True, text=True, timeout=60)
+        if result.returncode != 0:
+            return (None, "", f"curl_failed: rc={result.returncode} stderr={result.stderr[:200]}")
+        data = Path(tmp).read_bytes()
+        Path(tmp).unlink(missing_ok=True)
+        if not data:
+            return (None, "", "curl_empty_body")
+        if data[:5] != b"%PDF-":
+            return (None, "", f"curl_not_pdf: header={data[:20]!r}")
+        return (data, "application/pdf", "")
+    except Exception as e:
+        return (None, "", f"curl_error: {e}; urllib: {urllib_err}")
+
+
+def _extract_pdf_pages_text(pdf_bytes: bytes) -> tuple[str, list[str], int, str]:
+    """Extract text from PDF bytes using triple-parser fallback.
+    Returns (parser_name, pages_text_list, page_count, extra_error).
+    """
+    # Parser 1: pypdf
+    try:
+        from pypdf import PdfReader as PyPdfReader
+        reader = PyPdfReader(BytesIO(pdf_bytes))
+        pages = []
+        limit = min(len(reader.pages), PDF_MAX_PAGES)
+        for i in range(limit):
+            try:
+                t = reader.pages[i].extract_text() or ""
+                pages.append(t)
+            except Exception:
+                pages.append("")
+        return ("pypdf", pages, len(reader.pages), "")
+    except Exception as e:
+        pypdf_err = str(e)[:200]
+
+    # Parser 2: pdfplumber
+    try:
+        import pdfplumber
+        with pdfplumber.open(BytesIO(pdf_bytes)) as pdf:
+            pages = []
+            limit = min(len(pdf.pages), PDF_MAX_PAGES)
+            for i in range(limit):
+                try:
+                    t = pdf.pages[i].extract_text() or ""
+                    pages.append(t)
+                except Exception:
+                    pages.append("")
+            return ("pdfplumber", pages, len(pdf.pages), f"pypdf failed: {pypdf_err}")
+    except Exception as e:
+        plumber_err = str(e)[:200]
+
+    # Parser 3: pymupdf (fitz)
+    try:
+        import fitz
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        pages = []
+        limit = min(doc.page_count, PDF_MAX_PAGES)
+        for i in range(limit):
+            try:
+                t = doc[i].get_text() or ""
+                pages.append(t)
+            except Exception:
+                pages.append("")
+        pc = doc.page_count
+        doc.close()
+        return ("pymupdf", pages, pc, f"pypdf/pdfplumber failed")
+    except Exception as e:
+        fitz_err = str(e)[:200]
+
+    return ("none", [], 0, f"pypdf: {pypdf_err}; pdfplumber: {plumber_err}; fitz: {fitz_err}")
+
+
+def _extract_subject_from_text(text: str, enterprise_name: str) -> tuple[str, bool]:
+    """Check if enterprise_name appears in PDF text. Returns (matched_name, found)."""
+    if not text or not enterprise_name:
+        return ("", False)
+    # Try full name first
+    if enterprise_name in text:
+        return (enterprise_name, True)
+    # Try short variants (remove 集团/有限公司/股份 etc.)
+    short = re.sub(r"(集团)?(有限)?(公司|责任公司|股份公司|总公司).*$", "", enterprise_name)
+    if len(short) >= 4 and short in text:
+        return (short, True)
+    # Try first 4 chars
+    if len(enterprise_name) >= 4:
+        head = enterprise_name[:4]
+        if head in text:
+            return (head + "...", True)
+    return ("", False)
+
+
+async def _parse_pdf_document(
+    *,
+    pdf_url: str,
+    enterprise_name: str,
+    title_text: str,
+    report_period_fallback: str,
+    output_dir: Path,
+) -> dict[str, Any]:
+    """Download and parse a single PDF document. Returns pdf_parse dict."""
+    result: dict[str, Any] = {
+        "download_status": "not_applicable",
+        "parse_status": "not_applicable",
+        "parser": "",
+        "page_count": 0,
+        "text_char_count": 0,
+        "cover_text": "",
+        "text_excerpt": "",
+        "report_period_from_pdf": "",
+        "matched_name_in_pdf": "",
+        "subject_verified": False,
+        "download_path": "",
+        "parse_failed_reason": "",
+    }
+
+    if not pdf_url:
+        result["download_status"] = "not_applicable"
+        result["parse_status"] = "not_applicable"
+        result["parse_failed_reason"] = "no_pdf_url"
+        return result
+
+    # Download
+    loop = asyncio.get_running_loop()
+    pdf_bytes, content_type, dl_error = await loop.run_in_executor(
+        None, _download_pdf_bytes, pdf_url
+    )
+
+    if dl_error:
+        result["download_status"] = "failed"
+        result["parse_status"] = "not_applicable"
+        result["parse_failed_reason"] = f"download: {dl_error}"
+        return result
+
+    result["download_status"] = "success"
+
+    # Save PDF locally
+    pdfs_dir = output_dir / "pdfs"
+    pdfs_dir.mkdir(parents=True, exist_ok=True)
+    slug = _safe_slug(enterprise_name)
+    url_hash = hashlib.md5(pdf_url.encode()).hexdigest()[:8]
+    pdf_path = pdfs_dir / f"{slug}_{url_hash}.pdf"
+    pdf_path.write_bytes(pdf_bytes)
+    result["download_path"] = str(pdf_path)
+
+    # Parse
+    parser_name, pages, page_count, extra_err = await loop.run_in_executor(
+        None, _extract_pdf_pages_text, pdf_bytes
+    )
+
+    result["parser"] = parser_name
+    result["page_count"] = page_count
+
+    if parser_name == "none" or not pages:
+        result["parse_status"] = "failed"
+        result["parse_failed_reason"] = extra_err
+        return result
+
+    full_text = "\n".join(pages)
+    text_char_count = len(full_text)
+    result["text_char_count"] = text_char_count
+
+    if text_char_count == 0:
+        result["parse_status"] = "failed"
+        result["parse_failed_reason"] = "no_extractable_text"
+        return result
+
+    result["parse_status"] = "success"
+
+    # Cover text (first page or first 1000 chars)
+    cover = pages[0] if pages else ""
+    result["cover_text"] = cover[:1000] if cover else ""
+
+    # Text excerpt (first TEXT_EXCERPT_LIMIT chars)
+    result["text_excerpt"] = full_text[:TEXT_EXCERPT_LIMIT]
+
+    # Subject match
+    matched_name, found = _extract_subject_from_text(full_text, enterprise_name)
+    result["matched_name_in_pdf"] = matched_name
+    result["subject_verified"] = found
+
+    # Report period from PDF
+    period_match = re.search(r"(\d{4})\s*年(?:\s*(?:第[一二三四]季度|半年度|年度))?", full_text[:5000])
+    if period_match:
+        result["report_period_from_pdf"] = period_match.group(0).strip()
+    elif report_period_fallback:
+        result["report_period_from_pdf"] = report_period_fallback
+
+    return result
+
+
+def _aggregate_status(values: list[str]) -> str:
+    """Aggregate status strings: any success -> success, any partial -> partial, all failed -> failed, else not_applicable."""
+    if not values:
+        return "not_applicable"
+    if "success" in values:
+        return "success"
+    if "partial" in values:
+        return "partial"
+    if all(v == "failed" for v in values):
+        return "failed"
+    return "not_applicable"
+
+
 async def _search_channel(
     enterprise_name: str,
     channel_name: str,
@@ -297,7 +604,7 @@ async def _search_channel(
             "publish_date": publish_date,
             "url": url,
             "source_url": url,
-            "pdf_url": item.get("pdfUrl") or item.get("attachmentUrl") or "",
+            "pdf_url": item.get("pdfUrl") or item.get("attachmentUrl") or item.get("jumpUrl") or item.get("jump_url") or "",
             "source_platform": channel_name,
             "entity_match_result": "matched",
             "used_for_main_analysis": file_type == "annual_report",
@@ -315,6 +622,41 @@ async def _search_channel(
         }
         matched_documents.append(doc)
 
+
+    # ── PDF parse for matched documents ──
+    for doc in matched_documents:
+        pdf_url = doc.get("pdf_url", "")
+        if pdf_url:
+            pdf_parse = await _parse_pdf_document(
+                pdf_url=pdf_url,
+                enterprise_name=enterprise_name,
+                title_text=doc.get("title", ""),
+                report_period_fallback=doc.get("report_period", ""),
+                output_dir=output_dir,
+            )
+        else:
+            pdf_parse = {
+                "download_status": "not_applicable",
+                "parse_status": "not_applicable",
+                "parser": "",
+                "page_count": 0,
+                "text_char_count": 0,
+                "cover_text": "",
+                "text_excerpt": "",
+                "report_period_from_pdf": "",
+                "matched_name_in_pdf": "",
+                "subject_verified": False,
+                "download_path": "",
+                "parse_failed_reason": "no_pdf_url",
+            }
+        doc["pdf_parse"] = pdf_parse
+
+    # Aggregate per-chamber download/parse status
+    dl_statuses = [d.get("pdf_parse", {}).get("download_status", "not_applicable") for d in matched_documents]
+    ps_statuses = [d.get("pdf_parse", {}).get("parse_status", "not_applicable") for d in matched_documents]
+    agg_dl = _aggregate_status(dl_statuses)
+    agg_ps = _aggregate_status(ps_statuses)
+
     return {
         "source_name": channel_name,
         "searched": error is None,
@@ -326,8 +668,8 @@ async def _search_channel(
         "selected_documents": matched_documents,
         "skipped_documents": skipped_documents,
         "skipped_reason": [],
-        "download_status": "not_applicable",
-        "parse_status": "not_applicable",
+        "download_status": agg_dl,
+        "parse_status": agg_ps,
         "parse_failed_reason": "",
         "latest_document_publish_date": matched_documents[0]["publish_date"] if matched_documents else "",
         "latest_report_period": matched_documents[0]["report_period"] if matched_documents else "",
