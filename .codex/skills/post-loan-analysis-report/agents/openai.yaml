@@ -1,0 +1,4 @@
+interface:
+  display_name: "公告搜索与PDF来源发现"
+  short_description: "输入企业名称，在中国货币网/上交所/深交所搜索年报、半年报、季报、募集说明书、评级报告五类公开文件，提取PDF链接，进行轻量主体核验和报告期识别，输出source_documents[]、search_log和pdf_handoff供后续PDF解析skill使用。"
+  default_prompt: "Use $post-loan-analysis-report to search public disclosures for an enterprise across ChinaMoney, SSE, and SZSE, identify annual/semi-annual/quarterly reports, prospectuses, and rating reports, extract PDF links, perform light entity verification and report-period identification, and return source_documents[], search_log, and pdf_handoff for downstream PDF parsing skills. Do NOT parse financial tables, extract financial fields, calculate indicators, or generate risk judgments."
