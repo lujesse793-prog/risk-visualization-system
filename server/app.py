@@ -28,6 +28,7 @@ from flask_cors import CORS
 
 from mcp.client import MCPClient, MCPConfig, health_check as mcp_health_check
 from mx_skills.dispatcher import execute_skill, list_skills
+from orchestrator.orchestrator import create_and_run_task, run_task, ProgressTracker
 
 app = Flask(__name__, static_folder=str(BASE_DIR), static_url_path="")
 
@@ -705,6 +706,76 @@ def api_opinion_full_text(full_text_id: str):
 
 
 
+
+# ---- Orchestrator 总控 ----
+
+_orchestrator_tasks: dict[str, dict] = {}
+_orchestrator_tasks_lock = threading.Lock()
+
+@app.route("/api/orchestrator/run", methods=["POST"])
+def api_orchestrator_run():
+    """运行贷后分析流水线"""
+    data = request.get_json(force=True, silent=True) or {}
+    enterprise_name = (data.get("enterprise_name") or "").strip()
+    if not enterprise_name:
+        return jsonify({"error": "enterprise_name is required"}), 400
+    
+    report_period = data.get("report_period")
+    
+    def _run():
+        return asyncio.run(create_and_run_task(enterprise_name, report_period))
+    
+    try:
+        result = _run()
+        # 存储任务结果
+        task_id = result.get("task_id", "")
+        with _orchestrator_tasks_lock:
+            _orchestrator_tasks[task_id] = result
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e), "traceback": traceback.format_exc()}), 500
+
+
+@app.route("/api/orchestrator/status/<task_id>", methods=["GET"])
+def api_orchestrator_status(task_id: str):
+    """获取任务状态"""
+    with _orchestrator_tasks_lock:
+        task = _orchestrator_tasks.get(task_id)
+    if not task:
+        return jsonify({"error": "任务不存在或已过期"}), 404
+    return jsonify({
+        "task_id": task.get("task_id"),
+        "enterprise_name": task.get("enterprise_name"),
+        "task_status": task.get("task_status"),
+        "data_status": task.get("data_status"),
+        "message": task.get("message"),
+        "progress_events": task.get("progress_events", []),
+    })
+
+
+@app.route("/api/orchestrator/result/<task_id>", methods=["GET"])
+def api_orchestrator_result(task_id: str):
+    """获取完整任务结果"""
+    with _orchestrator_tasks_lock:
+        task = _orchestrator_tasks.get(task_id)
+    if not task:
+        return jsonify({"error": "任务不存在或已过期"}), 404
+    return jsonify(task)
+
+
+@app.route("/api/orchestrator/progress/<task_id>", methods=["GET"])
+def api_orchestrator_progress(task_id: str):
+    """获取任务进度事件"""
+    with _orchestrator_tasks_lock:
+        task = _orchestrator_tasks.get(task_id)
+    if not task:
+        return jsonify({"error": "任务不存在或已过期"}), 404
+    return jsonify({
+        "task_id": task.get("task_id"),
+        "task_status": task.get("task_status"),
+        "progress_events": task.get("progress_events", []),
+    })
+
 @app.after_request
 def add_charset(response):
     ct = response.headers.get("Content-Type", "")
@@ -715,3 +786,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("SERVER_PORT", 8080))
     debug = os.environ.get("PRODUCTION", "false").lower() != "true"
     app.run(host="0.0.0.0", port=port, debug=debug)
+

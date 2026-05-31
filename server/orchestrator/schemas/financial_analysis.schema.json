@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "financial_analysis.schema.json",
+  "title": "FinancialAnalysis",
+  "description": "Skill 4 财务分析输出：财务指标分析和风险判断",
+  "type": "object",
+  "required": ["analysis_status"],
+  "properties": {
+    "analysis_status": {
+      "type": "string",
+      "enum": ["success", "partial", "failed", "not_ready"]
+    },
+    "financial_indicators": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["indicator_name", "current_value"],
+        "properties": {
+          "indicator_name": {
+            "type": "string",
+            "description": "指标名称：资产负债率/流动比率/现金短债比/短期有息债务占比/营业收入同比变动/净利润同比变动/经营性净现金流÷营业收入/财务费用率"
+          },
+          "current_value": {"type": "string"},
+          "previous_value": {"type": "string"},
+          "judgement": {
+            "type": "string",
+            "enum": ["偏高", "偏低", "下降", "上升", "为负", "正常"]
+          },
+          "source": {"type": "string"},
+          "formula": {"type": "string"}
+        }
+      }
+    },
+    "negative_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "finding"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["financial_negative", "rating_negative", "prospectus_negative", "audit_negative"]
+          },
+          "finding": {"type": "string"},
+          "evidence": {"type": "string"},
+          "source_url": {"type": "string"},
+          "source_title": {"type": "string"},
+          "indicator_name": {"type": "string"},
+          "indicator_value": {"type": "string"}
+        }
+      }
+    },
+    "negative_summary_under_200_chars": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "analysis_summary": {
+      "type": "object",
+      "properties": {
+        "data_period_type": {"type": "string"},
+        "analysis_basis": {"type": "string"},
+        "core_indicators_summary": {"type": "string"},
+        "risk_level_indicative": {
+          "type": "string",
+          "enum": ["低风险", "关注", "预警", "高风险", "数据不足"]
+        }
+      }
+    },
+    "frontend_financial_summary": {
+      "type": "object",
+      "description": "前端可直接展示的财务摘要",
+      "properties": {
+        "periods": {"type": "array", "items": {"type": "string"}},
+        "key_metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {"type": "string"},
+              "values": {"type": "array", "items": {"type": "string"}},
+              "trend": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "data_sufficiency": {
+      "type": "object",
+      "properties": {
+        "has_annual_report": {"type": "boolean"},
+        "has_semi_annual": {"type": "boolean"},
+        "indicator_count": {"type": "integer"},
+        "missing_indicators": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

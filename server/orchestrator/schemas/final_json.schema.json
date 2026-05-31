@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "final_json.schema.json",
+  "title": "FinalJson",
+  "description": "Orchestrator 最终输出格式",
+  "type": "object",
+  "required": ["task_id", "enterprise_name", "task_status", "data_status", "progress_events", "validation_result"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "enterprise_name": {"type": "string"},
+    "task_status": {"type": "string", "enum": ["completed", "partial", "failed"]},
+    "data_status": {"type": "string", "enum": ["success", "no_latest_public_data", "data_insufficient", "financial_analysis_skill_not_ready", "failed"]},
+    "message": {"type": "string"},
+    "skill4_ready": {"type": "boolean"},
+    "is_mock_analysis": {"type": "boolean"},
+    "source_documents": {"type": "array", "items": {"type": "object"}},
+    "parsed_documents_summary": {"type": "array", "items": {
+      "type": "object",
+      "required": ["document_id", "file_type", "parser_used", "parse_status"],
+      "properties": {
+        "document_id": {"type": "string"}, "file_type": {"type": "string"},
+        "report_period": {"type": "string"}, "parser_used": {"type": "string"},
+        "ocr_used": {"type": "boolean"}, "page_count": {"type": "integer"},
+        "tables_found_count": {"type": "integer"}, "parse_status": {"type": "string"},
+        "parse_confidence": {"type": "string"}, "parse_warnings": {"type": "array", "items": {"type": "string"}}
+      }
+    }},
+    "structured_financial_data": {"type": "object"},
+    "financial_indicators": {"type": "array", "items": {
+      "type": "object",
+      "required": ["indicator_name", "current_value"],
+      "properties": {
+        "indicator_name": {"type": "string"}, "current_value": {"type": "string"},
+        "previous_value": {"type": "string"}, "judgement": {"type": "string"},
+        "source": {"type": "string"}, "formula": {"type": "string"}
+      }
+    }},
+    "negative_findings": {"type": "array", "items": {"type": "object"}},
+    "analysis_summary": {"type": "object"},
+    "frontend_financial_summary": {"type": "object"},
+    "failed_documents": {"type": "array", "items": {"type": "object"}},
+    "progress_events": {"type": "array", "items": {
+      "type": "object",
+      "required": ["event", "percent", "timestamp"],
+      "properties": {
+        "event": {"type": "string"}, "percent": {"type": "number"},
+        "message": {"type": "string"}, "timestamp": {"type": "string"},
+        "elapsed_ms": {"type": "number"}, "detail": {"type": "object"}
+      }
+    }},
+    "validation_result": {
+      "type": "object",
+      "required": ["passed"],
+      "properties": {
+        "passed": {"type": "boolean"},
+        "errors": {"type": "array", "items": {"type": "string"}},
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}
