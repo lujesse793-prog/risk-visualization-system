@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "parsed_document.schema.json",
+  "title": "ParsedDocument",
+  "description": "Skill 2 PDF解析输出：解析后的文档描述",
+  "type": "object",
+  "required": ["document_id", "file_type", "parser_used", "parse_status"],
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "对应 source_document.document_id"
+    },
+    "source_document_id": {
+      "type": "string",
+      "description": "关联的源文档ID"
+    },
+    "file_type": {
+      "type": "string",
+      "enum": ["annual_report", "semi_annual_report", "quarterly_report", "prospectus", "rating_report", "unsupported_file_type"]
+    },
+    "report_period": {
+      "type": "string",
+      "description": "从PDF中识别的报告期"
+    },
+    "parser_used": {
+      "type": "string",
+      "description": "使用的解析器",
+      "enum": ["marker", "surya_ocr", "surya_table", "pypdf", "pymupdf", "pdfplumber", "fallback"]
+    },
+    "ocr_used": {
+      "type": "boolean",
+      "description": "是否使用了OCR"
+    },
+    "is_scanned": {
+      "type": "boolean",
+      "description": "是否为扫描件"
+    },
+    "page_count": {
+      "type": "integer"
+    },
+    "tables_found_count": {
+      "type": "integer"
+    },
+    "parse_status": {
+      "type": "string",
+      "enum": ["success", "partial", "failed"]
+    },
+    "parse_confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "parse_warnings": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "markdown_path": {
+      "type": "string",
+      "description": "解析后markdown文件路径"
+    },
+    "json_output_path": {
+      "type": "string",
+      "description": "解析后JSON输出路径"
+    },
+    "page_texts": {
+      "type": "object",
+      "description": "按页码组织的页面文本 {page_number: text}",
+      "additionalProperties": {"type": "string"}
+    },
+    "tables_raw": {
+      "type": "array",
+      "description": "原始表格数据",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page": {"type": "integer"},
+          "table_index": {"type": "integer"},
+          "headers": {"type": "array", "items": {"type": "string"}},
+          "rows": {"type": "array", "items": {"type": "array", "items": {"type": "string"}}},
+          "caption": {"type": "string"}
+        }
+      }
+    },
+    "title_hierarchy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "level": {"type": "integer"},
+          "title": {"type": "string"},
+          "page": {"type": "integer"}
+        }
+      }
+    },
+    "parse_error": {
+      "type": "string",
+      "description": "解析失败时记录错误信息"
+    }
+  }
+}

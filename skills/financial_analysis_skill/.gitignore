@@ -1,0 +1,7 @@
+﻿__pycache__/
+*.pyc
+*.pyo
+_test_output.json
+_test_missing.json
+_test_city.json
+.DS_Store

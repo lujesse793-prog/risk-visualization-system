@@ -17,3 +17,6 @@ ifind_runs/raw/
 mx_skills/output/
 logs/
 data/opinion_full_text/
+data/cache/
+data/pdfs/
+outputs/

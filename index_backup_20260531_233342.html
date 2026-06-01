@@ -13832,8 +13832,6 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
         const [taskExpanded, setTaskExpanded] = React.useState(true);
         const [activeTable, setActiveTable] = React.useState("balance_sheet");
         const [expandedTable, setExpandedTable] = React.useState(false);
-        const [expandedMoreIndicators, setExpandedMoreIndicators] = React.useState(false);
-        const [expandedRiskDetails, setExpandedRiskDetails] = React.useState(false);
         const [expandedSourceKey, setExpandedSourceKey] = React.useState("");
         const [selectedEvidence, setSelectedEvidence] = React.useState(null);
 
@@ -13951,8 +13949,8 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
 
         function cellValue(cell) {
           if (cell === null || cell === undefined || cell === "") return "—";
-          const raw = typeof cell === "object" ? (cell.value ?? cell.amount ?? cell.text) : cell;
-          return formatTableAmount(raw);
+          if (typeof cell === "object") return text(cell.value || cell.amount || cell.text);
+          return String(cell);
         }
 
         function cellSource(cell, rowName, period) {
@@ -14016,173 +14014,6 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
           return /偏弱|不足|下降|较高|压力|恶化|负面|风险|低于|高于|不确定/.test(String(judgement || ""));
         }
 
-        const indicatorNameMap = {
-          asset_liability_ratio: "资产负债率",
-          cash_short_debt_ratio: "现金短债比",
-          interest_bearing_debt: "有息债务",
-          short_term_interest_bearing_debt: "短期有息债务",
-          operating_revenue: "营业收入",
-          net_profit: "净利润",
-          current_ratio: "流动比率",
-          quick_ratio: "速动比率",
-          net_cash_flow_from_operating_activities: "经营活动现金流量净额",
-          total_assets: "总资产",
-          total_liabilities: "总负债",
-          total_owner_equity: "所有者权益",
-          monetary_funds: "货币资金",
-          total_current_assets: "流动资产合计",
-          total_current_liabilities: "流动负债合计",
-          gross_profit_margin: "毛利率",
-          net_profit_margin: "净利率",
-          operating_profit_margin: "营业利润率",
-          short_term_debt_ratio: "短期债务占比",
-          operating_cash_flow_to_short_debt: "经营现金流短债覆盖倍数",
-          interest_bearing_debt_to_equity: "有息债务权益比",
-          revenue_yoy: "营业收入同比",
-          net_profit_yoy: "净利润同比",
-        };
-
-        const statementNameMap = {
-          cash_and_cash_equivalents: "货币资金",
-          monetary_funds: "货币资金",
-          total_assets: "资产总计",
-          total_liabilities: "负债合计",
-          total_owner_equity: "所有者权益合计",
-          total_equity: "所有者权益合计",
-          short_term_borrowings: "短期借款",
-          non_current_liabilities_due_within_one_year: "一年内到期的非流动负债",
-          long_term_borrowings: "长期借款",
-          bonds_payable: "应付债券",
-          operating_revenue: "营业收入",
-          operating_cost: "营业成本",
-          gross_profit: "毛利",
-          operating_profit: "营业利润",
-          total_profit: "利润总额",
-          net_profit: "净利润",
-          net_cash_flow_from_operating_activities: "经营活动现金流量净额",
-          net_cash_flow_from_investing_activities: "投资活动现金流量净额",
-          net_cash_flow_from_financing_activities: "筹资活动现金流量净额",
-          ending_cash_and_cash_equivalents_balance: "期末现金及现金等价物余额",
-        };
-
-        const coreIndicatorGroups = [
-          { title: "偿债压力", keys: ["asset_liability_ratio", "interest_bearing_debt", "short_term_interest_bearing_debt", "cash_short_debt_ratio"] },
-          { title: "流动性", keys: ["current_ratio", "quick_ratio", "short_term_debt_ratio"] },
-          { title: "盈利与现金流", keys: ["operating_revenue", "net_profit", "net_cash_flow_from_operating_activities", "gross_profit_margin"] },
-        ];
-
-        const statementKeyRows = {
-          balance_sheet: ["monetary_funds", "cash_and_cash_equivalents", "total_assets", "total_liabilities", "total_owner_equity", "total_equity", "short_term_borrowings", "non_current_liabilities_due_within_one_year", "long_term_borrowings", "bonds_payable"],
-          income_statement: ["operating_revenue", "operating_cost", "gross_profit", "operating_profit", "total_profit", "net_profit"],
-          cash_flow_statement: ["net_cash_flow_from_operating_activities", "net_cash_flow_from_investing_activities", "net_cash_flow_from_financing_activities", "ending_cash_and_cash_equivalents_balance"],
-          business_segments: [],
-          supplemental: ["operating_revenue", "net_profit", "net_cash_flow_from_operating_activities", "total_assets", "total_liabilities"],
-        };
-
-        const riskToneMap = {
-          正常: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700", border: "border-l-emerald-300", value: "text-emerald-700" },
-          关注: { badge: "border-amber-200 bg-amber-50 text-amber-700", border: "border-l-amber-300", value: "text-amber-700" },
-          预警: { badge: "border-orange-200 bg-orange-50 text-orange-700", border: "border-l-orange-400", value: "text-orange-700" },
-          严重: { badge: "border-red-200 bg-red-50 text-red-700", border: "border-l-red-400", value: "text-red-700" },
-        };
-
-        function normalizeKey(value) {
-          return String(value || "").trim().toLowerCase();
-        }
-
-        function metricKey(indicator) {
-          return normalizeKey(indicator?.indicator_key || indicator?.standard_field_name || indicator?.field_name || indicator?.key || indicator?.indicator_name);
-        }
-
-        function looksLikeBackendKey(value) {
-          return /^[a-z][a-z0-9_]*$/i.test(String(value || "").trim());
-        }
-
-        function indicatorLabel(indicator) {
-          const key = metricKey(indicator);
-          const fallback = indicator?.display_name || indicator?.name_cn || indicator?.indicator_name;
-          if (indicatorNameMap[key]) return indicatorNameMap[key];
-          if (fallback && !looksLikeBackendKey(fallback)) return text(fallback);
-          return "其他财务指标";
-        }
-
-        function formatNumber(value) {
-          if (value === null || value === undefined || value === "") return "—";
-          const match = String(value).replace(/,/g, "").match(/-?\d+(?:\.\d+)?/);
-          if (!match) return String(value);
-          return Number(match[0]).toFixed(2);
-        }
-
-        function formatTableAmount(value) {
-          if (value === null || value === undefined || value === "") return "—";
-          const match = String(value).replace(/,/g, "").match(/-?\d+(?:\.\d+)?/);
-          if (!match) return String(value);
-          return Number(match[0]).toFixed(2);
-        }
-
-        function formatMetricValue(indicator) {
-          const raw = indicator?.current_value ?? indicator?.value ?? indicator?.amount;
-          if (raw === null || raw === undefined || raw === "") return "—";
-          const key = metricKey(indicator);
-          const lowerUnit = String(indicator?.unit || "").toLowerCase();
-          const rawText = String(raw);
-          const value = formatNumber(raw);
-          if (value === "—") return rawText;
-          if (lowerUnit.includes("倍") || /coverage|multiple|current_ratio|quick_ratio|cash_short_debt_ratio|interest_bearing_debt_to_equity/.test(key)) return `${value}倍`;
-          if (lowerUnit.includes("%") || /asset_liability_ratio|margin|rate|yoy|short_term_debt_ratio|比例|率|占比/.test(key)) return `${value}%`;
-          if (lowerUnit.includes("亿") || /debt|revenue|profit|cash|assets|liabilities|equity|funds|金额|收入|利润|债务|现金/.test(key)) return `${value}亿元`;
-          return value;
-        }
-
-        function riskLevelForIndicator(indicator) {
-          const raw = String(indicator?.risk_level || indicator?.risk_status || indicator?.status || "");
-          if (/严重|high|confirmed|red/i.test(raw)) return "严重";
-          if (/预警|warning|medium|orange/i.test(raw)) return "预警";
-          if (/关注|watch|low|amber/i.test(raw)) return "关注";
-          if (isNegativeJudgement(indicator?.judgement)) return "关注";
-          return "正常";
-        }
-
-        function uniqueBy(items, keyFn) {
-          const seen = new Set();
-          return (items || []).filter((item, index) => {
-            const key = keyFn(item, index);
-            if (!key || seen.has(key)) return false;
-            seen.add(key);
-            return true;
-          });
-        }
-
-        function coreMetricGroups(data) {
-          const indicators = uniqueBy(data?.financial_indicators || [], (item) => metricKey(item) || item?.indicator_name);
-          const byKey = new Map(indicators.map((item) => [metricKey(item), item]));
-          const used = new Set();
-          const groups = coreIndicatorGroups.map((group) => ({
-            ...group,
-            items: group.keys.map((key) => byKey.get(key)).filter(Boolean).map((item) => {
-              used.add(metricKey(item));
-              return item;
-            }),
-          })).filter((group) => group.items.length);
-          return { groups, more: indicators.filter((item) => !used.has(metricKey(item))) };
-        }
-
-        function dedupeSources(items) {
-          return uniqueBy(items, (source) => normalizeKey(source.title || source.attachment_title || source.pdf_url || source.source_url || source.url));
-        }
-
-        function topRiskItems(data) {
-          return uniqueBy(data?.negative_findings || [], (item) => normalizeKey(item.finding || item.judgement || item.indicator_name || item.type)).slice(0, 5);
-        }
-
-        function conclusionSummary(data, risks) {
-          const summary = data?.analysis_summary || {};
-          const overall = summary.overall_view || data?.overall_conclusion || data?.conclusion || data?.negative_summary_under_200_chars || "已基于公开披露文件完成贷后财务展示。";
-          const riskText = risks.length ? risks.slice(0, 3).map((item) => text(item.finding || item.judgement || item.type)).join("；") : "未识别到公开披露文件直接支持的明显负面事项。";
-          const oneLine = risks.length ? `一句话判断：需重点关注 ${text(risks[0].type || risks[0].indicator_name || "核心财务指标")}。` : "一句话判断：公开资料未显示突出异常，仍需结合授信敞口持续跟踪。";
-          return { overall, riskText, oneLine };
-        }
-
         function allSources(data) {
           const sourceGroups = data?.sources || {};
           return ["financial_report", "prospectus", "rating_report"]
@@ -14190,11 +14021,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
         }
 
         function rowName(row, index) {
-          const key = normalizeKey(row?.standard_field_name || row?.field_name || row?.key || row?.indicator_name);
-          const fallback = row?.item_name || row?.item || row?.name || row?.project || row?.title || row?.indicator_name;
-          if (statementNameMap[key] || indicatorNameMap[key]) return statementNameMap[key] || indicatorNameMap[key];
-          if (fallback && !looksLikeBackendKey(fallback)) return text(fallback);
-          return `其他科目 ${index + 1}`;
+          return text(row?.item_name || row?.item || row?.name || row?.project || row?.title || row?.indicator_name, `项目 ${index + 1}`);
         }
 
         function rowCell(row, period, index) {
@@ -14340,18 +14167,9 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
         const dataLevel = analysisData?.data_availability?.data_level || "";
         const dataLevelMeta = dataLevelInfo(dataLevel);
         const hasNoData = dataLevel === "no_data";
-        const sourceList = dedupeSources(allSources(analysisData));
-        const mainSourceList = sourceList.filter((source) => source.used_for_main_analysis);
-        const supplementSourceList = mainSourceList.length ? sourceList.filter((source) => !source.used_for_main_analysis) : [];
+        const sourceList = allSources(analysisData);
         const activeTableConfig = tableConfig(analysisData);
-        const keyRows = statementKeyRows[activeTable] || [];
-        const prioritizedRows = keyRows.length
-          ? activeTableConfig.rows.filter((row) => keyRows.includes(normalizeKey(row?.standard_field_name || row?.field_name || row?.key || row?.indicator_name)))
-          : activeTableConfig.rows.slice(0, 8);
-        const visibleRows = expandedTable ? activeTableConfig.rows : (prioritizedRows.length ? prioritizedRows : activeTableConfig.rows.slice(0, 8));
-        const metricView = coreMetricGroups(analysisData);
-        const riskItems = topRiskItems(analysisData);
-        const conclusion = conclusionSummary(analysisData, riskItems);
+        const visibleRows = expandedTable ? activeTableConfig.rows : activeTableConfig.rows.slice(0, 8);
 
         return (
           <section className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.62fr)_minmax(360px,1fr)]">
@@ -14445,143 +14263,62 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
 
                   {!hasNoData && (
                     <>
-                      <Card className="rounded-[16px] border-l-[4px] border-l-[#1f3b5d] p-4 shadow-cabin">
-                        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                          <div>
-                            <p className="text-[13px] font-semibold text-slate-500">贷后结论摘要</p>
-                            <h3 className="mt-1 text-[17px] font-bold text-slate-900">综合结论</h3>
-                          </div>
-                          <Badge tone={riskItems.length ? "watch" : "ok"}>{riskItems.length ? "存在关注事项" : "未见突出异常"}</Badge>
-                        </div>
-                        <p className="mt-3 rounded-xl bg-slate-50 px-4 py-3 text-[13px] leading-6 text-slate-700">{text(conclusion.overall)}</p>
-                        <div className="mt-3 grid gap-3 md:grid-cols-[1.15fr_.85fr]">
-                          <div className="rounded-xl border border-amber-100 bg-amber-50/70 px-3 py-2">
-                            <p className="text-[12px] font-semibold text-amber-800">主要风险点</p>
-                            <p className="mt-1 text-[13px] leading-6 text-amber-800">{text(conclusion.riskText)}</p>
-                          </div>
-                          <div className="rounded-xl border border-[#e5edf5] bg-white px-3 py-2">
-                            <p className="text-[12px] font-semibold text-slate-500">一句话判断</p>
-                            <p className="mt-1 text-[13px] leading-6 text-slate-700">{text(conclusion.oneLine)}</p>
-                          </div>
-                        </div>
-                      </Card>
-
                       <Card className="rounded-[16px] p-4 shadow-cabin">
-                        <div className="flex items-center justify-between gap-3">
-                          <h3 className="text-[15px] font-bold text-slate-900">核心财务指标</h3>
-                          <span className="text-[12px] text-slate-400">默认展示重点指标，其余收纳在更多指标中</span>
-                        </div>
-                        <div className="mt-3 space-y-4">
-                          {metricView.groups.length ? metricView.groups.map((group) => (
-                            <div key={group.title}>
-                              <p className="mb-2 text-[13px] font-bold text-slate-700">{group.title}</p>
-                              <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
-                                {group.items.map((indicator, index) => {
-                                  const riskLevel = riskLevelForIndicator(indicator);
-                                  const tone = riskToneMap[riskLevel] || riskToneMap["正常"];
-                                  const label = indicatorLabel(indicator);
-                                  return (
-                                    <button
-                                      key={`${metricKey(indicator) || label}-${index}`}
-                                      type="button"
-                                      onClick={() => setSelectedEvidence({ type: "核心财务指标", title: label, source: text(indicator.source, "未标注来源文件"), excerpt: text(indicator.judgement, ""), url: indicator.source_url || "" })}
-                                      className={cn("rounded-xl border border-[#e5edf5] border-l-[3px] bg-white p-3 text-left transition hover:border-slate-300 hover:shadow-sm", tone.border)}
-                                    >
-                                      <div className="flex items-center justify-between gap-2">
-                                        <span className="text-[12px] font-semibold text-slate-500">{label}</span>
-                                        <span className={cn("rounded-full border px-2 py-0.5 text-[11px] font-semibold", tone.badge)}>{riskLevel}</span>
-                                      </div>
-                                      <p className={cn("mt-2 text-[22px] font-bold tracking-tight", tone.value)}>{formatMetricValue(indicator)}</p>
-                                      <p className="mt-1 text-[12px] text-slate-400">较上期 {text(indicator.change_direction || indicator.change || indicator.previous_value)}</p>
-                                      <p className="mt-2 line-clamp-2 text-[12px] leading-5 text-slate-600">{text(indicator.judgement, "公开资料未披露完整字段。")}</p>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )) : (
-                            <div className="col-span-full rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[13px] text-slate-500">公开资料未披露完整字段。</div>
-                          )}
-                          {metricView.more.length > 0 && (
-                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 p-3">
-                              <button type="button" onClick={() => setExpandedMoreIndicators((current) => !current)} className="flex w-full items-center justify-between text-left text-[13px] font-semibold text-slate-700">
-                                <span>{expandedMoreIndicators ? "收起更多指标" : `展开更多指标（${metricView.more.length}项）`}</span>
-                                <Icon name={expandedMoreIndicators ? "ChevronUp" : "ChevronDown"} className="h-4 w-4 text-slate-400" />
-                              </button>
-                              {expandedMoreIndicators && (
-                                <div className="mt-3 grid gap-2 md:grid-cols-2">
-                                  {metricView.more.map((indicator, index) => {
-                                    const label = indicatorLabel(indicator);
-                                    const riskLevel = riskLevelForIndicator(indicator);
-                                    const tone = riskToneMap[riskLevel] || riskToneMap["正常"];
-                                    return (
-                                      <button key={`${metricKey(indicator) || label}-more-${index}`} type="button" onClick={() => setSelectedEvidence({ type: "更多财务指标", title: label, source: text(indicator.source, "未标注来源文件"), excerpt: text(indicator.judgement, ""), url: indicator.source_url || "" })} className={cn("rounded-lg border border-[#e5edf5] border-l-[3px] bg-white px-3 py-2 text-left", tone.border)}>
-                                        <div className="flex items-center justify-between gap-2">
-                                          <span className="text-[12px] font-semibold text-slate-600">{label}</span>
-                                          <span className={cn("rounded-full border px-2 py-0.5 text-[11px] font-semibold", tone.badge)}>{riskLevel}</span>
-                                        </div>
-                                        <p className={cn("mt-1 text-[16px] font-bold", tone.value)}>{formatMetricValue(indicator)}</p>
-                                      </button>
-                                    );
-                                  })}
+                        <h3 className="text-[15px] font-bold text-slate-900">核心财务指标</h3>
+                        <div className="mt-3 grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
+                          {(analysisData.financial_indicators || []).length ? analysisData.financial_indicators.map((indicator, index) => {
+                            const negative = isNegativeJudgement(indicator.judgement);
+                            return (
+                              <button
+                                key={`${indicator.indicator_name || "indicator"}-${index}`}
+                                type="button"
+                                onClick={() => setSelectedEvidence({ type: "核心财务指标", title: text(indicator.indicator_name), source: text(indicator.source, "未标注来源文件"), excerpt: text(indicator.judgement, ""), url: indicator.source_url || "" })}
+                                className={cn("rounded-xl border bg-white p-3 text-left transition hover:border-slate-300 hover:shadow-sm", negative ? "border-red-100 border-l-red-300 border-l-[3px]" : "border-[#e5edf5]")}
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-[12px] font-semibold text-slate-500">{text(indicator.indicator_name)}</span>
+                                  {negative && <span className="h-2 w-2 rounded-full bg-red-400" />}
                                 </div>
-                              )}
-                            </div>
+                                <p className="mt-2 text-[22px] font-bold tracking-tight text-slate-900">{text(indicator.current_value)}</p>
+                                <p className="mt-1 text-[12px] text-slate-400">较上期 {text(indicator.change_direction || indicator.change || indicator.previous_value)}</p>
+                                <p className="mt-2 text-[12px] leading-5 text-slate-600">{text(indicator.judgement, "公开资料未披露完整字段。")}</p>
+                              </button>
+                            );
+                          }) : (
+                            <div className="col-span-full rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[13px] text-slate-500">公开资料未披露完整字段。</div>
                           )}
                         </div>
                       </Card>
 
                       <Card className="rounded-[16px] p-4 shadow-cabin">
                         <h3 className="text-[15px] font-bold text-slate-900">基于公开资料识别的风险提示</h3>
-                        {riskItems.length ? (
-                          <>
-                            <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-3">
-                              {analysisData.negative_summary_under_200_chars && <p className="mb-2 text-[13px] font-semibold leading-6 text-amber-900">{analysisData.negative_summary_under_200_chars}</p>}
-                              <ol className="space-y-1 text-[13px] leading-6 text-amber-900">
-                                {riskItems.map((finding, index) => (
-                                  <li key={`${finding.finding || "risk"}-${index}`}>{index + 1}. {text(finding.finding || finding.judgement || finding.type)}</li>
-                                ))}
-                              </ol>
-                            </div>
-                            <div className="mt-3 rounded-xl border border-[#e5edf5] bg-white p-3">
-                              <button type="button" onClick={() => setExpandedRiskDetails((current) => !current)} className="flex w-full items-center justify-between text-left text-[13px] font-bold text-slate-800">
-                                <span>{expandedRiskDetails ? "收起详细证据" : "展开详细证据"}</span>
-                                <Icon name={expandedRiskDetails ? "ChevronUp" : "ChevronDown"} className="h-4 w-4 text-slate-400" />
-                              </button>
-                              {expandedRiskDetails && (
-                                <div className="mt-3 space-y-2">
-                                  {riskItems.map((finding, index) => (
-                                    <div key={`${finding.finding || "finding"}-${index}`} className="rounded-lg border border-[#eef2f7] bg-slate-50 px-3 py-2">
-                                      <div className="flex flex-wrap items-center justify-between gap-2">
-                                        <Badge tone="high">{text(finding.type, "风险提示")}</Badge>
-                                        <button
-                                          type="button"
-                                          onClick={() => setSelectedEvidence({ type: text(finding.type, "风险提示"), title: text(finding.finding), source: text(finding.source_title, "风险提示来源"), excerpt: text(finding.evidence), url: finding.source_url || "" })}
-                                          className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
-                                        >
-                                          查看来源
-                                        </button>
-                                      </div>
-                                      <p className="mt-2 text-[13px] font-semibold leading-5 text-slate-800">{text(finding.finding)}</p>
-                                      <p className="mt-1 text-[12px] leading-5 text-slate-500">证据：{text(finding.evidence)}</p>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </>
-                        ) : (
-                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[13px] leading-6 text-slate-500">未识别到可由公开披露文件直接支持的明显负面事项。</div>
+                        {(analysisData.negative_findings || []).length > 0 && analysisData.negative_summary_under_200_chars && (
+                          <div className="mt-3 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-[13px] leading-6 text-red-700">{analysisData.negative_summary_under_200_chars}</div>
                         )}
+                        <div className="mt-3 space-y-3">
+                          {(analysisData.negative_findings || []).length ? analysisData.negative_findings.map((finding, index) => (
+                            <div key={`${finding.finding || "finding"}-${index}`} className="rounded-xl border border-[#e5edf5] bg-white p-3">
+                              <Badge tone="high">{text(finding.type, "风险提示")}</Badge>
+                              <p className="mt-2 text-[14px] font-semibold leading-6 text-slate-800">{text(finding.finding)}</p>
+                              <p className="mt-2 text-[12px] leading-5 text-slate-500">证据：{text(finding.evidence)}</p>
+                              <button
+                                type="button"
+                                onClick={() => setSelectedEvidence({ type: text(finding.type, "风险提示"), title: text(finding.finding), source: text(finding.source_title, "负面提示来源"), excerpt: text(finding.evidence), url: finding.source_url || "" })}
+                                className="mt-3 inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 text-[12px] text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
+                              >
+                                查看来源
+                              </button>
+                            </div>
+                          )) : (
+                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[13px] leading-6 text-slate-500">未识别到可由公开披露文件直接支持的明显负面事项。</div>
+                          )}
+                        </div>
                       </Card>
 
                       <Card className="overflow-hidden rounded-[16px] shadow-cabin">
                         <div className="border-b border-[#eef2f7] px-4 py-3">
                           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                            <div>
-                              <h3 className="text-[15px] font-bold text-slate-900">财务报表摘要</h3>
-                              <p className="mt-1 text-[12px] text-slate-400">金额单位：亿元，默认展示重点科目</p>
-                            </div>
+                            <h3 className="text-[15px] font-bold text-slate-900">财务报表摘要</h3>
                             <div className="flex flex-wrap gap-1 rounded-full bg-slate-100/80 p-1">
                               {tableTabs.map((tab) => (
                                 <button key={tab.key} type="button" onClick={() => { setActiveTable(tab.key); setExpandedTable(false); }} className={cn("h-8 rounded-full px-3 text-[12px] transition", activeTable === tab.key ? "bg-white font-semibold text-slate-900 shadow-sm" : "text-slate-500 hover:bg-white/60")}>{tab.label}</button>
@@ -14629,7 +14366,7 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                             <div className="px-4 py-8 text-center text-[13px] text-slate-500">公开资料未披露该部分数据。</div>
                           )}
                         </div>
-                        {activeTableConfig.rows.length > visibleRows.length && (
+                        {activeTableConfig.rows.length > 8 && (
                           <div className="border-t border-[#eef2f7] px-4 py-3 text-right">
                             <button type="button" onClick={() => setExpandedTable((current) => !current)} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[12px] text-slate-600">{expandedTable ? "收起核心字段" : "展开全部字段"}</button>
                           </div>
@@ -14676,30 +14413,28 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                 {analysisData && (
                   <div className="space-y-3">
                     <details open className="rounded-xl border border-[#e5edf5] bg-white p-3">
-                      <summary className="cursor-pointer text-[13px] font-bold text-slate-800">主分析依据（{mainSourceList.length || sourceList.length}）</summary>
-                      <div className="mt-3 space-y-2">
-                        {(mainSourceList.length ? mainSourceList : sourceList).length ? (mainSourceList.length ? mainSourceList : sourceList).map((source) => {
+                      <summary className="cursor-pointer text-[13px] font-bold text-slate-800">已采用资料</summary>
+                      <div className="mt-3 space-y-3">
+                        {sourceList.length ? sourceList.map((source) => {
                           const verification = source.entity_verification || {};
                           const open = expandedSourceKey === source.sourceKey;
                           return (
-                            <div key={source.sourceKey} className={cn("rounded-lg border border-[#eef2f7] bg-white px-3 py-2", source.used_for_main_analysis && "border-l-[3px] border-l-[#1f3b5d]")}>
-                              <div className="flex flex-wrap items-center justify-between gap-2">
-                                <div className="flex flex-wrap items-center gap-1.5">
-                                  <Badge>{fileTypeLabel(source.file_type || source.report_type || source.sourceGroup)}</Badge>
-                                  {source.used_for_main_analysis && <Badge tone="ok">主分析依据</Badge>}
-                                  {source.used_as_supplement && <Badge tone="watch">补充资料</Badge>}
-                                </div>
-                                <div className="flex gap-1.5">
-                                  {(source.source_url || source.url || source.pdf_url) && <button type="button" onClick={() => window.open(source.pdf_url || source.source_url || source.url, "_blank", "noopener,noreferrer")} className="rounded-full border border-slate-200 px-2.5 py-0.5 text-[11px] text-slate-600">打开来源</button>}
-                                  <button type="button" onClick={() => setExpandedSourceKey(open ? "" : source.sourceKey)} className="rounded-full border border-slate-200 px-2.5 py-0.5 text-[11px] text-slate-600">查看详情</button>
-                                </div>
+                            <div key={source.sourceKey} className={cn("rounded-xl border border-[#eef2f7] bg-white p-3", source.used_for_main_analysis && "border-l-[3px] border-l-[#1f3b5d]")}>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Badge>{fileTypeLabel(source.file_type || source.report_type || source.sourceGroup)}</Badge>
+                                {source.used_for_main_analysis && <Badge tone="ok">主分析依据</Badge>}
+                                {source.used_as_supplement && <Badge tone="watch">补充资料</Badge>}
                               </div>
-                              <p className="mt-1.5 line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800">{text(source.title || source.attachment_title)}</p>
-                              <div className="mt-1.5 grid grid-cols-[72px_minmax(0,1fr)] gap-1 text-[12px] leading-5">
+                              <p className="mt-2 text-[13px] font-semibold leading-5 text-slate-800">{text(source.title || source.attachment_title)}</p>
+                              <div className="mt-2 grid grid-cols-[72px_minmax(0,1fr)] gap-1.5 text-[12px] leading-5">
                                 <span className="text-slate-400">来源平台</span><span className="text-slate-600">{text(source.source_platform)}</span>
                                 <span className="text-slate-400">披露日期</span><span className="text-slate-600">{text(source.publish_date)}</span>
                                 <span className="text-slate-400">报告期</span><span className="text-slate-600">{text(source.report_period || source.period)}</span>
                                 <span className="text-slate-400">主体匹配</span><span className="text-slate-600">{text(verification.confidence || source.entity_match_result)}</span>
+                              </div>
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {(source.source_url || source.url || source.pdf_url) && <button type="button" onClick={() => window.open(source.pdf_url || source.source_url || source.url, "_blank", "noopener,noreferrer")} className="rounded-full border border-slate-200 px-3 py-1 text-[12px] text-slate-600">打开来源</button>}
+                                <button type="button" onClick={() => setExpandedSourceKey(open ? "" : source.sourceKey)} className="rounded-full border border-slate-200 px-3 py-1 text-[12px] text-slate-600">查看详情</button>
                               </div>
                               {open && (
                                 <div className="mt-3 rounded-lg bg-slate-50 p-3 text-[12px] leading-5">
@@ -14719,31 +14454,6 @@ function RegionMap({ rows, mapState, setMapState, hoveredRegion, setHoveredRegio
                         )}
                       </div>
                     </details>
-
-                    {supplementSourceList.length > 0 && (
-                      <details className="rounded-xl border border-[#e5edf5] bg-white p-3">
-                        <summary className="cursor-pointer text-[13px] font-bold text-slate-800">补充资料（{supplementSourceList.length}）</summary>
-                        <div className="mt-3 space-y-2">
-                          {supplementSourceList.map((source) => (
-                            <div key={source.sourceKey} className="rounded-lg border border-[#eef2f7] bg-slate-50 px-3 py-2">
-                              <div className="flex flex-wrap items-center justify-between gap-2">
-                                <div className="flex flex-wrap items-center gap-1.5">
-                                  <Badge>{fileTypeLabel(source.file_type || source.report_type || source.sourceGroup)}</Badge>
-                                  <Badge tone="watch">补充资料</Badge>
-                                </div>
-                                <div className="flex gap-1.5">
-                                  {(source.source_url || source.url || source.pdf_url) && <button type="button" onClick={() => window.open(source.pdf_url || source.source_url || source.url, "_blank", "noopener,noreferrer")} className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600">打开来源</button>}
-                                  <button type="button" onClick={() => setExpandedSourceKey(expandedSourceKey === source.sourceKey ? "" : source.sourceKey)} className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600">查看详情</button>
-                                </div>
-                              </div>
-                              <p className="mt-1.5 line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800">{text(source.title || source.attachment_title)}</p>
-                              <p className="mt-1 text-[12px] text-slate-500">{text(source.source_platform)} · {text(source.publish_date)} · {text(source.report_period || source.period)}</p>
-                              {expandedSourceKey === source.sourceKey && <p className="mt-2 rounded-lg bg-white px-3 py-2 text-[12px] leading-5 text-slate-500">{text(source.entity_verification?.verification_evidence || source.summary || source.note, "暂无更多详情。")}</p>}
-                            </div>
-                          ))}
-                        </div>
-                      </details>
-                    )}
 
                     <details className="rounded-xl border border-[#e5edf5] bg-white p-3">
                       <summary className="cursor-pointer text-[13px] font-bold text-slate-800">检索过程</summary>

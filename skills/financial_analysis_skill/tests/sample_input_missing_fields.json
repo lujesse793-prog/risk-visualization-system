@@ -1,0 +1,38 @@
+{
+  "task_id": "TASK-2024-002",
+  "enterprise_name": "YY产业控股有限公司",
+  "analysis_context": {
+    "enterprise_type": "产业",
+    "expected_periods": ["2023-12-31"],
+    "main_report_period": "2023-12-31",
+    "analysis_date": "2024-06-30",
+    "currency": "CNY",
+    "unit": "亿元"
+  },
+  "source_documents": [
+    {"document_id": "DOC-003", "file_name": "2023年季度报告.pdf", "selected_type": "selected_main", "report_type": "quarterly_report"}
+  ],
+  "structured_financial_data": {
+    "periods": ["2023-12-31"],
+    "financial_tables": {
+      "balance_sheet": [
+        {"standard_field_name": "total_assets", "period": "2023-12-31", "value": 200.00, "unit": "亿元", "source_document_id": "DOC-003", "confidence": "medium"},
+        {"standard_field_name": "total_liabilities", "period": "2023-12-31", "value": 140.00, "unit": "亿元", "source_document_id": "DOC-003", "confidence": "medium"},
+        {"standard_field_name": "owner_equity", "period": "2023-12-31", "value": 60.00, "unit": "亿元", "source_document_id": "DOC-003", "confidence": "medium"},
+        {"standard_field_name": "cash_and_cash_equivalents", "period": "2023-12-31", "value": 10.00, "unit": "亿元", "source_document_id": "DOC-003", "confidence": "medium"}
+      ],
+      "income_statement": [
+        {"standard_field_name": "operating_revenue", "period": "2023-12-31", "value": 50.00, "unit": "亿元", "source_document_id": "DOC-003", "confidence": "medium"},
+        {"standard_field_name": "net_profit", "period": "2023-12-31", "value": 3.00, "unit": "亿元", "source_document_id": "DOC-003", "confidence": "medium"}
+      ],
+      "cash_flow_statement": []
+    },
+    "supplemental_financial_tables": {},
+    "partial_financial_data": []
+  },
+  "field_evidence": [],
+  "extraction_warnings": [
+    "季度报告未披露完整的资产负债表科目，短期借款、长期借款、应付债券等字段缺失"
+  ],
+  "thresholds_config": {}
+}

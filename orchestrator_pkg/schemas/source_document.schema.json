@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "source_document.schema.json",
+  "title": "SourceDocument",
+  "description": "Skill 1 公告搜索输出：单个搜索结果文档的描述",
+  "type": "object",
+  "required": ["document_id", "source_platform", "title", "file_type", "source_url"],
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "文档唯一标识"
+    },
+    "source_platform": {
+      "type": "string",
+      "description": "来源平台",
+      "enum": ["中国货币网", "上海证券交易所", "深圳证券交易所"]
+    },
+    "title": {
+      "type": "string",
+      "description": "文档标题"
+    },
+    "attachment_title": {
+      "type": "string",
+      "description": "附件标题"
+    },
+    "file_type": {
+      "type": "string",
+      "description": "文件类型",
+      "enum": ["annual_report", "semi_annual_report", "quarterly_report", "prospectus", "rating_report", "unsupported_file_type"]
+    },
+    "report_period": {
+      "type": "string",
+      "description": "报告期，如 2025、2025Q1、2025H1"
+    },
+    "publish_date": {
+      "type": "string",
+      "description": "发布日期 YYYY-MM-DD"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "公告详情页链接"
+    },
+    "pdf_url": {
+      "type": "string",
+      "description": "PDF下载链接"
+    },
+    "local_pdf_path": {
+      "type": "string",
+      "description": "本地PDF路径"
+    },
+    "pdf_download_status": {
+      "type": "string",
+      "enum": ["success", "failed", "skipped"]
+    },
+    "pdf_sha256": {
+      "type": "string",
+      "description": "PDF SHA256 哈希"
+    },
+    "document_status": {
+      "type": "string",
+      "description": "文档选择状态",
+      "enum": ["selected_main", "selected_supplement", "skipped", "stale_or_prior_period_document", "subject_mismatch", "unsupported_file_type", "download_failed"]
+    },
+    "selection_reason": {
+      "type": "string"
+    },
+    "skipped_reason": {
+      "type": "string"
+    },
+    "entity_verification": {
+      "type": "object",
+      "properties": {
+        "input_name": {"type": "string"},
+        "matched_name_in_document": {"type": "string"},
+        "matched_role": {
+          "type": "string",
+          "enum": ["发行人", "披露主体", "受评主体", "母公司", "子公司", "关联方", "历史名称", "不确定"]
+        },
+        "is_same_subject": {"type": "boolean"},
+        "verification_evidence": {"type": "string"},
+        "confidence": {"type": "string", "enum": ["high", "medium", "low"]}
+      }
+    },
+    "needs_deep_pdf_parse": {
+      "type": "boolean",
+      "description": "是否需要深度PDF解析"
+    }
+  }
+}

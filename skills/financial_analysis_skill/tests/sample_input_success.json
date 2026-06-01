@@ -1,0 +1,55 @@
+{
+  "task_id": "TASK-2024-001",
+  "enterprise_name": "XX城市建设投资集团有限公司",
+  "analysis_context": {
+    "enterprise_type": "城投",
+    "expected_periods": ["2023-12-31", "2022-12-31"],
+    "main_report_period": "2023-12-31",
+    "analysis_date": "2024-06-30",
+    "currency": "CNY",
+    "unit": "亿元"
+  },
+  "source_documents": [
+    {"document_id": "DOC-001", "file_name": "2023年度报告.pdf", "selected_type": "selected_main", "report_type": "annual_report"},
+    {"document_id": "DOC-002", "file_name": "2022年度报告.pdf", "selected_type": "selected_main", "report_type": "annual_report"}
+  ],
+  "structured_financial_data": {
+    "periods": ["2023-12-31", "2022-12-31"],
+    "financial_tables": {
+      "balance_sheet": [
+        {"standard_field_name": "total_assets", "period": "2023-12-31", "value": 500.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "total_liabilities", "period": "2023-12-31", "value": 350.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "current_assets", "period": "2023-12-31", "value": 280.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "current_liabilities", "period": "2023-12-31", "value": 180.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "inventory", "period": "2023-12-31", "value": 120.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "cash_and_cash_equivalents", "period": "2023-12-31", "value": 45.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "short_term_borrowings", "period": "2023-12-31", "value": 60.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "non_current_liabilities_due_within_one_year", "period": "2023-12-31", "value": 30.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "long_term_borrowings", "period": "2023-12-31", "value": 120.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "bonds_payable", "period": "2023-12-31", "value": 80.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "owner_equity", "period": "2023-12-31", "value": 150.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "total_assets", "period": "2022-12-31", "value": 420.00, "unit": "亿元", "source_document_id": "DOC-002", "confidence": "high"},
+        {"standard_field_name": "owner_equity", "period": "2022-12-31", "value": 130.00, "unit": "亿元", "source_document_id": "DOC-002", "confidence": "high"}
+      ],
+      "income_statement": [
+        {"standard_field_name": "operating_revenue", "period": "2023-12-31", "value": 85.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "operating_profit", "period": "2023-12-31", "value": 12.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "net_profit", "period": "2023-12-31", "value": 8.50, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "total_profit", "period": "2023-12-31", "value": 11.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "interest_expense", "period": "2023-12-31", "value": 15.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "operating_revenue", "period": "2022-12-31", "value": 75.00, "unit": "亿元", "source_document_id": "DOC-002", "confidence": "high"},
+        {"standard_field_name": "net_profit", "period": "2022-12-31", "value": 7.20, "unit": "亿元", "source_document_id": "DOC-002", "confidence": "high"}
+      ],
+      "cash_flow_statement": [
+        {"standard_field_name": "net_operating_cash_flow", "period": "2023-12-31", "value": 5.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "net_investing_cash_flow", "period": "2023-12-31", "value": -20.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"},
+        {"standard_field_name": "net_financing_cash_flow", "period": "2023-12-31", "value": 10.00, "unit": "亿元", "source_document_id": "DOC-001", "confidence": "high"}
+      ]
+    },
+    "supplemental_financial_tables": {},
+    "partial_financial_data": []
+  },
+  "field_evidence": [],
+  "extraction_warnings": [],
+  "thresholds_config": {}
+}

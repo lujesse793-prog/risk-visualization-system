@@ -1,0 +1,4 @@
+display_name: Financial Extraction Skill
+short_description: Extracts standardized financial statement fields and evidence from parsed post-loan documents.
+default_prompt: Extract financial statement fields from Skill2 parsed_documents JSON and produce structured_financial_data, field_evidence, missing_fields, warnings, and validation_result without computing ratios or risk conclusions.
+

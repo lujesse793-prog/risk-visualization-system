@@ -1,0 +1,4 @@
+interface:
+  display_name: "PDF Parse Skill"
+  short_description: "Parse PDFs with Marker first and Surya OCR fallback."
+  default_prompt: "Parse these PDF source documents and return unified parsed_documents JSON."

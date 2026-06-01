@@ -1,0 +1,4 @@
+interface:
+  display_name: "贷后分析报告"
+  short_description: "支持取数降级，提取公开资料并生成负面信息揭示能力摘要"
+  default_prompt: "Use $post-loan-analysis-report to analyze an enterprise with available public disclosures, degrade gracefully when financial data is unavailable, and return structured negative findings."

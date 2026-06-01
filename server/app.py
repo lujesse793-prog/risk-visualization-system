@@ -13,6 +13,7 @@ import re
 import sys
 import threading
 import time
+import traceback
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -28,7 +29,7 @@ from flask_cors import CORS
 
 from mcp.client import MCPClient, MCPConfig, health_check as mcp_health_check
 from mx_skills.dispatcher import execute_skill, list_skills
-from orchestrator.orchestrator import create_and_run_task, run_task, ProgressTracker
+from orchestrator_pkg.orchestrator import create_and_run_task, run_task, ProgressTracker
 
 app = Flask(__name__, static_folder=str(BASE_DIR), static_url_path="")
 
@@ -216,6 +217,8 @@ def _update_platform_log(task_id: str, platform_key: str, status: str, current_a
 def _unwrap_skill_result(result: dict) -> dict:
     """Return the frontend report payload from dispatcher/task wrappers."""
     payload = result.get("result") if isinstance(result, dict) else {}
+    if isinstance(payload, dict) and "task_id" in payload and "source_documents" in payload:
+        return payload
     if isinstance(payload, dict) and "enterprise_name" in payload and "search_log" in payload:
         return payload
     if isinstance(payload, dict) and isinstance(payload.get("result"), dict):
@@ -223,6 +226,192 @@ def _unwrap_skill_result(result: dict) -> dict:
         if "enterprise_name" in nested and "search_log" in nested:
             return nested
     return payload if isinstance(payload, dict) else {}
+
+
+def _extract_post_loan_payload(query: str) -> dict:
+    try:
+        parsed = json.loads(query) if isinstance(query, str) and query.strip().startswith("{") else {}
+    except json.JSONDecodeError:
+        parsed = {}
+    if not isinstance(parsed, dict):
+        parsed = {}
+    enterprise_name = (
+        parsed.get("enterprise_name")
+        or parsed.get("company_name")
+        or parsed.get("subject_name")
+        or query
+        or ""
+    )
+    return {
+        "enterprise_name": str(enterprise_name).strip(),
+        "report_period": parsed.get("report_period") or parsed.get("report_period_preference"),
+    }
+
+
+def _row_label(row: dict) -> str:
+    return str(row.get("field_name") or row.get("standard_field_name") or row.get("indicator_name") or "")
+
+
+def _cell_from_financial_row(row: dict) -> dict:
+    return {
+        "value": row.get("value"),
+        "source_title": row.get("source_document_id", ""),
+        "page": row.get("page") or "",
+        "table_name": row.get("table_title") or row.get("table_id") or "",
+        "raw_text": row.get("raw_row") or row.get("evidence_text") or "",
+        "source_url": row.get("source_pdf") or "",
+    }
+
+
+def _frontend_table(rows: list[dict], periods: list[str]) -> list[dict]:
+    grouped: dict[str, dict] = {}
+    for row in rows or []:
+        name = _row_label(row)
+        if not name:
+            continue
+        item = grouped.setdefault(name, {"item_name": name, "standard_field_name": row.get("standard_field_name", ""), "values": {}})
+        period = str(row.get("period") or "")
+        if period:
+            item["values"][period] = _cell_from_financial_row(row)
+    return list(grouped.values())
+
+
+def _normalize_indicator_for_frontend(indicator: dict) -> dict:
+    item = dict(indicator)
+    value = item.get("current_value", item.get("value"))
+    unit = item.get("unit", "")
+    if value is not None and item.get("current_value") in (None, ""):
+        item["current_value"] = f"{value}{unit}" if unit else value
+    if not item.get("judgement"):
+        if item.get("status") == "unavailable":
+            item["judgement"] = item.get("unavailable_reason") or "公开资料未披露完整字段。"
+        else:
+            item["judgement"] = item.get("formula_warning") or "指标已按公开披露字段计算。"
+    return item
+
+
+def _normalize_finding_for_frontend(finding: dict) -> dict:
+    item = dict(finding)
+    item.setdefault("type", item.get("finding_type") or item.get("risk_level") or "风险提示")
+    item.setdefault("finding", item.get("judgement") or item.get("finding") or item.get("indicator_name") or "风险提示")
+    item.setdefault("evidence", item.get("evidence_text") or item.get("evidence") or "")
+    item.setdefault("source_title", item.get("source_document_id") or "")
+    item.setdefault("source_url", item.get("source_pdf") or "")
+    return item
+
+
+def _make_post_loan_frontend_payload(result: dict) -> dict:
+    """Add legacy display fields expected by the current static React page."""
+    payload = dict(result or {})
+    source_documents = payload.get("source_documents") or []
+    selected_docs = [
+        {**doc, "used_for_main_analysis": doc.get("document_status") == "selected_main",
+         "used_as_supplement": doc.get("document_status") == "selected_supplement"}
+        for doc in source_documents
+        if doc.get("document_status") in {"selected_main", "selected_supplement"}
+    ]
+    groups = {"financial_report": [], "prospectus": [], "rating_report": [], "public_opinion": []}
+    for doc in selected_docs:
+        file_type = doc.get("file_type")
+        if file_type in {"annual_report", "semi_annual_report", "quarterly_report"}:
+            groups["financial_report"].append(doc)
+        elif file_type == "prospectus":
+            groups["prospectus"].append(doc)
+        elif file_type == "rating_report":
+            groups["rating_report"].append(doc)
+
+    extraction = payload.get("financial_extraction") or {}
+    periods = extraction.get("data_periods") or []
+    tables = (payload.get("structured_financial_data") or {}).get("financial_tables") or {}
+    payload["financial_tables"] = {
+        "periods": periods,
+        "balance_sheet": _frontend_table(tables.get("balance_sheet", []), periods),
+        "income_statement": _frontend_table(tables.get("income_statement", []), periods),
+        "cash_flow_statement": _frontend_table(tables.get("cash_flow_statement", []), periods),
+        "business_segments": [],
+    }
+    payload.setdefault("supplemental_financial_tables", {
+        "periods": [],
+        "balance_sheet": [],
+        "income_statement": [],
+        "cash_flow_statement": [],
+        "business_segments": [],
+    })
+    payload["sources"] = groups
+    if source_documents and not selected_docs:
+        reason = "已检索到公开披露记录，但检索结果未提供可下载 PDF 链接，无法进入 PDF 解析、财务抽取和指标计算。"
+        payload.setdefault("data_availability", {})
+        payload["data_availability"]["data_level"] = "no_data"
+        payload["data_availability"]["data_limitation_note"] = reason
+        payload.setdefault("freshness_gate", {})
+        payload["freshness_gate"]["is_fresh_enough_for_analysis"] = False
+        payload["freshness_gate"]["stop_reason"] = reason
+        payload["analysis_basis"] = "已检索到披露记录，但缺少 PDF 下载链接"
+
+    skipped_by_platform: dict[str, list[dict]] = {}
+    for doc in source_documents:
+        if doc.get("document_status") in {"selected_main", "selected_supplement"}:
+            continue
+        platform = doc.get("source_platform") or "未标注来源"
+        skipped_by_platform.setdefault(platform, []).append({
+            "title": doc.get("title") or doc.get("attachment_title") or "",
+            "file_type": doc.get("file_type", ""),
+            "source_url": doc.get("source_url", ""),
+            "pdf_url": doc.get("pdf_url", ""),
+            "skipped_reason": doc.get("skipped_reason") or doc.get("document_status") or "not_selected",
+        })
+    if skipped_by_platform:
+        logs = list(payload.get("search_log") or [])
+        for platform, skipped_docs in skipped_by_platform.items():
+            log = next((item for item in logs if item.get("source_name") == platform), None)
+            if log is None:
+                log = {"source_name": platform, "status": "warning", "skipped_documents": []}
+                logs.append(log)
+            existing = log.setdefault("skipped_documents", [])
+            seen = {(item.get("title"), item.get("skipped_reason")) for item in existing if isinstance(item, dict)}
+            for doc in skipped_docs:
+                key = (doc.get("title"), doc.get("skipped_reason"))
+                if key not in seen:
+                    existing.append(doc)
+                    seen.add(key)
+        payload["search_log"] = logs
+
+    payload["source_policy"] = {
+        "allowed_announcement_sources_only": True,
+        "allowed_sources": ["中国货币网", "上海证券交易所", "深圳证券交易所"],
+        "external_financial_sources_used": False,
+    }
+    payload.setdefault("report_date", datetime.now().strftime("%Y-%m-%d"))
+    payload.setdefault("data_updated_at", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    if not payload.get("data_period_type"):
+        payload["data_period_type"] = " / ".join(periods[:4]) if periods else "可获取数据不足"
+    main_doc = next((doc for doc in selected_docs if doc.get("document_status") == "selected_main"), None)
+    payload.setdefault("analysis_basis", file_type_label(main_doc.get("file_type")) if main_doc else "无有效公开资料")
+    payload.setdefault("quarterly_report_used_for_analysis", False)
+    main_period = str(payload.get("main_period") or (periods[0] if periods else ""))
+    visible_indicators = [
+        item
+        for item in payload.get("financial_indicators", [])
+        if not main_period or str(item.get("period") or "") == main_period
+    ]
+    payload["financial_indicators"] = [_normalize_indicator_for_frontend(i) for i in visible_indicators]
+    payload["negative_findings"] = [_normalize_finding_for_frontend(f) for f in payload.get("negative_findings", [])]
+    if not payload.get("negative_summary_under_200_chars"):
+        summary = "；".join(f.get("finding", "") for f in payload["negative_findings"][:3] if f.get("finding"))
+        payload["negative_summary_under_200_chars"] = summary[:200]
+    if not payload.get("missing_data_note"):
+        payload["missing_data_note"] = (payload.get("analysis_summary") or {}).get("data_limitation_note", "")
+    return payload
+
+
+def file_type_label(file_type: str | None) -> str:
+    return {
+        "annual_report": "年度报告",
+        "semi_annual_report": "半年度报告",
+        "quarterly_report": "季度报告",
+        "prospectus": "募集说明书",
+        "rating_report": "评级报告",
+    }.get(file_type or "", "公开披露文件")
 
 
 def _complete_task_from_result(task_id: str, result: dict):
@@ -244,6 +433,14 @@ def _complete_task_from_result(task_id: str, result: dict):
         "skipped_files": skipped_count,
         "generated_at": _now_text(),
     }
+    if selected_count == 0 and isinstance(skill_result, dict):
+        blocked_docs = [
+            doc for doc in (skill_result.get("source_documents") or [])
+            if doc.get("document_status") not in {"selected_main", "selected_supplement"}
+        ]
+        if blocked_docs:
+            summary["candidate_files"] = max(summary["candidate_files"], len(skill_result.get("source_documents") or []))
+            summary["skipped_files"] = max(summary["skipped_files"], len(blocked_docs))
     final_status = "success" if result.get("status") == "ok" else "failed"
     final_message = "贷后分析已生成。" if final_status == "success" else (result.get("error") or "任务执行失败。")
     if final_status == "success":
@@ -341,7 +538,20 @@ def _run_post_loan_task_worker(task_id: str, skill_name: str, query: str, output
         )
         time.sleep(0.12)
 
-    result = _run_async(execute_skill(skill_name, query, output_dir=output_dir))
+    payload = _extract_post_loan_payload(query)
+    enterprise_name = payload["enterprise_name"]
+    if not enterprise_name:
+        raise ValueError("缺少企业名称")
+
+    orchestrator_result = _run_async(create_and_run_task(enterprise_name, payload.get("report_period")))
+    frontend_payload = _make_post_loan_frontend_payload(orchestrator_result)
+    status = "error" if frontend_payload.get("task_status") == "failed" else "ok"
+    result = {
+        "status": status,
+        "result": frontend_payload,
+        "skill": skill_name,
+        "error": "" if status == "ok" else frontend_payload.get("message", "贷后分析执行失败。"),
+    }
     _complete_task_from_result(task_id, result)
 
 
@@ -573,7 +783,18 @@ def api_execute_skill(skill_name: str):
         return jsonify({"error": "缺少 query 参数"}), 400
     output_dir = data.get("output_dir")
     try:
-        result = _run_async(execute_skill(skill_name, query, output_dir=output_dir))
+        if skill_name in {"post-loan-analysis-report", "post-loan-analysis"}:
+            payload = _extract_post_loan_payload(query)
+            if not payload["enterprise_name"]:
+                return jsonify({"status": "error", "error": "缺少企业名称"}), 400
+            result = {
+                "status": "ok",
+                "result": _make_post_loan_frontend_payload(
+                    _run_async(create_and_run_task(payload["enterprise_name"], payload.get("report_period")))
+                ),
+            }
+        else:
+            result = _run_async(execute_skill(skill_name, query, output_dir=output_dir))
         return jsonify(result)
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
@@ -726,7 +947,7 @@ def api_orchestrator_run():
         return asyncio.run(create_and_run_task(enterprise_name, report_period))
     
     try:
-        result = _run()
+        result = _make_post_loan_frontend_payload(_run())
         # 存储任务结果
         task_id = result.get("task_id", "")
         with _orchestrator_tasks_lock:

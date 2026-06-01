@@ -1,0 +1,229 @@
+{
+  "task_id": "TASK-2024-003",
+  "enterprise_name": "ZZ城投开发有限公司",
+  "analysis_context": {
+    "enterprise_type": "城投",
+    "expected_periods": ["2023-12-31", "2022-12-31"],
+    "main_report_period": "2023-12-31",
+    "analysis_date": "2024-06-30",
+    "currency": "CNY",
+    "unit": "亿元"
+  },
+  "source_documents": [
+    {"document_id": "DOC-004", "file_name": "ZZ城投2023年报.pdf", "selected_type": "selected_main", "report_type": "annual_report"},
+    {"document_id": "DOC-005", "file_name": "ZZ城投2022年报.pdf", "selected_type": "selected_main", "report_type": "annual_report"}
+  ],
+  "structured_financial_data": {
+    "periods": ["2023-12-31", "2022-12-31"],
+    "financial_tables": {
+      "balance_sheet": [],
+      "income_statement": [],
+      "cash_flow_statement": []
+    },
+    "supplemental_financial_tables": {},
+    "partial_financial_data": []
+  },
+  "field_evidence": [
+    {
+      "field_name": "资产总计",
+      "standard_field_name": "总资产",
+      "period": "2023-12-31",
+      "value_raw": "850.00",
+      "value_normalized": 850.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "source_pdf": "ZZ城投2023年报.pdf",
+      "page": 56,
+      "table_id": "BS-001",
+      "table_title": "合并资产负债表",
+      "raw_row": "资产总计",
+      "raw_column": "期末余额",
+      "confidence": "high"
+    },
+    {
+      "field_name": "负债合计",
+      "standard_field_name": "总负债",
+      "period": "2023-12-31",
+      "value_raw": "620.00",
+      "value_normalized": 620.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "source_pdf": "ZZ城投2023年报.pdf",
+      "page": 56,
+      "table_id": "BS-001",
+      "table_title": "合并资产负债表",
+      "raw_row": "负债合计",
+      "raw_column": "期末余额",
+      "confidence": "high"
+    },
+    {
+      "field_name": "货币资金",
+      "standard_field_name": "货币资金",
+      "period": "2023-12-31",
+      "value_raw": "55.00",
+      "value_normalized": 55.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "source_pdf": "ZZ城投2023年报.pdf",
+      "page": 56,
+      "table_id": "BS-001",
+      "table_title": "合并资产负债表",
+      "confidence": "high"
+    },
+    {
+      "field_name": "短期借款",
+      "standard_field_name": "短期借款",
+      "period": "2023-12-31",
+      "value_raw": "85.00",
+      "value_normalized": 85.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "source_pdf": "ZZ城投2023年报.pdf",
+      "page": 57,
+      "table_id": "BS-002",
+      "table_title": "合并资产负债表(续)",
+      "confidence": "high"
+    },
+    {
+      "field_name": "一年内到期的非流动负债",
+      "standard_field_name": "一年内到期的非流动负债",
+      "period": "2023-12-31",
+      "value_raw": "45.00",
+      "value_normalized": 45.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "source_pdf": "ZZ城投2023年报.pdf",
+      "page": 57,
+      "confidence": "high"
+    },
+    {
+      "field_name": "长期借款",
+      "standard_field_name": "长期借款",
+      "period": "2023-12-31",
+      "value_raw": "200.00",
+      "value_normalized": 200.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "page": 57,
+      "confidence": "high"
+    },
+    {
+      "field_name": "应付债券",
+      "standard_field_name": "应付债券",
+      "period": "2023-12-31",
+      "value_raw": "150.00",
+      "value_normalized": 150.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "page": 57,
+      "confidence": "high"
+    },
+    {
+      "field_name": "所有者权益",
+      "standard_field_name": "所有者权益",
+      "period": "2023-12-31",
+      "value_raw": "230.00",
+      "value_normalized": 230.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "page": 56,
+      "confidence": "high"
+    },
+    {
+      "field_name": "营业总收入",
+      "standard_field_name": "营业总收入",
+      "period": "2023-12-31",
+      "value_raw": "120.00",
+      "value_normalized": 120.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "page": 60,
+      "confidence": "high"
+    },
+    {
+      "field_name": "净利润",
+      "standard_field_name": "净利润",
+      "period": "2023-12-31",
+      "value_raw": "6.20",
+      "value_normalized": 6.20,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "page": 60,
+      "confidence": "high"
+    },
+    {
+      "field_name": "经营活动现金流量净额",
+      "standard_field_name": "经营活动现金流量净额",
+      "period": "2023-12-31",
+      "value_raw": "8.00",
+      "value_normalized": 8.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-004",
+      "page": 63,
+      "confidence": "high"
+    },
+    {
+      "field_name": "资产总计",
+      "standard_field_name": "总资产",
+      "period": "2022-12-31",
+      "value_raw": "720.00",
+      "value_normalized": 720.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-005",
+      "page": 55,
+      "confidence": "high"
+    },
+    {
+      "field_name": "所有者权益",
+      "standard_field_name": "所有者权益",
+      "period": "2022-12-31",
+      "value_raw": "210.00",
+      "value_normalized": 210.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-005",
+      "page": 55,
+      "confidence": "high"
+    },
+    {
+      "field_name": "营业总收入",
+      "standard_field_name": "营业总收入",
+      "period": "2022-12-31",
+      "value_raw": "100.00",
+      "value_normalized": 100.00,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-005",
+      "page": 58,
+      "confidence": "high"
+    },
+    {
+      "field_name": "净利润",
+      "standard_field_name": "净利润",
+      "period": "2022-12-31",
+      "value_raw": "5.80",
+      "value_normalized": 5.80,
+      "unit_raw": "亿元",
+      "unit_normalized": "亿元",
+      "source_document_id": "DOC-005",
+      "page": 58,
+      "confidence": "high"
+    }
+  ],
+  "extraction_warnings": [
+    "2023年报中未找到利润总额和利息费用明细"
+  ],
+  "thresholds_config": {}
+}
